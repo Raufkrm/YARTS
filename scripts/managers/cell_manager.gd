@@ -6,6 +6,10 @@ const TERRAIN_TO_BATTLE_TAG := {
 	"forest": "forest_battlefield",
 	"hills": "high_ground",
 	"water": "shoreline",
+	"mountains": "mountain_pass",
+	"snow": "frozen_field",
+	"desert": "dry_wastes",
+	"tundra": "cold_steppe",
 }
 
 

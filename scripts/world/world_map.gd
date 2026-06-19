@@ -4,8 +4,10 @@ const PLANET_RADIUS := 2.0
 const PLANET_GRID_RADIUS := 2.015
 const TERMINATOR_RADIUS := PLANET_RADIUS * 1.012
 const ATMOSPHERE_RADIUS := PLANET_RADIUS * 1.34
-const TERRAIN_CELL_SUBDIVISIONS := 4
-const ROTATION_SPEED := 0.025
+const WORLD_SURFACE_LONGITUDE_SEGMENTS := 512
+const WORLD_SURFACE_LATITUDE_SEGMENTS := 256
+const PLANET_TEXTURE_SIZE := Vector2i(2048, 1024)
+const PLANET_TEXTURE_VERSION := 8
 const ZOOM_DURATION := 0.85
 const CAMERA_DEFAULT_DISTANCE := 6.2
 const CAMERA_MIN_DISTANCE := PLANET_RADIUS + 0.85
@@ -27,6 +29,7 @@ const SUN_BURST_QUAD_SIZE := 50.0
 var selected_cell_id := ""
 var zooming := false
 var orbit_dragging := false
+var debug_view_mode := "terrain"
 var camera_yaw := 0.0
 var camera_pitch := -0.22
 var camera_distance := CAMERA_DEFAULT_DISTANCE
@@ -44,18 +47,25 @@ var sun_core_visual: MeshInstance3D
 var sun_burst_visual: MeshInstance3D
 var sun_shader_material: ShaderMaterial
 var sun_shader_time := 0.0
+var planet_material: StandardMaterial3D
+var planet_texture: Texture2D
+var planet_texture_cache_key := ""
 var info_label: Label
 var event_log_label: RichTextLabel
+var debug_view_button: Button
+var world_loading_layer: CanvasLayer
+var world_loading_label: Label
+var world_loading_bar: ProgressBar
+var suppress_world_refresh := false
+var world_refresh_running := false
+var grid_faint_enabled := true
 
 
 func _ready() -> void:
-	if Game.world_state == null:
-		Game.new_campaign()
-
 	_build_world()
 	_build_overlay()
-	Game.world_state_changed.connect(_refresh_world)
-	_refresh_world()
+	Game.world_state_changed.connect(_on_world_state_changed)
+	call_deferred("_load_world_on_startup")
 
 
 func _process(delta: float) -> void:
@@ -65,8 +75,8 @@ func _process(delta: float) -> void:
 	_face_sun_visuals_to_camera()
 
 	if planet_root != null and not zooming:
-		planet_root.rotate_y(ROTATION_SPEED * delta)
-		camera_yaw += ROTATION_SPEED * delta
+		planet_root.rotate_y(Game.WORLD_ROTATION_SPEED * delta)
+		camera_yaw += Game.WORLD_ROTATION_SPEED * delta
 		_update_camera_orbit_from_input(delta)
 		_apply_camera_orbit()
 
@@ -75,8 +85,16 @@ func _process(delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if world_loading_layer != null:
+		return
 	if zooming:
 		return
+
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_G:
+			_toggle_grid_faint()
+			get_viewport().set_input_as_handled()
+			return
 
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_RIGHT:
@@ -266,8 +284,8 @@ func _build_world() -> void:
 	sky.sky_material = sky_material
 	environment.sky = sky
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.ambient_light_color = Color(0.04, 0.05, 0.08)
-	environment.ambient_light_energy = 0.18
+	environment.ambient_light_color = Color(0.14, 0.16, 0.22)
+	environment.ambient_light_energy = 0.52
 	world_environment.environment = environment
 	add_child(world_environment)
 
@@ -302,6 +320,11 @@ func _build_overlay() -> void:
 	load_button.pressed.connect(_on_load_pressed)
 	top_bar.add_child(load_button)
 
+	debug_view_button = Button.new()
+	debug_view_button.text = "View: Terrain"
+	debug_view_button.pressed.connect(_on_debug_view_pressed)
+	top_bar.add_child(debug_view_button)
+
 	var panel := PanelContainer.new()
 	panel.position = Vector2(16, 58)
 	panel.custom_minimum_size = Vector2(340, 260)
@@ -332,7 +355,7 @@ func _build_overlay() -> void:
 	panel_stack.add_child(info_label)
 
 	var hint := Label.new()
-	hint.text = "Click a cell to enter it. WASD/arrows or right-drag orbit. Mouse wheel zooms."
+	hint.text = "Click a cell to enter it. %s/arrows or right-drag orbit. Mouse wheel zooms. G toggles grid." % Game.movement_layout_label()
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	panel_stack.add_child(hint)
@@ -350,6 +373,152 @@ func _build_overlay() -> void:
 	panel_stack.add_child(event_log_label)
 
 
+func _build_world_loading_overlay() -> void:
+	if world_loading_layer != null:
+		return
+
+	world_loading_layer = CanvasLayer.new()
+	world_loading_layer.name = "WorldLoadingOverlay"
+	world_loading_layer.layer = 100
+	add_child(world_loading_layer)
+
+	var backdrop := ColorRect.new()
+	backdrop.set_anchors_preset(Control.PRESET_FULL_RECT)
+	backdrop.color = Color(0.015, 0.020, 0.030, 0.92)
+	world_loading_layer.add_child(backdrop)
+
+	var panel := PanelContainer.new()
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.offset_left = -300
+	panel.offset_top = -82
+	panel.offset_right = 300
+	panel.offset_bottom = 82
+	world_loading_layer.add_child(panel)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_top", 18)
+	margin.add_theme_constant_override("margin_right", 20)
+	margin.add_theme_constant_override("margin_bottom", 18)
+	panel.add_child(margin)
+
+	var stack := VBoxContainer.new()
+	margin.add_child(stack)
+
+	var title := Label.new()
+	title.text = "Preparing World"
+	title.add_theme_font_size_override("font_size", 20)
+	stack.add_child(title)
+
+	world_loading_label = Label.new()
+	world_loading_label.text = "Starting..."
+	world_loading_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	stack.add_child(world_loading_label)
+
+	world_loading_bar = ProgressBar.new()
+	world_loading_bar.min_value = 0.0
+	world_loading_bar.max_value = 100.0
+	world_loading_bar.value = 0.0
+	stack.add_child(world_loading_bar)
+
+
+func _show_world_loading(stage: String, progress: float = 0.0) -> void:
+	_build_world_loading_overlay()
+	_set_world_loading(stage, progress)
+
+
+func _set_world_loading(stage: String, progress: float) -> void:
+	if world_loading_label != null:
+		world_loading_label.text = stage
+	if world_loading_bar != null:
+		world_loading_bar.value = clamp(progress, 0.0, 1.0) * 100.0
+
+
+func _hide_world_loading() -> void:
+	if world_loading_layer != null:
+		world_loading_layer.queue_free()
+		world_loading_layer = null
+		world_loading_label = null
+		world_loading_bar = null
+
+
+func _load_world_on_startup() -> void:
+	if world_refresh_running:
+		return
+
+	world_refresh_running = true
+	_show_world_loading("Opening world scene...", 0.02)
+	await get_tree().process_frame
+	if Game.world_state == null:
+		await _create_world_with_loading(0, 24, 12, "Creating new world")
+	else:
+		await _refresh_world_with_loading("Loading world map")
+	_hide_world_loading()
+	world_refresh_running = false
+
+
+func _create_world_with_loading(seed: int, width: int, height: int, title: String) -> void:
+	suppress_world_refresh = true
+	selected_cell_id = ""
+	_set_world_loading("%s: generating seed, cells, biomes, and rivers..." % title, 0.08)
+	await get_tree().process_frame
+	Game.new_campaign(seed, width, height)
+	if Game.world_state != null:
+		selected_cell_id = Game.world_state.starting_cell_id
+	_set_world_loading("%s: world data ready, building globe..." % title, 0.22)
+	await get_tree().process_frame
+	await _refresh_world_with_loading(title)
+	suppress_world_refresh = false
+
+
+func _run_world_refresh_with_loading(title: String) -> void:
+	if world_refresh_running:
+		return
+
+	world_refresh_running = true
+	_show_world_loading("%s..." % title, 0.02)
+	await get_tree().process_frame
+	await _refresh_world_with_loading(title)
+	_hide_world_loading()
+	world_refresh_running = false
+
+
+func _refresh_world_with_loading(title: String) -> void:
+	if Game.world_state == null:
+		return
+
+	if selected_cell_id.is_empty():
+		selected_cell_id = Game.world_state.starting_cell_id
+
+	_set_world_loading("%s: building planet geometry..." % title, 0.30)
+	await get_tree().process_frame
+	terrain_mesh_instance.mesh = _build_planet_mesh(false)
+
+	_set_world_loading("%s: painting terrain texture..." % title, 0.42)
+	await get_tree().process_frame
+	await _apply_planet_texture_with_loading(0.42, 0.86)
+
+	_set_world_loading("%s: wrapping strategic grid..." % title, 0.90)
+	await get_tree().process_frame
+	grid_mesh_instance.mesh = _build_grid_mesh()
+
+	_set_world_loading("%s: selecting starting cell..." % title, 0.96)
+	await get_tree().process_frame
+	selection_mesh_instance.mesh = _build_cell_outline_mesh(selected_cell_id)
+	_update_overlay()
+	_set_world_loading("%s complete." % title, 1.0)
+	await get_tree().process_frame
+
+
+func _on_world_state_changed() -> void:
+	if suppress_world_refresh:
+		return
+	call_deferred("_run_world_refresh_with_loading", "Refreshing world")
+
+
 func _refresh_world() -> void:
 	if Game.world_state == null:
 		return
@@ -363,68 +532,159 @@ func _refresh_world() -> void:
 	_update_overlay()
 
 
-func _build_planet_mesh() -> ArrayMesh:
+func _build_planet_mesh(apply_texture: bool = true) -> ArrayMesh:
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
-	var colors := PackedColorArray()
+	var uvs := PackedVector2Array()
 	var indices := PackedInt32Array()
+	var row_length := WORLD_SURFACE_LONGITUDE_SEGMENTS + 1
 
-	for cell in Game.world_state.get_cells():
-		var width: int = int(Game.world_state.width)
-		var height: int = int(Game.world_state.height)
-		var lon_left: float = lerpf(-PI, PI, float(cell.x) / float(width))
-		var lon_right: float = lerpf(-PI, PI, float(cell.x + 1) / float(width))
-		var lat_top: float = lerpf(PI / 2.0, -PI / 2.0, float(cell.y) / float(height))
-		var lat_bottom: float = lerpf(PI / 2.0, -PI / 2.0, float(cell.y + 1) / float(height))
-		var cell_color := _terrain_color(cell.terrain, cell.owner_id)
+	for lat_index in range(WORLD_SURFACE_LATITUDE_SEGMENTS + 1):
+		var lat: float = lerpf(PI / 2.0, -PI / 2.0, float(lat_index) / float(WORLD_SURFACE_LATITUDE_SEGMENTS))
+		for lon_index in range(WORLD_SURFACE_LONGITUDE_SEGMENTS + 1):
+			var lon: float = lerpf(-PI, PI, float(lon_index) / float(WORLD_SURFACE_LONGITUDE_SEGMENTS))
+			var direction := _direction_from_lat_lon(lat, lon)
+			vertices.append(direction * PLANET_RADIUS)
+			normals.append(direction)
+			uvs.append(Vector2(
+				float(lon_index) / float(WORLD_SURFACE_LONGITUDE_SEGMENTS),
+				float(lat_index) / float(WORLD_SURFACE_LATITUDE_SEGMENTS)
+			))
 
-		for sub_y in range(TERRAIN_CELL_SUBDIVISIONS):
-			var lat_a: float = lerpf(lat_top, lat_bottom, float(sub_y) / float(TERRAIN_CELL_SUBDIVISIONS))
-			var lat_b: float = lerpf(lat_top, lat_bottom, float(sub_y + 1) / float(TERRAIN_CELL_SUBDIVISIONS))
-			for sub_x in range(TERRAIN_CELL_SUBDIVISIONS):
-				var lon_a: float = lerpf(lon_left, lon_right, float(sub_x) / float(TERRAIN_CELL_SUBDIVISIONS))
-				var lon_b: float = lerpf(lon_left, lon_right, float(sub_x + 1) / float(TERRAIN_CELL_SUBDIVISIONS))
-				var base_index := vertices.size()
-				var corners := [
-					_direction_from_lat_lon(lat_a, lon_a),
-					_direction_from_lat_lon(lat_a, lon_b),
-					_direction_from_lat_lon(lat_b, lon_b),
-					_direction_from_lat_lon(lat_b, lon_a),
-				]
+	for lat_index in range(WORLD_SURFACE_LATITUDE_SEGMENTS):
+		for lon_index in range(WORLD_SURFACE_LONGITUDE_SEGMENTS):
+			var base_index := lat_index * row_length + lon_index
+			indices.append(base_index)
+			indices.append(base_index + 1)
+			indices.append(base_index + row_length)
 
-				for direction in corners:
-					vertices.append(direction * PLANET_RADIUS)
-					normals.append(direction)
-					colors.append(cell_color)
-
-				indices.append(base_index)
-				indices.append(base_index + 1)
-				indices.append(base_index + 2)
-				indices.append(base_index)
-				indices.append(base_index + 2)
-				indices.append(base_index + 3)
+			indices.append(base_index + 1)
+			indices.append(base_index + row_length + 1)
+			indices.append(base_index + row_length)
 
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = vertices
 	arrays[Mesh.ARRAY_NORMAL] = normals
-	arrays[Mesh.ARRAY_COLOR] = colors
+	arrays[Mesh.ARRAY_TEX_UV] = uvs
 	arrays[Mesh.ARRAY_INDEX] = indices
 
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 
-	var material := StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	material.roughness = 0.82
-	mesh.surface_set_material(0, material)
+	planet_material = StandardMaterial3D.new()
+	planet_material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	planet_material.roughness = 0.82
+	planet_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	mesh.surface_set_material(0, planet_material)
+	if apply_texture:
+		_apply_planet_texture()
 	return mesh
+
+
+func _clear_planet_texture_cache() -> void:
+	planet_texture = null
+	planet_texture_cache_key = ""
+
+
+func _apply_planet_texture() -> void:
+	if planet_material == null or Game.world_state == null:
+		return
+
+	var cache_key := _planet_texture_cache_key()
+	if cache_key != planet_texture_cache_key:
+		planet_texture = null
+		planet_texture_cache_key = cache_key
+
+	if planet_texture == null:
+		var cached_texture = Game.get_world_visual_cache(cache_key)
+		if cached_texture is Texture2D:
+			planet_texture = cached_texture
+		if planet_texture == null:
+			planet_texture = _build_planet_texture(PLANET_TEXTURE_SIZE.x, PLANET_TEXTURE_SIZE.y)
+			Game.set_world_visual_cache(cache_key, planet_texture)
+	planet_material.albedo_texture = planet_texture
+
+
+func _apply_planet_texture_with_loading(progress_start: float, progress_end: float) -> void:
+	if planet_material == null or Game.world_state == null:
+		return
+
+	var cache_key := _planet_texture_cache_key()
+	if cache_key != planet_texture_cache_key:
+		planet_texture = null
+		planet_texture_cache_key = cache_key
+
+	if planet_texture == null:
+		var cached_texture = Game.get_world_visual_cache(cache_key)
+		if cached_texture is Texture2D:
+			_set_world_loading("Using cached planet texture...", progress_end)
+			await get_tree().process_frame
+			planet_texture = cached_texture
+		if planet_texture == null:
+			planet_texture = await _build_planet_texture_with_loading(PLANET_TEXTURE_SIZE.x, PLANET_TEXTURE_SIZE.y, progress_start, progress_end)
+			Game.set_world_visual_cache(cache_key, planet_texture)
+	planet_material.albedo_texture = planet_texture
+
+
+func _planet_texture_cache_key() -> String:
+	return "planet_texture:v%d:%d:%s:%dx%d" % [
+		PLANET_TEXTURE_VERSION,
+		int(Game.world_state.seed),
+		debug_view_mode,
+		PLANET_TEXTURE_SIZE.x,
+		PLANET_TEXTURE_SIZE.y,
+	]
+
+
+func _build_planet_texture(width: int, height: int) -> Texture2D:
+	var image := Image.create(width, height, true, Image.FORMAT_RGBA8)
+	for y in range(height):
+		var v: float = float(y) / float(height - 1)
+		var lat: float = lerpf(PI / 2.0, -PI / 2.0, v)
+		for x in range(width):
+			var u: float = float(x) / float(width - 1)
+			var lon: float = lerpf(-PI, PI, u)
+			var sample: Dictionary = Game.world_state.sample_world(lat, lon)
+			image.set_pixel(x, y, _sample_color(sample, "neutral"))
+
+	image.generate_mipmaps()
+	return ImageTexture.create_from_image(image)
+
+
+func _build_planet_texture_with_loading(width: int, height: int, progress_start: float, progress_end: float) -> Texture2D:
+	var image := Image.create(width, height, true, Image.FORMAT_RGBA8)
+	var row_step := 16
+	for y in range(height):
+		var v: float = float(y) / float(height - 1)
+		var lat: float = lerpf(PI / 2.0, -PI / 2.0, v)
+		for x in range(width):
+			var u: float = float(x) / float(width - 1)
+			var lon: float = lerpf(-PI, PI, u)
+			var sample: Dictionary = Game.world_state.sample_world(lat, lon)
+			image.set_pixel(x, y, _sample_color(sample, "neutral"))
+
+		if y % row_step == 0:
+			var row_progress: float = float(y) / float(max(height - 1, 1))
+			_set_world_loading(
+				"Painting planet texture row %d/%d..." % [y + 1, height],
+				lerpf(progress_start, progress_end - 0.04, row_progress)
+			)
+			await get_tree().process_frame
+
+	_set_world_loading("Generating planet texture mipmaps...", progress_end - 0.02)
+	await get_tree().process_frame
+	image.generate_mipmaps()
+	_set_world_loading("Uploading planet texture...", progress_end)
+	await get_tree().process_frame
+	return ImageTexture.create_from_image(image)
 
 
 func _build_grid_mesh() -> ArrayMesh:
 	var vertices := PackedVector3Array()
 	var colors := PackedColorArray()
-	var color := Color(0.9, 0.95, 1.0, 0.14)
+	var grid_alpha := 0.035 if grid_faint_enabled else 0.14
+	var color := Color(0.9, 0.95, 1.0, grid_alpha)
 	var width: int = int(Game.world_state.width)
 	var height: int = int(Game.world_state.height)
 	var segments := 96
@@ -441,7 +701,10 @@ func _build_grid_mesh() -> ArrayMesh:
 
 	for column in range(width):
 		var lon: float = lerpf(-PI, PI, float(column) / float(width))
-		for segment in range(segments):
+		var is_polar_boundary := column % WorldState.POLAR_MERGE_SPAN == 0
+		var start_segment := 0 if is_polar_boundary else int(ceil(float(segments) / float(height)))
+		var end_segment := segments if is_polar_boundary else int(floor(float(segments) * float(height - 1) / float(height)))
+		for segment in range(start_segment, end_segment):
 			var lat_a: float = lerpf(PI / 2.0, -PI / 2.0, float(segment) / float(segments))
 			var lat_b: float = lerpf(PI / 2.0, -PI / 2.0, float(segment + 1) / float(segments))
 			vertices.append(_direction_from_lat_lon(lat_a, lon) * PLANET_GRID_RADIUS)
@@ -465,6 +728,17 @@ func _build_grid_mesh() -> ArrayMesh:
 	return mesh
 
 
+func _toggle_grid_faint() -> void:
+	grid_faint_enabled = not grid_faint_enabled
+	_refresh_grid_mesh()
+
+
+func _refresh_grid_mesh() -> void:
+	if grid_mesh_instance == null or Game.world_state == null:
+		return
+	grid_mesh_instance.mesh = _build_grid_mesh()
+
+
 func _build_cell_outline_mesh(cell_id: String) -> ArrayMesh:
 	var cell = Game.world_state.get_cell(cell_id)
 	var vertices := PackedVector3Array()
@@ -473,7 +747,7 @@ func _build_cell_outline_mesh(cell_id: String) -> ArrayMesh:
 		return ArrayMesh.new()
 
 	var color := Color(1.0, 0.92, 0.25, 1.0)
-	var corners := _cell_corner_directions(cell.x, cell.y)
+	var corners := _cell_corner_directions(cell.x, cell.y, cell.x_span)
 	var edges := [
 		[corners[0], corners[1]],
 		[corners[1], corners[2]],
@@ -539,7 +813,19 @@ func _zoom_to_selected_cell() -> void:
 
 
 func _enter_selected_cell() -> void:
+	_sync_battle_sun_context()
 	Game.start_battle(selected_cell_id)
+
+
+func _sync_battle_sun_context() -> void:
+	var cell = Game.world_state.get_cell(selected_cell_id)
+	if cell == null or planet_root == null:
+		return
+
+	var lat_lon: Vector2 = Game.world_state.get_cell_center_lat_lon(cell)
+	var cell_normal := _direction_from_lat_lon(lat_lon.x, lat_lon.y)
+	var sun_planet := (planet_root.global_transform.basis.inverse() * SUN_WORLD_DIRECTION.normalized()).normalized()
+	Game.set_battle_sun_context_for_cell(cell_normal, sun_planet)
 
 
 func _ray_sphere_intersection(origin: Vector3, direction: Vector3, center: Vector3, radius: float):
@@ -559,11 +845,11 @@ func _ray_sphere_intersection(origin: Vector3, direction: Vector3, center: Vecto
 	return origin + direction * distance
 
 
-func _cell_corner_directions(x_index: int, y_index: int) -> Array:
+func _cell_corner_directions(x_index: int, y_index: int, x_span: int = 1) -> Array:
 	var width: int = int(Game.world_state.width)
 	var height: int = int(Game.world_state.height)
 	var lon_left: float = lerpf(-PI, PI, float(x_index) / float(width))
-	var lon_right: float = lerpf(-PI, PI, float(x_index + 1) / float(width))
+	var lon_right: float = lerpf(-PI, PI, float(x_index + x_span) / float(width))
 	var lat_top: float = lerpf(PI / 2.0, -PI / 2.0, float(y_index) / float(height))
 	var lat_bottom: float = lerpf(PI / 2.0, -PI / 2.0, float(y_index + 1) / float(height))
 	return [
@@ -583,23 +869,111 @@ func _direction_from_lat_lon(lat: float, lon: float) -> Vector3:
 	).normalized()
 
 
-func _terrain_color(terrain: String, owner_id: String) -> Color:
-	var color := Color(0.35, 0.58, 0.26)
-	match terrain:
-		"forest":
-			color = Color(0.08, 0.38, 0.16)
-		"hills":
-			color = Color(0.46, 0.43, 0.34)
-		"water":
-			color = Color(0.05, 0.26, 0.56)
-		_:
-			color = Color(0.38, 0.60, 0.29)
+func _cell_color(cell) -> Color:
+	var sample: Dictionary = {
+		"terrain": cell.terrain,
+		"climate": cell.climate,
+		"elevation": cell.elevation,
+		"moisture": cell.moisture,
+		"temperature": cell.temperature,
+		"raw_noise": cell.elevation,
+		"ridge": 0.0,
+		"river": 0.0,
+		"direction": _direction_from_lat_lon(Game.world_state.get_cell_center_lat_lon(cell).x, Game.world_state.get_cell_center_lat_lon(cell).y),
+	}
+	return _sample_color(sample, str(cell.owner_id))
 
-	if owner_id == "player":
-		color = color.lerp(Color(0.18, 0.72, 0.76), 0.22)
-	elif owner_id == "bandits":
-		color = color.lerp(Color(0.78, 0.22, 0.16), 0.16)
+
+func _sample_color(sample: Dictionary, owner_id: String = "neutral") -> Color:
+	if debug_view_mode == "climate":
+		return _climate_color(str(sample["climate"]))
+	if debug_view_mode == "noise":
+		var raw_noise: float = float(sample["raw_noise"])
+		var noise_color := Color(raw_noise, raw_noise, raw_noise)
+		return noise_color.lerp(Color(0.20, 0.72, 1.0), clamp(float(sample["river"]) * 1.8, 0.0, 1.0))
+	return _terrain_color(sample, owner_id)
+
+
+func _terrain_color(sample: Dictionary, owner_id: String) -> Color:
+	var elevation: float = float(sample["elevation"])
+	var moisture: float = float(sample["moisture"])
+	var temperature: float = float(sample["temperature"])
+	var ridge: float = float(sample.get("ridge", 0.0))
+	var river: float = float(sample.get("river", 0.0))
+	var sample_direction := Vector3.UP
+	if sample.has("direction") and sample["direction"] is Vector3:
+		sample_direction = sample["direction"]
+	var land_height: float = clamp((elevation - WorldState.SEA_LEVEL) / max(1.0 - WorldState.SEA_LEVEL, 0.001), 0.0, 1.0)
+	var surface_detail: float = clamp((float(sample.get("raw_noise", elevation)) - 0.5) * 0.20, -0.08, 0.08)
+	var color := Color(0.34, 0.58, 0.28)
+	if elevation < WorldState.SEA_LEVEL:
+		var depth: float = clamp((WorldState.SEA_LEVEL - elevation) * 7.5, 0.0, 1.0)
+		var shelf: float = smoothstep(WorldState.SEA_LEVEL - 0.13, WorldState.SEA_LEVEL - 0.012, elevation)
+		color = Color(0.035, 0.19, 0.43).lerp(Color(0.04, 0.31, 0.62), 1.0 - depth)
+		color = color.lerp(Color(0.15, 0.58, 0.82), shelf * 0.78)
+		var sea_edge: float = smoothstep(WorldState.SEA_LEVEL - 0.085, WorldState.SEA_LEVEL - 0.004, elevation)
+		var sea_floor: Color = Color(0.68, 0.59, 0.38).lerp(Color(0.42, 0.40, 0.34), clamp(ridge * 0.62, 0.0, 1.0))
+		color = color.lerp(sea_floor, clamp(sea_edge * 0.34, 0.0, 0.34))
+		color = color.lightened(clamp(surface_detail * 0.45, 0.0, 0.05))
+	else:
+		var dryness: float = clamp((1.0 - moisture) * 0.82 + temperature * 0.20, 0.0, 1.0)
+		var lush: float = clamp(moisture * 1.08 - temperature * 0.10, 0.0, 1.0)
+		var lowland := Color(0.38, 0.67, 0.30).lerp(Color(0.12, 0.42, 0.16), lush)
+		var dryland := Color(0.63, 0.47, 0.25).lerp(Color(0.82, 0.66, 0.36), clamp(dryness, 0.0, 1.0))
+		color = lowland.lerp(dryland, clamp(dryness * 0.76, 0.0, 0.76))
+		var foothill: float = smoothstep(0.20, 0.48, land_height)
+		color = color.lerp(Color(0.43, 0.38, 0.27), foothill * 0.30)
+		var mountain: float = smoothstep(0.44, 0.72, land_height) * smoothstep(0.25, 0.70, ridge)
+		color = color.lerp(Color(0.34, 0.27, 0.22), clamp(mountain * 0.78, 0.0, 0.78))
+		var high_peak: float = smoothstep(0.64, 0.88, land_height) * smoothstep(0.42, 0.86, ridge)
+		color = color.lerp(Color(0.68, 0.65, 0.59), clamp(high_peak, 0.0, 0.92))
+		var snow: float = smoothstep(WorldState.SNOW_LEVEL - 0.08, WorldState.SNOW_LEVEL + 0.02, elevation)
+		snow = max(snow, smoothstep(0.78, 0.95, abs(sample_direction.y)) * smoothstep(0.0, 0.32, 1.0 - temperature))
+		color = color.lerp(Color(0.94, 0.97, 0.94), clamp(snow, 0.0, 0.90))
+		var coast_edge: float = 1.0 - smoothstep(WorldState.SEA_LEVEL + 0.006, WorldState.SEA_LEVEL + 0.060, elevation)
+		if coast_edge > 0.0:
+			var coast_sand := Color(0.86, 0.74, 0.43)
+			var coast_rock := Color(0.45, 0.40, 0.32)
+			var coast_rock_mix: float = clamp(ridge * 0.60 + land_height * 0.24, 0.0, 1.0)
+			var coast_color: Color = coast_sand.lerp(coast_rock, coast_rock_mix)
+			color = color.lerp(coast_color, clamp(coast_edge * 0.88, 0.0, 0.88))
+		var river_bank: float = smoothstep(0.012, 0.105, river) * (1.0 - smoothstep(0.28, 0.58, river))
+		if river_bank > 0.0:
+			var sandy_bank := Color(0.82, 0.71, 0.45)
+			var rocky_bank := Color(0.42, 0.38, 0.31)
+			var rock_mix: float = clamp(ridge * 0.74 + land_height * 0.34, 0.0, 1.0)
+			var bank_color: Color = sandy_bank.lerp(rocky_bank, rock_mix)
+			color = color.lerp(bank_color, clamp(river_bank * 0.68, 0.0, 0.68))
+		var river_bed: float = smoothstep(0.20, 0.48, river)
+		if river_bed > 0.0:
+			var bed_color: Color = Color(0.30, 0.31, 0.30).lerp(Color(0.48, 0.46, 0.40), clamp(1.0 - ridge, 0.0, 0.55))
+			color = color.lerp(bed_color, clamp(river_bed * 0.52, 0.0, 0.52))
+		if river > 0.018:
+			var river_strength: float = clamp((river - 0.018) * 2.55, 0.0, 0.82)
+			color = color.lerp(Color(0.025, 0.30, 0.58), river_strength)
+		if surface_detail > 0.0:
+			color = color.lightened(surface_detail * 0.38)
+		else:
+			color = color.darkened(abs(surface_detail) * 0.26)
 	return color
+
+
+func _climate_color(climate: String) -> Color:
+	match climate:
+		"polar":
+			return Color(0.86, 0.94, 1.0)
+		"alpine":
+			return Color(0.72, 0.73, 0.78)
+		"cold":
+			return Color(0.42, 0.65, 0.78)
+		"temperate":
+			return Color(0.34, 0.68, 0.34)
+		"tropical":
+			return Color(0.10, 0.58, 0.22)
+		"arid":
+			return Color(0.78, 0.55, 0.22)
+		_:
+			return Color(0.50, 0.50, 0.50)
 
 
 func _update_overlay() -> void:
@@ -611,6 +985,9 @@ func _update_overlay() -> void:
 			"Selected: %s" % cell.id,
 			"Owner: %s" % _owner_label(cell.owner_id),
 			"Terrain: %s" % cell.terrain.capitalize(),
+			"Biome: %s" % str(cell.biome).capitalize(),
+			"Climate: %s" % str(cell.climate).capitalize(),
+			"Elevation: %.2f  Moisture: %.2f  Temp: %.2f" % [float(cell.elevation), float(cell.moisture), float(cell.temperature)],
 			"Threat: %d" % cell.threat_level,
 			"Food: %d  Wood: %d  Stone: %d" % [
 				int(cell.resources.get("food", 0)),
@@ -624,12 +1001,26 @@ func _update_overlay() -> void:
 
 
 func _on_new_campaign_pressed() -> void:
+	if world_refresh_running:
+		return
 	selected_cell_id = ""
 	zooming = false
 	camera_yaw = 0.0
 	camera_pitch = -0.22
 	_set_camera_distance(CAMERA_DEFAULT_DISTANCE)
-	Game.new_campaign()
+	call_deferred("_new_campaign_with_loading")
+
+
+func _new_campaign_with_loading() -> void:
+	if world_refresh_running:
+		return
+
+	world_refresh_running = true
+	_show_world_loading("Creating new world...", 0.02)
+	await get_tree().process_frame
+	await _create_world_with_loading(0, 24, 12, "Creating new world")
+	_hide_world_loading()
+	world_refresh_running = false
 
 
 func _on_save_pressed() -> void:
@@ -638,9 +1029,58 @@ func _on_save_pressed() -> void:
 
 
 func _on_load_pressed() -> void:
-	if Game.load_campaign():
+	if world_refresh_running:
+		return
+	call_deferred("_load_campaign_with_loading")
+
+
+func _load_campaign_with_loading() -> void:
+	if world_refresh_running:
+		return
+
+	world_refresh_running = true
+	_show_world_loading("Loading campaign save...", 0.05)
+	await get_tree().process_frame
+	suppress_world_refresh = true
+	var loaded := Game.load_campaign()
+	suppress_world_refresh = false
+	if loaded:
 		selected_cell_id = Game.current_cell_id
-		_refresh_world()
+		_set_world_loading("Save loaded, rebuilding world map...", 0.20)
+		await get_tree().process_frame
+		await _refresh_world_with_loading("Loading saved world")
+	else:
+		_set_world_loading("No valid campaign save found.", 1.0)
+		await get_tree().create_timer(0.35).timeout
+	_hide_world_loading()
+	world_refresh_running = false
+
+
+func _on_debug_view_pressed() -> void:
+	if world_refresh_running:
+		return
+	match debug_view_mode:
+		"terrain":
+			debug_view_mode = "climate"
+		"climate":
+			debug_view_mode = "noise"
+		_:
+			debug_view_mode = "terrain"
+	debug_view_button.text = "View: %s" % debug_view_mode.capitalize()
+	_clear_planet_texture_cache()
+	call_deferred("_refresh_debug_view_with_loading")
+
+
+func _refresh_debug_view_with_loading() -> void:
+	if world_refresh_running:
+		return
+
+	world_refresh_running = true
+	_show_world_loading("Switching to %s view..." % debug_view_mode.capitalize(), 0.04)
+	await get_tree().process_frame
+	await _refresh_world_with_loading("Switching to %s view" % debug_view_mode.capitalize())
+	_hide_world_loading()
+	world_refresh_running = false
 
 
 func _owner_label(owner_id: String) -> String:
@@ -691,14 +1131,14 @@ func _update_camera_orbit_from_input(delta: float) -> void:
 	var yaw_input := 0.0
 	var pitch_input := 0.0
 
-	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+	if Game.is_move_left_pressed():
 		yaw_input -= 1.0
-	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+	if Game.is_move_right_pressed():
 		yaw_input += 1.0
-	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
-		pitch_input += 1.0
-	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+	if Game.is_move_forward_pressed():
 		pitch_input -= 1.0
+	if Game.is_move_back_pressed():
+		pitch_input += 1.0
 
 	if yaw_input != 0.0:
 		camera_yaw += yaw_input * CAMERA_ORBIT_SPEED * delta
