@@ -14,6 +14,7 @@ var current_cell_id := ""
 var event_log: Array[String] = []
 var world_visual_cache: Dictionary = {}
 var rts_cell_cache: Dictionary = {}
+var world_rotation_angle := 0.0
 var battle_sun_direction := Vector3(0.45, 0.82, 0.35).normalized()
 var battle_sun_amount := 0.82
 var battle_cell_normal := Vector3.UP
@@ -29,6 +30,7 @@ func _ready() -> void:
 func new_campaign(seed: int = 0, width: int = 24, height: int = 12) -> void:
 	clear_world_visual_cache()
 	clear_rts_cell_cache()
+	reset_world_time()
 	world_state = WorldStateScript.new()
 	world_state.create_new(seed, width, height)
 	current_cell_id = world_state.starting_cell_id
@@ -60,8 +62,24 @@ func set_battle_sun_context_for_cell(cell_normal: Vector3, sun_planet_direction:
 	_refresh_battle_sun_context()
 
 
+func reset_world_time() -> void:
+	world_rotation_angle = 0.0
+	battle_sun_elapsed = 0.0
+	_refresh_battle_sun_context()
+
+
+func advance_world_time(delta: float) -> float:
+	var angle_step := WORLD_ROTATION_SPEED * delta
+	world_rotation_angle = wrapf(world_rotation_angle + angle_step, -PI, PI)
+	return angle_step
+
+
+func get_world_rotation_angle() -> float:
+	return world_rotation_angle
+
+
 func advance_battle_sun(delta: float) -> void:
-	battle_sun_elapsed += WORLD_ROTATION_SPEED * delta
+	battle_sun_elapsed += advance_world_time(delta)
 	_refresh_battle_sun_context()
 
 
@@ -127,6 +145,7 @@ func load_campaign() -> bool:
 
 	world_state = loaded_state
 	current_cell_id = world_state.starting_cell_id
+	reset_world_time()
 	clear_world_visual_cache()
 	clear_rts_cell_cache()
 	debug_event("save_loaded path=%s" % CAMPAIGN_SAVE_PATH)

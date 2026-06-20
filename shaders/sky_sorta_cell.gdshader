@@ -1,7 +1,7 @@
 // Lightweight RTS-cell adaptation of "Sky Sorta" by Toybreaker.
 // The source shader is a large WIP sky shader with sun, atmosphere, stars,
-// moons, and volumetric clouds; this keeps the atmospheric gradient and sun
-// disc path for the cell-view lighting context.
+// moons, volumetric clouds, and cheap cloud layers; this keeps the atmospheric
+// gradient and sun disc only for the cell-view lighting context.
 // https://godotshaders.com/shader/sky-sorta/
 shader_type sky;
 

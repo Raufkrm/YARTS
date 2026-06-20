@@ -1,0 +1,24 @@
+Base Low Poly reference models
+- Base models made by Robin Butler and modified by Kriz.
+- Source: https://sketchfab.com/3d-models/base-low-poly-1dc0823e8bf547d6b1cadbd9274fad0a
+- Used in YARTS as split male/female modelling references.
+
+Shader references and adaptations
+- "SUN Script" by ArmouredJupiter, Godot Shaders, CC0.
+  https://godotshaders.com/shader/sun-script/
+- "Flaring Star" by halcyonxero, Godot Shaders, CC0.
+  https://godotshaders.com/shader/flaring-star/
+- "Starburst effect 3D (astronomy)" by T360, Godot Shaders, CC0.
+  https://godotshaders.com/shader/starburst-effect-3d-astronomy/
+- "Star Nest" by ColorauGuiyino, Godot Shaders, MIT.
+  https://godotshaders.com/shader/star-nest/
+- "Starry/Space-themed sky" by spvcer3ii, Godot Shaders, CC0.
+  https://godotshaders.com/shader/starry-space-themed-sky/
+- "Sky Sorta" by Toybreaker, Godot Shaders.
+  https://godotshaders.com/shader/sky-sorta/
+- "Sky++ but world-space" by smallcableboi, Godot Shaders.
+  https://godotshaders.com/shader/sky-but-world-space/
+- "Simple animated 3d water", Godot Shaders.
+  https://godotshaders.com/shader/simple-animated-3d-water/
+- "LowPoly Water", Godot Shaders.
+  https://godotshaders.com/shader/lowpoly-water/

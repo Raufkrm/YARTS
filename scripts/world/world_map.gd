@@ -75,8 +75,9 @@ func _process(delta: float) -> void:
 	_face_sun_visuals_to_camera()
 
 	if planet_root != null and not zooming:
-		planet_root.rotate_y(Game.WORLD_ROTATION_SPEED * delta)
-		camera_yaw += Game.WORLD_ROTATION_SPEED * delta
+		var rotation_step := Game.advance_world_time(delta)
+		_sync_world_rotation_from_game()
+		camera_yaw += rotation_step
 		_update_camera_orbit_from_input(delta)
 		_apply_camera_orbit()
 
@@ -121,9 +122,15 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+func _sync_world_rotation_from_game() -> void:
+	if planet_root != null:
+		planet_root.rotation.y = Game.get_world_rotation_angle()
+
+
 func _build_world() -> void:
 	planet_root = Node3D.new()
 	planet_root.name = "RotatingPlanet"
+	_sync_world_rotation_from_game()
 	add_child(planet_root)
 
 	terrain_mesh_instance = MeshInstance3D.new()
@@ -209,6 +216,7 @@ func _build_world() -> void:
 	camera.far = SUN_VISUAL_DISTANCE + SUN_BURST_QUAD_SIZE * 2.0
 	camera.current = true
 	camera_pivot.add_child(camera)
+	camera_yaw = Game.get_world_rotation_angle()
 	_apply_camera_orbit()
 
 	sun_core_visual = MeshInstance3D.new()
@@ -492,6 +500,7 @@ func _refresh_world_with_loading(title: String) -> void:
 
 	if selected_cell_id.is_empty():
 		selected_cell_id = Game.world_state.starting_cell_id
+	_sync_world_rotation_from_game()
 
 	_set_world_loading("%s: building planet geometry..." % title, 0.30)
 	await get_tree().process_frame

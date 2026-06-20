@@ -1,9 +1,9 @@
 extends Node3D
 
-const MAP_SIZE := 480.0
-const GRID_STEP := 10.0
+const MAP_SIZE := 4000.0
+const GRID_STEP := 100.0
 const TERRAIN_STEPS := 192
-const RTS_CACHE_VERSION := 15
+const RTS_CACHE_VERSION := 16
 const PROP_SAMPLE_COUNT := 220
 const WATER_PLANE_STEPS := 96
 const UNIT_HEIGHT := 1.65
@@ -18,14 +18,14 @@ const RIVER_SURFACE_OFFSET := 0.0
 const RIVER_RENDER_EDGE := 0.22
 const RIVER_RENDER_FULL := 0.68
 const GRID_SURFACE_OFFSET := 0.16
-const CAMERA_PAN_SPEED := 82.0
+const CAMERA_PAN_SPEED := 420.0
 const CAMERA_FAST_MULTIPLIER := 2.2
-const CAMERA_ZOOM_STEP := 8.0
-const CAMERA_MIN_HEIGHT := 18.0
-const CAMERA_MAX_HEIGHT := 220.0
-const CAMERA_MIN_Z := 22.0
-const CAMERA_MAX_Z := 250.0
-const FREE_ROAM_SPEED := 18.0
+const CAMERA_ZOOM_STEP := 70.0
+const CAMERA_MIN_HEIGHT := 90.0
+const CAMERA_MAX_HEIGHT := 1200.0
+const CAMERA_MIN_Z := 120.0
+const CAMERA_MAX_Z := 1450.0
+const FREE_ROAM_SPEED := 95.0
 const FREE_ROAM_FAST_MULTIPLIER := 3.0
 const FREE_ROAM_MOUSE_SENSITIVITY := 0.0025
 const FREE_ROAM_MIN_PITCH := -1.5
@@ -155,11 +155,12 @@ func _build_scene() -> void:
 	battle_environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	world_environment.environment = battle_environment
 	add_child(world_environment)
+
 	_sync_sun_lighting()
 
 	camera = Camera3D.new()
 	camera.name = "RTSCamera"
-	camera.position = Vector3(0.0, 72.0, 72.0)
+	camera.position = Vector3(0.0, 420.0, 420.0)
 	camera.rotation_degrees = Vector3(-52.0, 0.0, 0.0)
 	camera.fov = 50.0
 	camera.current = true
@@ -1048,7 +1049,9 @@ func _terrain_material() -> StandardMaterial3D:
 	material.vertex_color_use_as_albedo = true
 	material.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.roughness = 0.88
+	material.metallic = 0.0
+	material.metallic_specular = 0.0
+	material.roughness = 0.94
 	return material
 
 
@@ -1101,7 +1104,7 @@ func _sync_sun_lighting() -> void:
 	var direct_sun_factor := smoothstep(-0.04, 0.45, sun_amount)
 	var night_fill_factor := 1.0 - smoothstep(-0.16, 0.24, sun_amount)
 	var sun_direction := Game.get_battle_sun_direction()
-	sun_light.light_energy = lerpf(0.0, 1.55, direct_sun_factor)
+	sun_light.light_energy = lerpf(0.0, 1.85, direct_sun_factor)
 	sun_light.shadow_enabled = direct_sun_factor > 0.08
 	sun_light.light_color = Color(1.0, 0.78, 0.54).lerp(Color(1.0, 0.96, 0.86), direct_sun_factor)
 	sun_light.look_at_from_position(sun_direction * 100.0, Vector3.ZERO, Vector3.UP)
@@ -1110,8 +1113,8 @@ func _sync_sun_lighting() -> void:
 	sky_material.set_shader_parameter("sun_direction", sun_direction)
 	sky_material.set_shader_parameter("sun_amount", sun_amount)
 	sky_material.set_shader_parameter("day_factor", visibility_factor)
-	battle_environment.ambient_light_color = Color(0.13, 0.16, 0.24).lerp(Color(0.48, 0.48, 0.44), visibility_factor)
-	battle_environment.ambient_light_energy = lerpf(0.40, 0.54, visibility_factor)
+	battle_environment.ambient_light_color = Color(0.13, 0.16, 0.24).lerp(Color(0.62, 0.60, 0.52), visibility_factor)
+	battle_environment.ambient_light_energy = lerpf(0.40, 0.72, visibility_factor)
 	_sync_water_lighting(visibility_factor, sun_direction)
 	var next_sun_label := _sun_label(sun_amount)
 	if summary_label != null and next_sun_label != displayed_sun_label:
