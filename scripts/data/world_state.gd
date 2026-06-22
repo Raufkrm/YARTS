@@ -249,9 +249,11 @@ func _sample_base_layers(normal: Vector3) -> Dictionary:
 	var ridge_land_mask: float = smoothstep(0.52, 0.82, continent)
 	var raw_noise: float = clamp(continent * 0.66 + landmass * 0.20 + ridge * 0.09 + detail * 0.035 + fine_detail * 0.015, 0.0, 1.0)
 	var elevation: float = clamp(continent * 0.56 + landmass * 0.32 + pow(ridge, 2.45) * 0.20 * ridge_land_mask + detail * 0.04 + fine_detail * 0.02 - latitude_abs * 0.035, 0.0, 1.0)
-	var moisture: float = clamp(_normalized_noise(_moisture_noise, normal, 2.75) * 0.72 + _normalized_noise(_forest_noise, normal, 9.0) * 0.16 + (1.0 - latitude_abs) * 0.12, 0.0, 1.0)
+	var subtropical_dry_belt: float = 1.0 - smoothstep(0.0, 0.28, abs(latitude_abs - 0.34))
+	var moisture: float = clamp(_normalized_noise(_moisture_noise, normal, 2.75) * 0.72 + _normalized_noise(_forest_noise, normal, 9.0) * 0.16 + (1.0 - latitude_abs) * 0.12 - subtropical_dry_belt * 0.22, 0.0, 1.0)
 	var temperature: float = clamp(1.0 - pow(latitude_abs, 1.35), 0.0, 1.0)
 	temperature += (_normalized_noise(_temperature_noise, normal, 2.5) - 0.5) * 0.18
+	temperature += subtropical_dry_belt * 0.08
 	temperature -= max(0.0, elevation - SEA_LEVEL) * 0.58
 	temperature = clamp(temperature, 0.0, 1.0)
 	return {
@@ -609,7 +611,7 @@ func _terrain_for_layers(elevation: float, moisture: float, temperature: float, 
 		return "snow"
 	if temperature < 0.31:
 		return "tundra"
-	if moisture < 0.20 and temperature > 0.46:
+	if moisture < 0.28 and temperature > 0.56:
 		return "desert"
 	if elevation >= HILL_LEVEL:
 		return "hills"
@@ -645,7 +647,7 @@ func _climate_for_layers(elevation: float, moisture: float, temperature: float, 
 		return "polar"
 	if elevation >= MOUNTAIN_LEVEL:
 		return "alpine"
-	if moisture < 0.20 and temperature > 0.46:
+	if moisture < 0.28 and temperature > 0.56:
 		return "arid"
 	if temperature < 0.32:
 		return "cold"

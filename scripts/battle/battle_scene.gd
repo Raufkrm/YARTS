@@ -3,12 +3,18 @@ extends Node3D
 const MAP_SIZE := 4000.0
 const GRID_STEP := 100.0
 const TERRAIN_STEPS := 192
-const RTS_CACHE_VERSION := 16
-const PROP_SAMPLE_COUNT := 220
+const RTS_CACHE_VERSION := 25
+const TREE_SAMPLE_COUNT := 96000
+const DETAIL_PROP_SAMPLE_COUNT := 900
 const WATER_PLANE_STEPS := 96
 const UNIT_HEIGHT := 1.65
+const UNIT_VISUAL_SCALE := 5.0
+const UNIT_VISUAL_HEIGHT := UNIT_HEIGHT * UNIT_VISUAL_SCALE
 const UNIT_BODY_HEIGHT := 1.35
 const UNIT_HEAD_RADIUS := 0.15
+const TEMP_UNIT_MODEL := "res://assets/reference_models/base_low_poly_male_reference_simple_hands_rigged.glb"
+const MIN_TREE_TO_HUMAN_HEIGHT_RATIO := 10.0
+const MAX_TREE_TO_HUMAN_HEIGHT_RATIO := 25.0
 const TERRAIN_HEIGHT_SCALE := 38.0
 const TERRAIN_SMOOTH_PASSES := 2
 const TERRAIN_SMOOTH_BLEND := 0.55
@@ -17,6 +23,23 @@ const WATER_SURFACE_HEIGHT := 0.08
 const RIVER_SURFACE_OFFSET := 0.0
 const RIVER_RENDER_EDGE := 0.22
 const RIVER_RENDER_FULL := 0.68
+const TREE_SHORE_HEIGHT_BUFFER := 0.75
+const TREE_RIVER_NO_SPAWN_THRESHOLD := 0.045
+const TREE_RIVER_BANK_BUFFER_METERS := 150.0
+const TREE_RIVER_NEARBY_THRESHOLD := 0.025
+const TREE_SPACING_BUCKET_SIZE := 24.0
+const TREE_SPACING_RADIUS_RATIO := 0.15
+const TREE_SPACING_RADIUS_MIN := 3.8
+const TREE_SPACING_RADIUS_MAX := 9.5
+const TREE_SPACING_TOUCH_ALLOWANCE := 0.88
+const DEAD_TREE_FREQUENCY := 25
+const TREE_SHADOW_MAX_DISTANCE := 850.0
+const TREE_SHADOW_OPACITY := 0.56
+const TREE_SHADOW_BLUR := 2.8
+const TREE_SHADOW_BIAS := 0.08
+const TREE_SHADOW_NORMAL_BIAS := 1.6
+const TREE_GROUND_SHADOW_SURFACE_OFFSET := 0.075
+const TREE_GROUND_SHADOW_ALPHA := 0.24
 const GRID_SURFACE_OFFSET := 0.16
 const CAMERA_PAN_SPEED := 420.0
 const CAMERA_FAST_MULTIPLIER := 2.2
@@ -31,6 +54,31 @@ const FREE_ROAM_MOUSE_SENSITIVITY := 0.0025
 const FREE_ROAM_MIN_PITCH := -1.5
 const FREE_ROAM_MAX_PITCH := 1.5
 const RTS_MOUSE_YAW_SPEED := 0.006
+const LEAF_TREE_ASSETS := [
+	"res://assets/models/foliage/leaf_tree_01.glb",
+	"res://assets/models/foliage/leaf_tree_02.glb",
+	"res://assets/models/foliage/leaf_tree_03.glb",
+]
+const CONIFER_TREE_ASSETS := [
+	"res://assets/models/foliage/conifer_01.glb",
+	"res://assets/models/foliage/conifer_02.glb",
+	"res://assets/models/foliage/conifer_03.glb",
+]
+const SNOW_CONIFER_TREE_ASSETS := [
+	"res://assets/models/foliage/conifer_01_snow.glb",
+	"res://assets/models/foliage/conifer_02_snow.glb",
+	"res://assets/models/foliage/conifer_03_snow.glb",
+]
+const PALM_TREE_ASSETS := [
+	"res://assets/models/foliage/palm_tree_01.glb",
+	"res://assets/models/foliage/palm_tree_02.glb",
+	"res://assets/models/foliage/palm_tree_03.glb",
+]
+const DEAD_TREE_ASSETS := [
+	"res://assets/models/foliage/dead_tree_01.glb",
+	"res://assets/models/foliage/dead_tree_02.glb",
+	"res://assets/models/foliage/dead_tree_03.glb",
+]
 
 var cell
 var camera: Camera3D
@@ -52,6 +100,13 @@ var rts_yaw_dragging := false
 var grid_faint_enabled := true
 var smoothed_river_map := PackedFloat32Array()
 var smoothed_river_map_size := 0
+var tree_scene_cache: Dictionary = {}
+var tree_mesh_part_cache: Dictionary = {}
+var tree_shadow_mesh: ArrayMesh
+var tree_shadow_material: ShaderMaterial
+var loaded_entity_count := 0
+var full_model_entity_count := 0
+var impostor_entity_count := 0
 
 
 func _ready() -> void:
@@ -136,6 +191,7 @@ func _build_scene() -> void:
 	sun_light.name = "BattleSun"
 	sun_light.shadow_enabled = true
 	add_child(sun_light)
+	_configure_tree_shadow_quality()
 
 	night_fill_light = DirectionalLight3D.new()
 	night_fill_light.name = "NightTerrainFill"
@@ -165,6 +221,21 @@ func _build_scene() -> void:
 	camera.fov = 50.0
 	camera.current = true
 	add_child(camera)
+
+
+func _configure_tree_shadow_quality() -> void:
+	if sun_light == null:
+		return
+
+	sun_light.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+	sun_light.directional_shadow_max_distance = TREE_SHADOW_MAX_DISTANCE
+	sun_light.directional_shadow_fade_start = 0.72
+	sun_light.directional_shadow_pancake_size = 20.0
+	sun_light.directional_shadow_blend_splits = false
+	sun_light.shadow_opacity = TREE_SHADOW_OPACITY
+	sun_light.shadow_blur = TREE_SHADOW_BLUR
+	sun_light.shadow_bias = TREE_SHADOW_BIAS
+	sun_light.shadow_normal_bias = TREE_SHADOW_NORMAL_BIAS
 
 
 func _build_terrain_grid_mesh() -> ArrayMesh:
@@ -243,12 +314,28 @@ func _spawn_scale_unit(parent: Node3D, base_height: float = 0.0) -> void:
 	unit.position = Vector3(0.0, base_height, 0.0)
 	parent.add_child(unit)
 
+	var unit_resource := load(TEMP_UNIT_MODEL)
+	if unit_resource is PackedScene:
+		var model := (unit_resource as PackedScene).instantiate()
+		if model is Node3D:
+			var model_3d := model as Node3D
+			model_3d.name = "TposeReference_1m65"
+			unit.add_child(model_3d)
+			_fit_model_to_height(model_3d, UNIT_VISUAL_HEIGHT)
+			_set_shadow_casting(model_3d, true)
+			return
+		model.queue_free()
+
+	_spawn_placeholder_scale_unit(unit)
+
+
+func _spawn_placeholder_scale_unit(unit: Node3D) -> void:
 	var body := MeshInstance3D.new()
 	body.name = "Body_1m35"
 	var body_mesh := CylinderMesh.new()
-	body_mesh.top_radius = 0.22
-	body_mesh.bottom_radius = 0.25
-	body_mesh.height = UNIT_BODY_HEIGHT
+	body_mesh.top_radius = 0.22 * UNIT_VISUAL_SCALE
+	body_mesh.bottom_radius = 0.25 * UNIT_VISUAL_SCALE
+	body_mesh.height = UNIT_BODY_HEIGHT * UNIT_VISUAL_SCALE
 	body_mesh.radial_segments = 12
 	body.mesh = body_mesh
 	body.material_override = _material(Color(0.16, 0.36, 0.82))
@@ -258,23 +345,74 @@ func _spawn_scale_unit(parent: Node3D, base_height: float = 0.0) -> void:
 	var head := MeshInstance3D.new()
 	head.name = "Head_0m30"
 	var head_mesh := SphereMesh.new()
-	head_mesh.radius = UNIT_HEAD_RADIUS
-	head_mesh.height = UNIT_HEAD_RADIUS * 2.0
+	head_mesh.radius = UNIT_HEAD_RADIUS * UNIT_VISUAL_SCALE
+	head_mesh.height = UNIT_HEAD_RADIUS * 2.0 * UNIT_VISUAL_SCALE
 	head_mesh.radial_segments = 16
 	head_mesh.rings = 8
 	head.mesh = head_mesh
 	head.material_override = _material(Color(0.86, 0.70, 0.54))
-	head.position = Vector3(0.0, UNIT_BODY_HEIGHT + UNIT_HEAD_RADIUS, 0.0)
+	head.position = Vector3(0.0, (UNIT_BODY_HEIGHT + UNIT_HEAD_RADIUS) * UNIT_VISUAL_SCALE, 0.0)
 	unit.add_child(head)
 
 	var height_marker := MeshInstance3D.new()
 	height_marker.name = "HeightMarker_1m65"
 	var marker_mesh := BoxMesh.new()
-	marker_mesh.size = Vector3(0.04, UNIT_HEIGHT, 0.04)
+	marker_mesh.size = Vector3(0.04 * UNIT_VISUAL_SCALE, UNIT_VISUAL_HEIGHT, 0.04 * UNIT_VISUAL_SCALE)
 	height_marker.mesh = marker_mesh
 	height_marker.material_override = _material(Color(1.0, 0.92, 0.28))
-	height_marker.position = Vector3(0.55, UNIT_HEIGHT * 0.5, 0.0)
+	height_marker.position = Vector3(0.55 * UNIT_VISUAL_SCALE, UNIT_VISUAL_HEIGHT * 0.5, 0.0)
 	unit.add_child(height_marker)
+
+
+func _fit_model_to_height(model: Node3D, target_height: float) -> void:
+	model.position = Vector3.ZERO
+	model.rotation = Vector3.ZERO
+	model.scale = Vector3.ONE
+
+	var bounds := _combined_local_bounds(model)
+	if not bool(bounds.get("valid", false)):
+		return
+
+	var min_corner := bounds["min"] as Vector3
+	var max_corner := bounds["max"] as Vector3
+	var current_height: float = max(max_corner.y - min_corner.y, 0.001)
+	var scale_value: float = target_height / current_height
+	model.scale = Vector3.ONE * scale_value
+	model.position.y = -min_corner.y * scale_value
+
+
+func _combined_local_bounds(root: Node3D) -> Dictionary:
+	var bounds := {
+		"valid": false,
+		"min": Vector3(1.0e20, 1.0e20, 1.0e20),
+		"max": Vector3(-1.0e20, -1.0e20, -1.0e20),
+	}
+	_accumulate_local_bounds(root, root, bounds)
+	return bounds
+
+
+func _accumulate_local_bounds(root: Node3D, node: Node, bounds: Dictionary) -> void:
+	if node is MeshInstance3D:
+		var mesh_instance := node as MeshInstance3D
+		if mesh_instance.mesh != null:
+			var to_root := root.global_transform.affine_inverse() * mesh_instance.global_transform
+			var aabb := mesh_instance.get_aabb()
+			for endpoint_index in range(8):
+				var point := to_root * aabb.get_endpoint(endpoint_index)
+				var min_corner := bounds["min"] as Vector3
+				var max_corner := bounds["max"] as Vector3
+				min_corner.x = min(min_corner.x, point.x)
+				min_corner.y = min(min_corner.y, point.y)
+				min_corner.z = min(min_corner.z, point.z)
+				max_corner.x = max(max_corner.x, point.x)
+				max_corner.y = max(max_corner.y, point.y)
+				max_corner.z = max(max_corner.z, point.z)
+				bounds["min"] = min_corner
+				bounds["max"] = max_corner
+				bounds["valid"] = true
+
+	for child in node.get_children():
+		_accumulate_local_bounds(root, child, bounds)
 
 
 func _build_overlay() -> void:
@@ -494,8 +632,8 @@ func _generate_rts_cell_data() -> Dictionary:
 	var terrain_mesh := _mesh_from_arrays(terrain_vertices, terrain_normals, terrain_colors, terrain_uvs, terrain_indices)
 	var water_mesh := _build_water_plane_mesh()
 	var grid_mesh := _build_terrain_grid_mesh()
-	var prop_data := _generate_prop_data()
-	var center_height := _height_from_sample(_sample_cell_uv(0.5, 0.5))
+	var prop_data := _generate_prop_data(terrain_heights, row_length)
+	var center_height := _height_from_smoothed_terrain_at_uv(0.5, 0.5, terrain_heights, row_length)
 
 	return {
 		"terrain_mesh": terrain_mesh,
@@ -538,6 +676,9 @@ func _clear_generated_nodes() -> void:
 	if terrain_root == null:
 		return
 
+	loaded_entity_count = 0
+	full_model_entity_count = 0
+	impostor_entity_count = 0
 	for child in terrain_root.get_children():
 		child.queue_free()
 
@@ -787,6 +928,26 @@ func _smooth_river_at_uv(u: float, v: float) -> float:
 	return lerpf(lerpf(a, b, tx), lerpf(c, d, tx), ty)
 
 
+func _height_from_smoothed_terrain_at_uv(u: float, v: float, terrain_heights: PackedFloat32Array, row_length: int) -> float:
+	if terrain_heights.is_empty() or row_length <= 1:
+		return _height_from_sample(_sample_cell_uv(u, v))
+
+	var map_max := row_length - 1
+	var map_x: float = clamp(u, 0.0, 1.0) * float(map_max)
+	var map_y: float = clamp(v, 0.0, 1.0) * float(map_max)
+	var x0: int = int(floor(map_x))
+	var y0: int = int(floor(map_y))
+	var x1: int = min(x0 + 1, map_max)
+	var y1: int = min(y0 + 1, map_max)
+	var tx: float = map_x - float(x0)
+	var ty: float = map_y - float(y0)
+	var h00: float = terrain_heights[y0 * row_length + x0]
+	var h10: float = terrain_heights[y0 * row_length + x1]
+	var h01: float = terrain_heights[y1 * row_length + x0]
+	var h11: float = terrain_heights[y1 * row_length + x1]
+	return lerpf(lerpf(h00, h10, tx), lerpf(h01, h11, tx), ty)
+
+
 func _build_smoothed_river_map() -> void:
 	smoothed_river_map_size = TERRAIN_STEPS + 1
 	var total_size := smoothed_river_map_size * smoothed_river_map_size
@@ -909,14 +1070,43 @@ func _terrain_color_from_sample(sample: Dictionary) -> Color:
 	return color
 
 
-func _generate_prop_data() -> Array:
+func _generate_prop_data(terrain_heights: PackedFloat32Array, row_length: int) -> Array:
 	var props: Array = []
 	if Game.world_state == null or cell == null:
 		return props
 
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(Game.world_state.seed) + int(cell.x) * 99173 + int(cell.y) * 57121
-	for index in range(PROP_SAMPLE_COUNT):
+	var tree_spacing_hash: Dictionary = {}
+	var accepted_tree_count := 0
+	for index in range(TREE_SAMPLE_COUNT):
+		var x := rng.randf_range(-MAP_SIZE * 0.46, MAP_SIZE * 0.46)
+		var z := rng.randf_range(-MAP_SIZE * 0.46, MAP_SIZE * 0.46)
+		var u := inverse_lerp(-MAP_SIZE * 0.5, MAP_SIZE * 0.5, x)
+		var v := inverse_lerp(-MAP_SIZE * 0.5, MAP_SIZE * 0.5, z)
+		var sample := _sample_cell_uv(u, v)
+		if _blocks_tree_spawn(sample, u, v):
+			continue
+		var tree_asset := _tree_asset_for_sample(sample, rng)
+		if not tree_asset.is_empty() and rng.randf() < _tree_chance_for_sample(sample, x, z):
+			var next_tree_index := accepted_tree_count + 1
+			if next_tree_index % DEAD_TREE_FREQUENCY == 0:
+				tree_asset = _dead_tree_asset_for_sample(sample, rng)
+			var scale_value := _tree_runtime_scale_for_asset(tree_asset, rng)
+			var spacing_radius := _tree_spacing_radius_for_asset(tree_asset, scale_value)
+			if not _can_place_tree_at(tree_spacing_hash, x, z, spacing_radius):
+				continue
+			_remember_tree_position(tree_spacing_hash, x, z, spacing_radius)
+			accepted_tree_count = next_tree_index
+			props.append({
+				"type": "tree",
+				"asset": tree_asset,
+				"position": Vector3(x, _height_from_smoothed_terrain_at_uv(u, v, terrain_heights, row_length), z),
+				"scale": scale_value,
+				"rotation": rng.randf_range(0.0, TAU),
+			})
+
+	for index in range(DETAIL_PROP_SAMPLE_COUNT):
 		var x := rng.randf_range(-MAP_SIZE * 0.46, MAP_SIZE * 0.46)
 		var z := rng.randf_range(-MAP_SIZE * 0.46, MAP_SIZE * 0.46)
 		var u := inverse_lerp(-MAP_SIZE * 0.5, MAP_SIZE * 0.5, x)
@@ -926,21 +1116,239 @@ func _generate_prop_data() -> Array:
 		var river: float = float(sample.get("river", 0.0))
 		if terrain == "water" or river > 0.18:
 			continue
-		var prop_type := "grass"
-		if terrain == "forest" and rng.randf() < 0.86:
-			prop_type = "tree"
-		elif terrain in ["hills", "mountains", "snow", "desert"] and rng.randf() < 0.68:
+		var prop_type := ""
+		if terrain in ["hills", "mountains", "snow", "desert"] and rng.randf() < 0.68:
 			prop_type = "rock"
+		elif rng.randf() < _grass_chance_for_sample(sample, x, z):
+			prop_type = "grass"
+		if prop_type.is_empty():
+			continue
 		props.append({
 			"type": prop_type,
-			"position": Vector3(x, _height_from_sample(sample), z),
+			"asset": "",
+			"position": Vector3(x, _height_from_smoothed_terrain_at_uv(u, v, terrain_heights, row_length), z),
 			"scale": rng.randf_range(0.75, 1.45),
 			"rotation": rng.randf_range(0.0, TAU),
 		})
 	return props
 
 
+func _tree_chance_for_sample(sample: Dictionary, x: float, z: float) -> float:
+	var terrain: String = str(sample.get("terrain", "plains"))
+	var biome: String = str(sample.get("biome", "grassland"))
+	var moisture: float = float(sample.get("moisture", 0.45))
+	var cluster := _forest_cluster_value(x, z)
+	if _is_beach_sample(sample):
+		return 0.22
+	match terrain:
+		"forest":
+			var forest_base := 0.64
+			match biome:
+				"rainforest":
+					forest_base = 0.82
+				"temperate_forest":
+					forest_base = 0.72
+			return clamp(forest_base + moisture * 0.10 + (cluster - 0.5) * 0.24, 0.42, 0.94)
+		"plains":
+			var meadow_patch := smoothstep(0.55, 0.92, cluster)
+			return clamp((0.025 + clamp(moisture - 0.48, 0.0, 0.12)) * meadow_patch + 0.008, 0.0, 0.13)
+		"snow":
+			return 0.18 if biome != "polar_ice" else 0.04
+		"tundra":
+			return 0.08
+		"desert":
+			return 0.10
+		"hills":
+			if biome == "forested_hills":
+				return clamp(0.32 + (cluster - 0.5) * 0.20, 0.12, 0.48)
+			return 0.05
+	return 0.0
+
+
+func _grass_chance_for_sample(sample: Dictionary, x: float, z: float) -> float:
+	var terrain: String = str(sample.get("terrain", "plains"))
+	var biome: String = str(sample.get("biome", "grassland"))
+	var moisture: float = float(sample.get("moisture", 0.45))
+	var cluster := _forest_cluster_value(x + 913.0, z - 577.0)
+	match terrain:
+		"forest":
+			return 0.045
+		"plains":
+			return clamp(0.10 + moisture * 0.08 + cluster * 0.06, 0.08, 0.24)
+		"hills":
+			return 0.06 if biome == "forested_hills" else 0.10
+		"tundra":
+			return 0.06
+		"desert":
+			return 0.025
+	return 0.035
+
+
+func _forest_cluster_value(x: float, z: float) -> float:
+	var seed_offset := 0.0
+	if Game.world_state != null:
+		seed_offset = float(int(Game.world_state.seed) % 100000) * 0.00037
+	var large := sin(x * 0.0020 + z * 0.0015 + seed_offset) * 0.5 + 0.5
+	var medium := sin(x * 0.0058 - z * 0.0047 + seed_offset * 2.13) * 0.5 + 0.5
+	var small := sin(x * 0.0140 + z * 0.0110 + seed_offset * 5.31) * 0.5 + 0.5
+	return clamp(large * 0.56 + medium * 0.31 + small * 0.13, 0.0, 1.0)
+
+
+func _tree_asset_for_sample(sample: Dictionary, rng: RandomNumberGenerator) -> String:
+	var terrain: String = str(sample.get("terrain", "plains"))
+	var biome: String = str(sample.get("biome", "grassland"))
+	if _is_beach_sample(sample) or terrain == "desert" or biome in ["hot_desert", "dry_steppe"]:
+		return _pick_tree_asset(PALM_TREE_ASSETS, rng)
+	if terrain == "snow" or biome in ["snowfield", "snowy_mountain", "polar_ice"]:
+		return _pick_tree_asset(SNOW_CONIFER_TREE_ASSETS, rng)
+	if terrain == "tundra":
+		return _pick_tree_asset(CONIFER_TREE_ASSETS if rng.randf() < 0.70 else SNOW_CONIFER_TREE_ASSETS, rng)
+	if biome == "forested_hills":
+		return _pick_tree_asset(CONIFER_TREE_ASSETS if rng.randf() < 0.55 else LEAF_TREE_ASSETS, rng)
+	if terrain == "forest":
+		return _pick_tree_asset(CONIFER_TREE_ASSETS if rng.randf() < 0.36 else LEAF_TREE_ASSETS, rng)
+	if terrain == "plains" or biome == "grassland":
+		return _pick_tree_asset(CONIFER_TREE_ASSETS if rng.randf() < 0.42 else LEAF_TREE_ASSETS, rng)
+	return ""
+
+
+func _pick_tree_asset(asset_paths: Array, rng: RandomNumberGenerator) -> String:
+	if asset_paths.is_empty():
+		return ""
+	return str(asset_paths[rng.randi_range(0, asset_paths.size() - 1)])
+
+
+func _dead_tree_asset_for_sample(sample: Dictionary, rng: RandomNumberGenerator) -> String:
+	var terrain: String = str(sample.get("terrain", "plains"))
+	if terrain == "snow":
+		return str(DEAD_TREE_ASSETS[rng.randi_range(0, 2)])
+	return _pick_tree_asset(DEAD_TREE_ASSETS, rng)
+
+
+func _tree_runtime_scale_for_asset(asset_path: String, rng: RandomNumberGenerator) -> float:
+	var base_height := _tree_base_height_for_asset(asset_path)
+	var target_height := UNIT_HEIGHT * rng.randf_range(MIN_TREE_TO_HUMAN_HEIGHT_RATIO, MAX_TREE_TO_HUMAN_HEIGHT_RATIO)
+	return clamp(target_height / max(base_height, 0.1), 0.1, 16.0)
+
+
+func _tree_spacing_radius_for_asset(asset_path: String, scale_value: float) -> float:
+	var height := _tree_base_height_for_asset(asset_path) * scale_value
+	return clamp(height * TREE_SPACING_RADIUS_RATIO, TREE_SPACING_RADIUS_MIN, TREE_SPACING_RADIUS_MAX)
+
+
+func _can_place_tree_at(tree_spacing_hash: Dictionary, x: float, z: float, radius: float) -> bool:
+	var bucket := _tree_spacing_bucket(x, z)
+	for z_offset in range(-1, 2):
+		for x_offset in range(-1, 2):
+			var neighbor_key := bucket + Vector2i(x_offset, z_offset)
+			if not tree_spacing_hash.has(neighbor_key):
+				continue
+			for placed_tree in tree_spacing_hash[neighbor_key]:
+				var placed_position: Vector2 = placed_tree["position"]
+				var placed_radius: float = float(placed_tree["radius"])
+				var minimum_distance := (radius + placed_radius) * TREE_SPACING_TOUCH_ALLOWANCE
+				if placed_position.distance_squared_to(Vector2(x, z)) < minimum_distance * minimum_distance:
+					return false
+	return true
+
+
+func _remember_tree_position(tree_spacing_hash: Dictionary, x: float, z: float, radius: float) -> void:
+	var bucket := _tree_spacing_bucket(x, z)
+	if not tree_spacing_hash.has(bucket):
+		tree_spacing_hash[bucket] = []
+	tree_spacing_hash[bucket].append({
+		"position": Vector2(x, z),
+		"radius": radius,
+	})
+
+
+func _tree_spacing_bucket(x: float, z: float) -> Vector2i:
+	return Vector2i(
+		int(floor((x + MAP_SIZE * 0.5) / TREE_SPACING_BUCKET_SIZE)),
+		int(floor((z + MAP_SIZE * 0.5) / TREE_SPACING_BUCKET_SIZE))
+	)
+
+
+func _tree_base_height_for_asset(asset_path: String) -> float:
+	var tree_name := asset_path.get_file().get_basename().trim_suffix("_snow")
+	match tree_name:
+		"conifer_01":
+			return 6.0
+		"conifer_02":
+			return 7.1
+		"conifer_03":
+			return 5.2
+		"leaf_tree_01":
+			return 4.2
+		"leaf_tree_02":
+			return 4.9
+		"leaf_tree_03":
+			return 4.1
+		"palm_tree_01":
+			return 4.5
+		"palm_tree_02":
+			return 4.2
+		"palm_tree_03":
+			return 3.4
+		"dead_tree_01":
+			return 4.9
+		"dead_tree_02":
+			return 5.6
+		"dead_tree_03":
+			return 4.2
+	return 5.0
+
+
+func _is_beach_sample(sample: Dictionary) -> bool:
+	var terrain: String = str(sample.get("terrain", "plains"))
+	if terrain in ["water", "snow", "mountains", "tundra"]:
+		return false
+	var elevation: float = float(sample.get("elevation", WorldState.SEA_LEVEL + 0.10))
+	var river: float = float(sample.get("river", 0.0))
+	return river < 0.10 and elevation >= WorldState.SEA_LEVEL and elevation <= WorldState.SEA_LEVEL + 0.055
+
+
+func _blocks_tree_spawn(sample: Dictionary, u: float, v: float) -> bool:
+	var terrain: String = str(sample.get("terrain", "plains"))
+	if terrain == "water":
+		return true
+	if _is_beach_sample(sample):
+		return true
+
+	var river: float = float(sample.get("river", 0.0))
+	if river > TREE_RIVER_NO_SPAWN_THRESHOLD:
+		return true
+	if _nearby_river_value(u, v, TREE_RIVER_BANK_BUFFER_METERS) > TREE_RIVER_NEARBY_THRESHOLD:
+		return true
+
+	var surface_height := _height_from_sample(sample)
+	if surface_height <= WATER_SURFACE_HEIGHT + TREE_SHORE_HEIGHT_BUFFER:
+		return true
+
+	return false
+
+
+func _nearby_river_value(u: float, v: float, radius_meters: float) -> float:
+	var du := radius_meters / MAP_SIZE
+	var dv := radius_meters / MAP_SIZE
+	var max_river := _smooth_river_at_uv(u, v)
+	max_river = max(max_river, _smooth_river_at_uv(u + du, v))
+	max_river = max(max_river, _smooth_river_at_uv(u - du, v))
+	max_river = max(max_river, _smooth_river_at_uv(u, v + dv))
+	max_river = max(max_river, _smooth_river_at_uv(u, v - dv))
+	max_river = max(max_river, _smooth_river_at_uv(u + du * 0.72, v + dv * 0.72))
+	max_river = max(max_river, _smooth_river_at_uv(u - du * 0.72, v + dv * 0.72))
+	max_river = max(max_river, _smooth_river_at_uv(u + du * 0.72, v - dv * 0.72))
+	max_river = max(max_river, _smooth_river_at_uv(u - du * 0.72, v - dv * 0.72))
+	return max_river
+
+
 func _spawn_cached_props(props: Array) -> void:
+	var tree_batches: Dictionary = {}
+	var tree_shadows: Array = []
+	loaded_entity_count = 0
+	full_model_entity_count = 0
+	impostor_entity_count = 0
 	for prop in props:
 		var prop_type := str(prop.get("type", "grass"))
 		var position := Vector3.ZERO
@@ -950,14 +1358,172 @@ func _spawn_cached_props(props: Array) -> void:
 		var rotation_y: float = float(prop.get("rotation", 0.0))
 		match prop_type:
 			"tree":
-				_spawn_tree(position, scale_value, rotation_y)
+				loaded_entity_count += 1
+				full_model_entity_count += 1
+				var asset_path := str(prop.get("asset", ""))
+				_append_tree_shadow_data(tree_shadows, asset_path, position, scale_value)
+				if asset_path.is_empty():
+					_spawn_tree(position, scale_value, rotation_y)
+				else:
+					if not tree_batches.has(asset_path):
+						tree_batches[asset_path] = []
+					tree_batches[asset_path].append(prop)
+			"tree_impostor":
+				loaded_entity_count += 1
+				impostor_entity_count += 1
 			"rock":
+				loaded_entity_count += 1
+				full_model_entity_count += 1
 				_spawn_rock(position, scale_value, rotation_y)
 			_:
+				loaded_entity_count += 1
+				full_model_entity_count += 1
 				_spawn_grass(position, scale_value, rotation_y)
 
+	for asset_path in tree_batches.keys():
+		_spawn_tree_batch(str(asset_path), tree_batches[asset_path])
+	_spawn_tree_shadow_batch(tree_shadows)
 
-func _spawn_tree(position: Vector3, scale_value: float, rotation_y: float) -> void:
+
+func _append_tree_shadow_data(tree_shadows: Array, asset_path: String, position: Vector3, scale_value: float) -> void:
+	var base_height := _tree_base_height_for_asset(asset_path) if not asset_path.is_empty() else 4.2
+	tree_shadows.append({
+		"position": position,
+		"height": base_height * scale_value,
+	})
+
+
+func _spawn_tree_shadow_batch(tree_shadows: Array) -> void:
+	if tree_shadows.is_empty():
+		return
+
+	var multimesh := MultiMesh.new()
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	multimesh.mesh = _tree_ground_shadow_mesh()
+	multimesh.instance_count = tree_shadows.size()
+
+	var shadow_direction := _tree_ground_shadow_direction()
+	var shadow_angle := atan2(shadow_direction.x, shadow_direction.z)
+	for instance_index in range(tree_shadows.size()):
+		var shadow_data := tree_shadows[instance_index] as Dictionary
+		var position: Vector3 = shadow_data.get("position", Vector3.ZERO)
+		var tree_height: float = float(shadow_data.get("height", UNIT_HEIGHT * 12.0))
+		var width: float = clamp(tree_height * 0.34, 5.0, 16.0)
+		var length: float = clamp(tree_height * 0.58, 7.0, 34.0)
+		var shadow_position: Vector3 = position + shadow_direction * length * 0.22
+		shadow_position.y += TREE_GROUND_SHADOW_SURFACE_OFFSET
+		var basis: Basis = Basis(Vector3.UP, shadow_angle).scaled(Vector3(width, 1.0, length))
+		multimesh.set_instance_transform(instance_index, Transform3D(basis, shadow_position))
+
+	var shadow_batch := MultiMeshInstance3D.new()
+	shadow_batch.name = "TreeGroundShadows"
+	shadow_batch.multimesh = multimesh
+	shadow_batch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	shadow_batch.material_override = _tree_ground_shadow_material()
+	terrain_root.add_child(shadow_batch)
+
+
+func _tree_ground_shadow_direction() -> Vector3:
+	var sun_direction := Game.get_battle_sun_direction()
+	var shadow_direction := Vector3(-sun_direction.x, 0.0, -sun_direction.z)
+	if shadow_direction.length_squared() < 0.001:
+		shadow_direction = Vector3(0.45, 0.0, 0.82)
+	return shadow_direction.normalized()
+
+
+func _tree_ground_shadow_mesh() -> ArrayMesh:
+	if tree_shadow_mesh != null:
+		return tree_shadow_mesh
+
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([
+		Vector3(-0.5, 0.0, -0.5),
+		Vector3(0.5, 0.0, -0.5),
+		Vector3(0.5, 0.0, 0.5),
+		Vector3(-0.5, 0.0, 0.5),
+	])
+	arrays[Mesh.ARRAY_TEX_UV] = PackedVector2Array([
+		Vector2(0.0, 0.0),
+		Vector2(1.0, 0.0),
+		Vector2(1.0, 1.0),
+		Vector2(0.0, 1.0),
+	])
+	arrays[Mesh.ARRAY_INDEX] = PackedInt32Array([0, 1, 2, 0, 2, 3])
+	tree_shadow_mesh = ArrayMesh.new()
+	tree_shadow_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return tree_shadow_mesh
+
+
+func _tree_ground_shadow_material() -> ShaderMaterial:
+	if tree_shadow_material != null:
+		return tree_shadow_material
+
+	tree_shadow_material = ShaderMaterial.new()
+	tree_shadow_material.shader = load("res://shaders/tree_ground_shadow.gdshader")
+	tree_shadow_material.set_shader_parameter("shadow_color", Color(0.015, 0.018, 0.012))
+	tree_shadow_material.set_shader_parameter("shadow_alpha", TREE_GROUND_SHADOW_ALPHA)
+	return tree_shadow_material
+
+
+func _spawn_tree_batch(asset_path: String, tree_props: Array) -> void:
+	var parts := _tree_mesh_parts_for_path(asset_path)
+	if parts.is_empty():
+		for prop in tree_props:
+			var position := Vector3.ZERO
+			if prop.has("position") and prop["position"] is Vector3:
+				position = prop["position"]
+			_spawn_tree(position, float(prop.get("scale", 1.0)), float(prop.get("rotation", 0.0)), asset_path)
+		return
+
+	var asset_name := asset_path.get_file().get_basename()
+	for part_index in range(parts.size()):
+		var part := parts[part_index] as Dictionary
+		var mesh := part.get("mesh") as Mesh
+		if mesh == null:
+			continue
+
+		var multimesh := MultiMesh.new()
+		multimesh.transform_format = MultiMesh.TRANSFORM_3D
+		multimesh.mesh = mesh
+		multimesh.instance_count = tree_props.size()
+
+		var local_transform := part.get("transform", Transform3D.IDENTITY) as Transform3D
+		for instance_index in range(tree_props.size()):
+			var prop := tree_props[instance_index] as Dictionary
+			var position := Vector3.ZERO
+			if prop.has("position") and prop["position"] is Vector3:
+				position = prop["position"]
+			var scale_value := float(prop.get("scale", 1.0))
+			var rotation_y := float(prop.get("rotation", 0.0))
+			var basis := Basis(Vector3.UP, rotation_y).scaled(Vector3.ONE * scale_value)
+			var instance_transform := Transform3D(basis, position) * local_transform
+			multimesh.set_instance_transform(instance_index, instance_transform)
+
+		var batch := MultiMeshInstance3D.new()
+		batch.name = "TreeBatch_%s_%02d" % [asset_name, part_index + 1]
+		batch.multimesh = multimesh
+		batch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		var material = part.get("material")
+		if material is Material:
+			batch.material_override = material
+		terrain_root.add_child(batch)
+
+
+func _spawn_tree(position: Vector3, scale_value: float, rotation_y: float, asset_path: String = "") -> void:
+	var tree_scene := _tree_scene_for_path(asset_path)
+	if tree_scene != null:
+		var tree_node := tree_scene.instantiate()
+		if tree_node is Node3D:
+			var tree_node_3d := tree_node as Node3D
+			tree_node_3d.position = position
+			tree_node_3d.rotation.y = rotation_y
+			tree_node_3d.scale = Vector3.ONE * scale_value
+			_set_shadow_casting(tree_node_3d, true)
+			terrain_root.add_child(tree_node_3d)
+			return
+		tree_node.queue_free()
+
 	var trunk := MeshInstance3D.new()
 	var trunk_mesh := CylinderMesh.new()
 	trunk_mesh.top_radius = 0.08 * scale_value
@@ -966,6 +1532,7 @@ func _spawn_tree(position: Vector3, scale_value: float, rotation_y: float) -> vo
 	trunk_mesh.radial_segments = 6
 	trunk.mesh = trunk_mesh
 	trunk.material_override = _material(Color(0.32, 0.20, 0.10))
+	trunk.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	trunk.position = position + Vector3(0.0, trunk_mesh.height * 0.5, 0.0)
 	trunk.rotation.y = rotation_y
 	terrain_root.add_child(trunk)
@@ -978,8 +1545,70 @@ func _spawn_tree(position: Vector3, scale_value: float, rotation_y: float) -> vo
 	crown_mesh.rings = 6
 	crown.mesh = crown_mesh
 	crown.material_override = _material(Color(0.05, 0.28, 0.11))
+	crown.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 	crown.position = position + Vector3(0.0, trunk_mesh.height + crown_mesh.radius * 0.72, 0.0)
 	terrain_root.add_child(crown)
+
+
+func _tree_scene_for_path(asset_path: String) -> PackedScene:
+	if asset_path.is_empty():
+		return null
+	if tree_scene_cache.has(asset_path):
+		return tree_scene_cache[asset_path]
+	if not ResourceLoader.exists(asset_path):
+		return null
+	var resource := load(asset_path)
+	if resource is PackedScene:
+		tree_scene_cache[asset_path] = resource
+		return resource
+	return null
+
+
+func _tree_mesh_parts_for_path(asset_path: String) -> Array:
+	if tree_mesh_part_cache.has(asset_path):
+		return tree_mesh_part_cache[asset_path]
+
+	var scene := _tree_scene_for_path(asset_path)
+	if scene == null:
+		tree_mesh_part_cache[asset_path] = []
+		return []
+
+	var root := scene.instantiate()
+	var parts: Array = []
+	_collect_tree_mesh_parts(root, Transform3D.IDENTITY, parts)
+	root.free()
+	tree_mesh_part_cache[asset_path] = parts
+	return parts
+
+
+func _collect_tree_mesh_parts(node: Node, parent_transform: Transform3D, parts: Array) -> void:
+	var current_transform := parent_transform
+	if node is Node3D:
+		current_transform = parent_transform * (node as Node3D).transform
+
+	if node is MeshInstance3D:
+		var mesh_instance := node as MeshInstance3D
+		if mesh_instance.mesh != null:
+			var material: Material = mesh_instance.material_override
+			if material == null and mesh_instance.mesh.get_surface_count() > 0:
+				material = mesh_instance.get_surface_override_material(0)
+				if material == null:
+					material = mesh_instance.mesh.surface_get_material(0)
+			parts.append({
+				"mesh": mesh_instance.mesh,
+				"transform": current_transform,
+				"material": material,
+			})
+
+	for child in node.get_children():
+		_collect_tree_mesh_parts(child, current_transform, parts)
+
+
+func _set_shadow_casting(node: Node, enabled: bool) -> void:
+	if node is GeometryInstance3D:
+		(node as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if enabled else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for child in node.get_children():
+		_set_shadow_casting(child, enabled)
 
 
 func _spawn_rock(position: Vector3, scale_value: float, rotation_y: float) -> void:
@@ -1020,9 +1649,11 @@ func _refresh_overlay() -> void:
 	summary_label.text = _join_lines([
 		"Cell: %s" % cell_id,
 		"Flat plane: %dm x %dm" % [int(MAP_SIZE), int(MAP_SIZE)],
-		"Center unit: %.2fm tall" % UNIT_HEIGHT,
+		"Center human: %.2fm (%.1fx visual)" % [UNIT_HEIGHT, UNIT_VISUAL_SCALE],
 		"Grid: %dm spacing" % int(GRID_STEP),
 		"Sun: %s" % displayed_sun_label,
+		"Entities loaded: %d" % loaded_entity_count,
+		"Full models: %d  Impostors: %d" % [full_model_entity_count, impostor_entity_count],
 		"",
 		"%s/arrows pan. Middle-drag yaws. P free roam. G toggles grid. Space/C rise/fall." % Game.movement_layout_label(),
 	])
@@ -1116,6 +1747,7 @@ func _sync_sun_lighting() -> void:
 	battle_environment.ambient_light_color = Color(0.13, 0.16, 0.24).lerp(Color(0.62, 0.60, 0.52), visibility_factor)
 	battle_environment.ambient_light_energy = lerpf(0.40, 0.72, visibility_factor)
 	_sync_water_lighting(visibility_factor, sun_direction)
+	_sync_tree_ground_shadow_lighting(direct_sun_factor)
 	var next_sun_label := _sun_label(sun_amount)
 	if summary_label != null and next_sun_label != displayed_sun_label:
 		_refresh_overlay()
@@ -1135,6 +1767,13 @@ func _sync_water_lighting(day_factor: float, sun_direction: Vector3) -> void:
 			if shader_material != null:
 				shader_material.set_shader_parameter("day_factor", day_factor)
 				shader_material.set_shader_parameter("sun_direction", sun_direction)
+
+
+func _sync_tree_ground_shadow_lighting(direct_sun_factor: float) -> void:
+	if tree_shadow_material == null:
+		return
+	var shadow_visibility := smoothstep(0.10, 0.65, direct_sun_factor)
+	tree_shadow_material.set_shader_parameter("shadow_alpha", TREE_GROUND_SHADOW_ALPHA * shadow_visibility)
 
 
 func _on_victory_pressed() -> void:

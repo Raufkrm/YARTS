@@ -1,0 +1,362 @@
+[
+  {
+    "tree": "conifer_01",
+    "source": "assets/models/foliage/conifer_01.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/conifer_01_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_01",
+    "source": "assets/models/foliage/conifer_01.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/conifer_01_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_01",
+    "source": "assets/models/foliage/conifer_01.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/conifer_01_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_01_snow",
+    "source": "assets/models/foliage/conifer_01_snow.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/conifer_01_snow_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_01_snow",
+    "source": "assets/models/foliage/conifer_01_snow.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/conifer_01_snow_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_01_snow",
+    "source": "assets/models/foliage/conifer_01_snow.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/conifer_01_snow_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_02",
+    "source": "assets/models/foliage/conifer_02.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/conifer_02_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_02",
+    "source": "assets/models/foliage/conifer_02.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/conifer_02_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_02",
+    "source": "assets/models/foliage/conifer_02.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/conifer_02_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_02_snow",
+    "source": "assets/models/foliage/conifer_02_snow.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/conifer_02_snow_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_02_snow",
+    "source": "assets/models/foliage/conifer_02_snow.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/conifer_02_snow_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_02_snow",
+    "source": "assets/models/foliage/conifer_02_snow.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/conifer_02_snow_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_03",
+    "source": "assets/models/foliage/conifer_03.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/conifer_03_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_03",
+    "source": "assets/models/foliage/conifer_03.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/conifer_03_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_03",
+    "source": "assets/models/foliage/conifer_03.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/conifer_03_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_03_snow",
+    "source": "assets/models/foliage/conifer_03_snow.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/conifer_03_snow_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_03_snow",
+    "source": "assets/models/foliage/conifer_03_snow.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/conifer_03_snow_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "conifer_03_snow",
+    "source": "assets/models/foliage/conifer_03_snow.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/conifer_03_snow_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_01",
+    "source": "assets/models/foliage/leaf_tree_01.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/leaf_tree_01_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_01",
+    "source": "assets/models/foliage/leaf_tree_01.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/leaf_tree_01_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_01",
+    "source": "assets/models/foliage/leaf_tree_01.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/leaf_tree_01_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_01_snow",
+    "source": "assets/models/foliage/leaf_tree_01_snow.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/leaf_tree_01_snow_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_01_snow",
+    "source": "assets/models/foliage/leaf_tree_01_snow.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/leaf_tree_01_snow_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_01_snow",
+    "source": "assets/models/foliage/leaf_tree_01_snow.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/leaf_tree_01_snow_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_02",
+    "source": "assets/models/foliage/leaf_tree_02.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/leaf_tree_02_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_02",
+    "source": "assets/models/foliage/leaf_tree_02.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/leaf_tree_02_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_02",
+    "source": "assets/models/foliage/leaf_tree_02.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/leaf_tree_02_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_02_snow",
+    "source": "assets/models/foliage/leaf_tree_02_snow.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/leaf_tree_02_snow_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_02_snow",
+    "source": "assets/models/foliage/leaf_tree_02_snow.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/leaf_tree_02_snow_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_02_snow",
+    "source": "assets/models/foliage/leaf_tree_02_snow.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/leaf_tree_02_snow_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_03",
+    "source": "assets/models/foliage/leaf_tree_03.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/leaf_tree_03_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_03",
+    "source": "assets/models/foliage/leaf_tree_03.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/leaf_tree_03_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_03",
+    "source": "assets/models/foliage/leaf_tree_03.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/leaf_tree_03_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_03_snow",
+    "source": "assets/models/foliage/leaf_tree_03_snow.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/leaf_tree_03_snow_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_03_snow",
+    "source": "assets/models/foliage/leaf_tree_03_snow.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/leaf_tree_03_snow_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "leaf_tree_03_snow",
+    "source": "assets/models/foliage/leaf_tree_03_snow.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/leaf_tree_03_snow_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_01",
+    "source": "assets/models/foliage/palm_tree_01.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/palm_tree_01_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_01",
+    "source": "assets/models/foliage/palm_tree_01.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/palm_tree_01_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_01",
+    "source": "assets/models/foliage/palm_tree_01.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/palm_tree_01_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_02",
+    "source": "assets/models/foliage/palm_tree_02.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/palm_tree_02_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_02",
+    "source": "assets/models/foliage/palm_tree_02.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/palm_tree_02_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_02",
+    "source": "assets/models/foliage/palm_tree_02.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/palm_tree_02_top90.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_03",
+    "source": "assets/models/foliage/palm_tree_03.glb",
+    "angle": "ground",
+    "label": "Ground level",
+    "sprite": "assets/sprites/tree_impostors/ground/palm_tree_03_ground.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_03",
+    "source": "assets/models/foliage/palm_tree_03.glb",
+    "angle": "angle45",
+    "label": "45 degrees above",
+    "sprite": "assets/sprites/tree_impostors/angle45/palm_tree_03_angle45.png",
+    "size": 512
+  },
+  {
+    "tree": "palm_tree_03",
+    "source": "assets/models/foliage/palm_tree_03.glb",
+    "angle": "top90",
+    "label": "90 degrees above",
+    "sprite": "assets/sprites/tree_impostors/top90/palm_tree_03_top90.png",
+    "size": 512
+  }
+]
