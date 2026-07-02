@@ -29,6 +29,14 @@ Most units should not render as `LOD0` during normal gameplay. With hundreds of 
 
 For 500 visible units, regular soldiers should usually render at `400-700` vertices or lower. `LOD0` should be reserved for selected units or very close camera distances.
 
+Current source-compatible infantry assets:
+
+| Asset | Intended use | Vertex count | Triangle count | Notes |
+| --- | --- | ---: | ---: | --- |
+| `yarts_quaternius_compatible_low_poly_unit.glb` | `LOD0_Close` | 1,313 | 1,580 | Within close-view infantry budget. |
+| `yarts_quaternius_compatible_lod1_gameplay_unit.glb` | `LOD1_Gameplay` | 688 | 604 | Default RTS unit model; within gameplay infantry budget. |
+| `yarts_quaternius_compatible_female_lod1_gameplay_unit.glb` | `LOD1_Gameplay` | 438 | 603 | Female source-compatible gameplay unit; matches the male gameplay poly budget while staying below the vertex budget. |
+
 ## Foliage Budgets
 
 | Asset type | LOD0 close | LOD1 gameplay | LOD2 far | 2D impostor |
