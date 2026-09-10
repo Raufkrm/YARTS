@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="scavenge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c6ff5c" stop-opacity="0.98"/>
+      <stop offset="0.55" stop-color="#78c927" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#2f6c0c" stop-opacity="0.99"/>
+    </linearGradient>
+    <linearGradient id="recycle" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e2ff9a"/>
+      <stop offset="1" stop-color="#83d92f"/>
+    </linearGradient>
+  </defs>
+
+  <g>
+
+  <g fill="none" stroke="#caff72" stroke-linejoin="round" stroke-width="4" opacity="0.34">
+    <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"/>
+    <path d="M27 37 C29 30 35 27 42 28 C46 28 49 31 50 34 L52 31 L52 40 L43 39 L47 36 C45 33 42 32 39 32 C35 32 32 34 31 38 Z"/>
+    <path transform="rotate(180 39.5 39.5)" d="M27 37 C29 30 35 27 42 28 C46 28 49 31 50 34 L52 31 L52 40 L43 39 L47 36 C45 33 42 32 39 32 C35 32 32 34 31 38 Z"/>
+  </g>
+
+  <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"
+        fill="url(#scavenge)" stroke="#efffd7" stroke-linejoin="round" stroke-width="1.25"/>
+
+  <g fill="url(#recycle)" stroke="#f3ffda" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
+    <path d="M27 37 C29 30 35 27 42 28 C46 28 49 31 50 34 L52 31 L52 40 L43 39 L47 36 C45 33 42 32 39 32 C35 32 32 34 31 38 Z"/>
+    <path transform="rotate(180 39.5 39.5)" d="M27 37 C29 30 35 27 42 28 C46 28 49 31 50 34 L52 31 L52 40 L43 39 L47 36 C45 33 42 32 39 32 C35 32 32 34 31 38 Z"/>
+  </g>
+  <path d="M8 7 L35 17.5" fill="none" stroke="#f8ffed" stroke-linecap="round" stroke-width="1.4" opacity="0.74"/>
+  </g>
+</svg>

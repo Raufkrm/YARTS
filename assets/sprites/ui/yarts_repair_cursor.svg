@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="repair" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffad4d" stop-opacity="0.98"/>
+      <stop offset="0.55" stop-color="#ed6418" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#7a2605" stop-opacity="0.99"/>
+    </linearGradient>
+  </defs>
+
+  <g>
+
+  <g fill="none" stroke="#ffb666" stroke-linejoin="round" stroke-width="4" opacity="0.34">
+    <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"/>
+    <path transform="translate(6.66 6.66) scale(0.82)" d="M50 29 C52 34 50 39 46 41 C43 43 40 43 37 42 L29 50 C27 52 23 52 21 49 C19 47 20 44 22 42 L30 34 C29 31 30 27 32 25 C35 22 40 21 44 23 L39 28 L43 32 Z"/>
+  </g>
+
+  <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"
+        fill="url(#repair)" stroke="#ffe0c2" stroke-linejoin="round" stroke-width="1.25"/>
+
+  <g transform="translate(6.66 6.66) scale(0.82)">
+    <path d="M50 29 C52 34 50 39 46 41 C43 43 40 43 37 42 L29 50 C27 52 23 52 21 49 C19 47 20 44 22 42 L30 34 C29 31 30 27 32 25 C35 22 40 21 44 23 L39 28 L43 32 Z"
+          fill="#9a3309" stroke="#ffe0c2" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.45"/>
+    <circle cx="25.5" cy="46.5" r="1.8" fill="#ffd0a3"/>
+  </g>
+  <path d="M8 7 L35 17.5" fill="none" stroke="#fff5eb" stroke-linecap="round" stroke-width="1.4" opacity="0.72"/>
+  </g>
+</svg>

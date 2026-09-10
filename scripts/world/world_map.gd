@@ -6,10 +6,12 @@ const TERMINATOR_RADIUS := PLANET_RADIUS * 1.012
 const ATMOSPHERE_RADIUS := PLANET_RADIUS * 1.34
 const WORLD_SURFACE_LONGITUDE_SEGMENTS := 512
 const WORLD_SURFACE_LATITUDE_SEGMENTS := 256
-const PLANET_TEXTURE_SIZE := Vector2i(2048, 1024)
-const PLANET_TEXTURE_VERSION := 9
+const PLANET_TEXTURE_SIZE := Vector2i(3072, 1536)
+const PLANET_TEXTURE_VERSION := 14
 const ZOOM_DURATION := 0.85
 const CAMERA_DEFAULT_DISTANCE := 6.2
+const CAMERA_INTRO_DISTANCE := 11.6
+const CAMERA_INTRO_DURATION := 2.8
 const CAMERA_MIN_DISTANCE := PLANET_RADIUS + 0.85
 const CAMERA_MAX_DISTANCE := 12.0
 const CAMERA_ORBIT_SPEED := 1.35
@@ -25,6 +27,9 @@ const SUN_WORLD_DIRECTION := Vector3(0.74, 0.45, 0.50)
 const SUN_VISUAL_DISTANCE := 185.0
 const SUN_CORE_QUAD_SIZE := 15.0
 const SUN_BURST_QUAD_SIZE := 50.0
+const INTEL_OVERLAY_RADIUS := PLANET_RADIUS + 0.007
+const INTEL_OVERLAY_SUBDIVISIONS := 4
+const INTEL_DISCOVERED_ALPHA := 0.028
 
 var selected_cell_id := ""
 var zooming := false
@@ -39,6 +44,8 @@ var camera_pivot: Node3D
 var terrain_mesh_instance: MeshInstance3D
 var grid_mesh_instance: MeshInstance3D
 var selection_mesh_instance: MeshInstance3D
+var hover_mesh_instance: MeshInstance3D
+var intel_mesh_instance: MeshInstance3D
 var terminator_mesh_instance: MeshInstance3D
 var atmosphere_mesh_instance: MeshInstance3D
 var camera: Camera3D
@@ -59,6 +66,14 @@ var world_loading_bar: ProgressBar
 var suppress_world_refresh := false
 var world_refresh_running := false
 var grid_faint_enabled := true
+var campaign_intro_active := false
+var start_cell_selection_active := false
+var start_prompt: Label
+var start_prompt_detail: Label
+var hover_popup: PanelContainer
+var hover_popup_label: Label
+var hovered_cell_id := ""
+var hover_popup_tween: Tween
 
 
 func _ready() -> void:
@@ -78,17 +93,20 @@ func _process(delta: float) -> void:
 		var rotation_step := Game.advance_world_time(delta)
 		_sync_world_rotation_from_game()
 		camera_yaw += rotation_step
-		_update_camera_orbit_from_input(delta)
+		if not campaign_intro_active:
+			_update_camera_orbit_from_input(delta)
 		_apply_camera_orbit()
 
 	if zooming and camera != null:
 		camera.look_at(Vector3.ZERO, Vector3.UP)
+	elif campaign_intro_active:
+		_apply_camera_orbit()
 
 
 func _input(event: InputEvent) -> void:
 	if world_loading_layer != null:
 		return
-	if zooming:
+	if zooming or campaign_intro_active:
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -115,11 +133,17 @@ func _input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				_select_cell_from_screen(event.position)
 
-	if event is InputEventMouseMotion and orbit_dragging:
-		camera_yaw -= event.relative.x * CAMERA_MOUSE_ORBIT_SPEED
-		camera_pitch = clamp(camera_pitch - event.relative.y * CAMERA_MOUSE_ORBIT_SPEED, CAMERA_MIN_PITCH, CAMERA_MAX_PITCH)
-		_apply_camera_orbit()
-		get_viewport().set_input_as_handled()
+	if event is InputEventMouseMotion:
+		if orbit_dragging:
+			_hide_cell_hover()
+			camera_yaw -= event.relative.x * CAMERA_MOUSE_ORBIT_SPEED
+			camera_pitch = clamp(camera_pitch - event.relative.y * CAMERA_MOUSE_ORBIT_SPEED, CAMERA_MIN_PITCH, CAMERA_MAX_PITCH)
+			_apply_camera_orbit()
+			get_viewport().set_input_as_handled()
+		elif _is_pointer_over_ui():
+			_hide_cell_hover()
+		else:
+			_update_cell_hover(event.position)
 
 
 func _sync_world_rotation_from_game() -> void:
@@ -146,6 +170,16 @@ func _build_world() -> void:
 	selection_mesh_instance.name = "SelectedCellOutline"
 	selection_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	planet_root.add_child(selection_mesh_instance)
+
+	hover_mesh_instance = MeshInstance3D.new()
+	hover_mesh_instance.name = "HoveredCellOutline"
+	hover_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	planet_root.add_child(hover_mesh_instance)
+
+	intel_mesh_instance = MeshInstance3D.new()
+	intel_mesh_instance.name = "FactionIntelOverlay"
+	intel_mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	planet_root.add_child(intel_mesh_instance)
 
 	atmosphere_mesh_instance = MeshInstance3D.new()
 	atmosphere_mesh_instance.name = "PlanetAtmosphere"
@@ -380,6 +414,53 @@ func _build_overlay() -> void:
 	event_log_label.fit_content = false
 	panel_stack.add_child(event_log_label)
 
+	var prompt_stack := VBoxContainer.new()
+	prompt_stack.name = "StartingCellPrompt"
+	prompt_stack.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	prompt_stack.position = Vector2(-260.0, 38.0)
+	prompt_stack.custom_minimum_size = Vector2(520.0, 0.0)
+	prompt_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	prompt_stack.modulate.a = 0.0
+	root.add_child(prompt_stack)
+
+	start_prompt = Label.new()
+	start_prompt.text = "Choose your starting cell"
+	start_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	start_prompt.add_theme_font_size_override("font_size", 28)
+	start_prompt.add_theme_color_override("font_color", Color("edf7f2"))
+	start_prompt.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.85))
+	start_prompt.add_theme_constant_override("shadow_offset_x", 2)
+	start_prompt.add_theme_constant_override("shadow_offset_y", 2)
+	prompt_stack.add_child(start_prompt)
+
+	start_prompt_detail = Label.new()
+	start_prompt_detail.text = "Select any land cell to found your first settlement"
+	start_prompt_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	start_prompt_detail.add_theme_font_size_override("font_size", 15)
+	start_prompt_detail.add_theme_color_override("font_color", Color("a9c8bb"))
+	start_prompt_detail.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.8))
+	start_prompt_detail.add_theme_constant_override("shadow_offset_x", 1)
+	start_prompt_detail.add_theme_constant_override("shadow_offset_y", 1)
+	prompt_stack.add_child(start_prompt_detail)
+
+	hover_popup = PanelContainer.new()
+	hover_popup.name = "CellHoverPopup"
+	hover_popup.visible = false
+	hover_popup.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hover_popup.custom_minimum_size = Vector2(188.0, 70.0)
+	hover_popup.size = Vector2(188.0, 70.0)
+	hover_popup.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	hover_popup.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	hover_popup.add_theme_stylebox_override("panel", _hover_panel_style(Color("4e8c73")))
+	root.add_child(hover_popup)
+
+	hover_popup_label = Label.new()
+	hover_popup_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hover_popup_label.add_theme_font_size_override("font_size", 13)
+	hover_popup_label.add_theme_color_override("font_color", Color("e8f4ef"))
+	hover_popup_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	hover_popup.add_child(hover_popup_label)
+
 
 func _build_world_loading_overlay() -> void:
 	if world_loading_layer != null:
@@ -466,6 +547,8 @@ func _load_world_on_startup() -> void:
 		await _refresh_world_with_loading("Loading world map")
 	_hide_world_loading()
 	world_refresh_running = false
+	if Game.campaign_start_pending:
+		_begin_campaign_intro()
 
 
 func _create_world_with_loading(seed: int, width: int, height: int, title: String) -> void:
@@ -474,8 +557,7 @@ func _create_world_with_loading(seed: int, width: int, height: int, title: Strin
 	_set_world_loading("%s: generating seed, cells, biomes, and rivers..." % title, 0.08)
 	await get_tree().process_frame
 	Game.new_campaign(seed, width, height)
-	if Game.world_state != null:
-		selected_cell_id = Game.world_state.starting_cell_id
+	_restore_selected_cell_from_game()
 	_set_world_loading("%s: world data ready, building globe..." % title, 0.22)
 	await get_tree().process_frame
 	await _refresh_world_with_loading(title)
@@ -498,8 +580,7 @@ func _refresh_world_with_loading(title: String) -> void:
 	if Game.world_state == null:
 		return
 
-	if selected_cell_id.is_empty():
-		selected_cell_id = Game.world_state.starting_cell_id
+	_restore_selected_cell_from_game()
 	_sync_world_rotation_from_game()
 
 	_set_world_loading("%s: building planet geometry..." % title, 0.30)
@@ -513,6 +594,7 @@ func _refresh_world_with_loading(title: String) -> void:
 	_set_world_loading("%s: wrapping strategic grid..." % title, 0.90)
 	await get_tree().process_frame
 	grid_mesh_instance.mesh = _build_grid_mesh()
+	intel_mesh_instance.mesh = _build_intel_overlay_mesh()
 
 	_set_world_loading("%s: selecting starting cell..." % title, 0.96)
 	await get_tree().process_frame
@@ -532,13 +614,72 @@ func _refresh_world() -> void:
 	if Game.world_state == null:
 		return
 
-	if selected_cell_id.is_empty():
-		selected_cell_id = Game.world_state.starting_cell_id
+	_restore_selected_cell_from_game()
 
 	terrain_mesh_instance.mesh = _build_planet_mesh()
 	grid_mesh_instance.mesh = _build_grid_mesh()
+	intel_mesh_instance.mesh = _build_intel_overlay_mesh()
 	selection_mesh_instance.mesh = _build_cell_outline_mesh(selected_cell_id)
 	_update_overlay()
+
+
+func _restore_selected_cell_from_game() -> void:
+	if Game.world_state == null:
+		return
+
+	if not Game.current_cell_id.is_empty() and Game.world_state.get_cell(Game.current_cell_id) != null:
+		selected_cell_id = Game.current_cell_id
+		return
+
+	if selected_cell_id.is_empty() or Game.world_state.get_cell(selected_cell_id) == null:
+		selected_cell_id = Game.world_state.starting_cell_id
+		Game.current_cell_id = selected_cell_id
+
+
+func _begin_campaign_intro() -> void:
+	if campaign_intro_active or not Game.campaign_start_pending:
+		return
+	campaign_intro_active = true
+	start_cell_selection_active = false
+	selected_cell_id = ""
+	selection_mesh_instance.mesh = ArrayMesh.new()
+	intel_mesh_instance.mesh = ArrayMesh.new()
+	_hide_cell_hover()
+	camera_distance = CAMERA_INTRO_DISTANCE
+	_apply_camera_orbit()
+
+	var prompt_stack := start_prompt.get_parent() as Control
+	start_prompt.text = "Choose your starting cell"
+	start_prompt.add_theme_color_override("font_color", Color("edf7f2"))
+	start_prompt_detail.text = "Select any land cell to found your first settlement"
+	start_prompt_detail.add_theme_color_override("font_color", Color("a9c8bb"))
+	prompt_stack.modulate.a = 0.0
+	prompt_stack.position.y = 28.0
+	var tween := create_tween()
+	tween.set_trans(Tween.TRANS_QUART)
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(self, "camera_distance", CAMERA_DEFAULT_DISTANCE, CAMERA_INTRO_DURATION)
+	await tween.finished
+	campaign_intro_active = false
+	start_cell_selection_active = true
+	_apply_camera_orbit()
+	var prompt_tween := create_tween().set_parallel(true)
+	prompt_tween.set_trans(Tween.TRANS_CUBIC)
+	prompt_tween.set_ease(Tween.EASE_OUT)
+	prompt_tween.tween_property(prompt_stack, "modulate:a", 1.0, 0.35)
+	prompt_tween.tween_property(prompt_stack, "position:y", 38.0, 0.35)
+
+
+func _finish_start_prompt(color: Color) -> void:
+	start_prompt.text = "Settlement founded"
+	start_prompt.add_theme_color_override("font_color", color.lightened(0.28))
+	start_prompt_detail.text = "Faction color: #%s  |  Intelligence: 1" % color.to_html(false).to_upper()
+	var prompt_stack := start_prompt.get_parent() as Control
+	var tween := create_tween()
+	tween.tween_interval(1.4)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_IN)
+	tween.tween_property(prompt_stack, "modulate:a", 0.0, 0.45)
 
 
 func _build_planet_mesh(apply_texture: bool = true) -> ArrayMesh:
@@ -737,6 +878,64 @@ func _build_grid_mesh() -> ArrayMesh:
 	return mesh
 
 
+func _build_intel_overlay_mesh() -> ArrayMesh:
+	var mesh := ArrayMesh.new()
+	if Game.world_state == null or Game.campaign_start_pending:
+		return mesh
+
+	var vertices := PackedVector3Array()
+	var colors := PackedColorArray()
+	for cell in Game.world_state.get_cells():
+		var discovered: bool = Game.world_state.is_cell_discovered(str(cell.id), "player")
+		var overlay_color := Color(0.006, 0.013, 0.021, 0.57)
+		if discovered:
+			if str(cell.owner_id) == "player":
+				overlay_color = Game.get_faction_color("player")
+				overlay_color.a = 0.27
+			else:
+				overlay_color = Color(0.44, 0.64, 0.69, INTEL_DISCOVERED_ALPHA)
+		_append_cell_overlay_geometry(cell, overlay_color, vertices, colors)
+
+	if vertices.is_empty():
+		return mesh
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_COLOR] = colors
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var material := StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.vertex_color_use_as_albedo = true
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.roughness = 1.0
+	mesh.surface_set_material(0, material)
+	return mesh
+
+
+func _append_cell_overlay_geometry(cell, color: Color, vertices: PackedVector3Array, colors: PackedColorArray) -> void:
+	var bounds: Dictionary = Game.world_state.get_cell_lat_lon_bounds(cell)
+	var x_segments: int = maxi(INTEL_OVERLAY_SUBDIVISIONS, int(cell.x_span) * INTEL_OVERLAY_SUBDIVISIONS)
+	var y_segments := INTEL_OVERLAY_SUBDIVISIONS
+	for y_segment in range(y_segments):
+		var v0 := float(y_segment) / float(y_segments)
+		var v1 := float(y_segment + 1) / float(y_segments)
+		var lat0 := lerpf(float(bounds["lat_top"]), float(bounds["lat_bottom"]), v0)
+		var lat1 := lerpf(float(bounds["lat_top"]), float(bounds["lat_bottom"]), v1)
+		for x_segment in range(x_segments):
+			var u0 := float(x_segment) / float(x_segments)
+			var u1 := float(x_segment + 1) / float(x_segments)
+			var lon0 := lerpf(float(bounds["lon_left"]), float(bounds["lon_right"]), u0)
+			var lon1 := lerpf(float(bounds["lon_left"]), float(bounds["lon_right"]), u1)
+			var a := _direction_from_lat_lon(lat0, lon0) * INTEL_OVERLAY_RADIUS
+			var b := _direction_from_lat_lon(lat0, lon1) * INTEL_OVERLAY_RADIUS
+			var c := _direction_from_lat_lon(lat1, lon1) * INTEL_OVERLAY_RADIUS
+			var d := _direction_from_lat_lon(lat1, lon0) * INTEL_OVERLAY_RADIUS
+			for point in [a, b, d, b, c, d]:
+				vertices.append(point)
+				colors.append(color)
+
+
 func _toggle_grid_faint() -> void:
 	grid_faint_enabled = not grid_faint_enabled
 	_refresh_grid_mesh()
@@ -749,13 +948,21 @@ func _refresh_grid_mesh() -> void:
 
 
 func _build_cell_outline_mesh(cell_id: String) -> ArrayMesh:
+	var color := Color(1.0, 0.92, 0.25, 1.0)
+	if Game.world_state != null:
+		var cell = Game.world_state.get_cell(cell_id)
+		if cell != null and str(cell.owner_id) == "player":
+			color = Game.get_faction_color("player").lightened(0.24)
+	return _build_colored_cell_outline_mesh(cell_id, color, 2.045)
+
+
+func _build_colored_cell_outline_mesh(cell_id: String, color: Color, radius: float) -> ArrayMesh:
 	var cell = Game.world_state.get_cell(cell_id)
 	var vertices := PackedVector3Array()
 	var colors := PackedColorArray()
 	if cell == null:
 		return ArrayMesh.new()
 
-	var color := Color(1.0, 0.92, 0.25, 1.0)
 	var corners := _cell_corner_directions(cell.x, cell.y, cell.x_span)
 	var edges := [
 		[corners[0], corners[1]],
@@ -768,8 +975,8 @@ func _build_cell_outline_mesh(cell_id: String) -> ArrayMesh:
 		for segment in range(10):
 			var t_a := float(segment) / 10.0
 			var t_b := float(segment + 1) / 10.0
-			vertices.append(edge[0].slerp(edge[1], t_a).normalized() * 2.045)
-			vertices.append(edge[0].slerp(edge[1], t_b).normalized() * 2.045)
+			vertices.append(edge[0].slerp(edge[1], t_a).normalized() * radius)
+			vertices.append(edge[0].slerp(edge[1], t_b).normalized() * radius)
 			colors.append(color)
 			colors.append(color)
 
@@ -788,19 +995,63 @@ func _build_cell_outline_mesh(cell_id: String) -> ArrayMesh:
 
 
 func _select_cell_from_screen(screen_position: Vector2) -> void:
-	var ray_origin := camera.project_ray_origin(screen_position)
-	var ray_direction := camera.project_ray_normal(screen_position)
-	var hit = _ray_sphere_intersection(ray_origin, ray_direction, Vector3.ZERO, PLANET_RADIUS)
-	if hit == null:
+	var cell_id := _cell_id_from_screen(screen_position)
+	if cell_id.is_empty():
 		return
 
-	var local_hit := planet_root.to_local(hit).normalized()
-	selected_cell_id = Game.world_state.direction_to_cell_id(local_hit)
+	selected_cell_id = cell_id
 	Game.current_cell_id = selected_cell_id
 	Game.debug_event("cell_selected cell=%s" % selected_cell_id)
 	selection_mesh_instance.mesh = _build_cell_outline_mesh(selected_cell_id)
 	_update_overlay()
+	if start_cell_selection_active:
+		_choose_starting_cell(selected_cell_id)
+		return
+	if not Game.world_state.is_cell_discovered(selected_cell_id, "player"):
+		return
 	_zoom_to_selected_cell()
+
+
+func _choose_starting_cell(cell_id: String) -> void:
+	var cell = Game.world_state.get_cell(cell_id)
+	if cell == null:
+		return
+	var water_coverage: float = Game.world_state.get_cell_water_coverage(cell_id)
+	if water_coverage > 0.90:
+		start_prompt_detail.text = "That cell is %.0f%% water. Choose one with 90%% water or less." % (water_coverage * 100.0)
+		start_prompt_detail.add_theme_color_override("font_color", Color("e7ad70"))
+		var prompt_stack := start_prompt.get_parent() as Control
+		var shake := create_tween()
+		shake.tween_property(prompt_stack, "position:x", -248.0, 0.06)
+		shake.tween_property(prompt_stack, "position:x", -272.0, 0.10)
+		shake.tween_property(prompt_stack, "position:x", -260.0, 0.06)
+		return
+
+	suppress_world_refresh = true
+	var settled := Game.settle_player_start(cell_id)
+	suppress_world_refresh = false
+	if not settled:
+		return
+	start_cell_selection_active = false
+	selected_cell_id = cell_id
+	selection_mesh_instance.mesh = _build_cell_outline_mesh(cell_id)
+	intel_mesh_instance.mesh = _build_intel_overlay_mesh()
+	_update_overlay()
+	_update_cell_hover(get_viewport().get_mouse_position())
+	_finish_start_prompt(Game.get_faction_color("player"))
+	Game.save_campaign()
+
+
+func _cell_id_from_screen(screen_position: Vector2) -> String:
+	if camera == null or planet_root == null or Game.world_state == null:
+		return ""
+	var ray_origin := camera.project_ray_origin(screen_position)
+	var ray_direction := camera.project_ray_normal(screen_position)
+	var hit = _ray_sphere_intersection(ray_origin, ray_direction, Vector3.ZERO, PLANET_RADIUS)
+	if hit == null:
+		return ""
+	var local_hit := planet_root.to_local(hit).normalized()
+	return Game.world_state.direction_to_cell_id(local_hit)
 
 
 func _zoom_to_selected_cell() -> void:
@@ -985,13 +1236,111 @@ func _climate_color(climate: String) -> Color:
 			return Color(0.50, 0.50, 0.50)
 
 
+func _update_cell_hover(screen_position: Vector2) -> void:
+	if hover_popup == null or Game.world_state == null or world_refresh_running:
+		return
+	var cell_id := _cell_id_from_screen(screen_position)
+	if cell_id.is_empty():
+		_hide_cell_hover()
+		return
+	var cell = Game.world_state.get_cell(cell_id)
+	if cell == null:
+		_hide_cell_hover()
+		return
+
+	var popup_color := Color("4e8c73")
+	if start_cell_selection_active:
+		var water_coverage: float = Game.world_state.get_cell_water_coverage(cell_id)
+		var availability := "Blocked | Water %.0f%%" % (water_coverage * 100.0) if water_coverage > 0.90 else "Settle here | Water %.0f%%" % (water_coverage * 100.0)
+		hover_popup_label.text = "%s\nStatus: Unsettled\nOwner: Unclaimed\n%s" % [cell.id, availability]
+	elif not Game.world_state.is_cell_discovered(cell_id, "player"):
+		hover_popup_label.text = "%s\nStatus: Undiscovered\nOwner: ???" % cell.id
+		popup_color = Color("50616c")
+	else:
+		var status_text := str(cell.status).capitalize()
+		var owner_text := _owner_label(str(cell.owner_id))
+		hover_popup_label.text = "%s\nStatus: %s\nOwner: %s\n%s / %s" % [
+			cell.id,
+			status_text,
+			owner_text,
+			str(cell.terrain).capitalize(),
+			str(cell.biome).capitalize(),
+		]
+		if str(cell.owner_id) != "neutral":
+			popup_color = Game.get_faction_color(str(cell.owner_id))
+
+	hover_popup.add_theme_stylebox_override("panel", _hover_panel_style(popup_color))
+	var line_count := hover_popup_label.text.count("\n") + 1
+	var popup_height := 16.0 + float(line_count) * 18.0
+	hover_popup.custom_minimum_size = Vector2(188.0, popup_height)
+	hover_popup.size = Vector2(188.0, popup_height)
+	var viewport_size := get_viewport().get_visible_rect().size
+	var popup_size := hover_popup.size
+	hover_popup.position = Vector2(
+		clamp(screen_position.x + 22.0, 8.0, viewport_size.x - popup_size.x - 8.0),
+		clamp(screen_position.y + 18.0, 8.0, viewport_size.y - popup_size.y - 8.0)
+	)
+	hover_mesh_instance.mesh = _build_colored_cell_outline_mesh(cell_id, popup_color.lightened(0.30), 2.034)
+	if hovered_cell_id == cell_id and hover_popup.visible:
+		return
+	hovered_cell_id = cell_id
+	if hover_popup_tween != null and hover_popup_tween.is_valid():
+		hover_popup_tween.kill()
+	hover_popup.visible = true
+	hover_popup.modulate.a = 0.0
+	hover_popup.scale = Vector2(0.96, 0.96)
+	hover_popup.pivot_offset = Vector2(12.0, 10.0)
+	hover_popup_tween = create_tween().set_parallel(true)
+	hover_popup_tween.set_trans(Tween.TRANS_CUBIC)
+	hover_popup_tween.set_ease(Tween.EASE_OUT)
+	hover_popup_tween.tween_property(hover_popup, "modulate:a", 1.0, 0.16)
+	hover_popup_tween.tween_property(hover_popup, "scale", Vector2.ONE, 0.16)
+
+
+func _hide_cell_hover() -> void:
+	if hover_popup == null:
+		return
+	hovered_cell_id = ""
+	if hover_mesh_instance != null:
+		hover_mesh_instance.mesh = ArrayMesh.new()
+	if not hover_popup.visible:
+		return
+	if hover_popup_tween != null and hover_popup_tween.is_valid():
+		hover_popup_tween.kill()
+	hover_popup_tween = create_tween()
+	hover_popup_tween.tween_property(hover_popup, "modulate:a", 0.0, 0.10)
+	hover_popup_tween.tween_callback(func(): hover_popup.visible = false)
+
+
+func _hover_panel_style(accent: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.018, 0.075, 0.055, 0.90)
+	style.border_color = Color(accent.r, accent.g, accent.b, 0.82)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(5)
+	style.content_margin_left = 9.0
+	style.content_margin_top = 7.0
+	style.content_margin_right = 9.0
+	style.content_margin_bottom = 7.0
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.42)
+	style.shadow_size = 6
+	return style
+
+
 func _update_overlay() -> void:
 	var cell = Game.world_state.get_cell(selected_cell_id)
 	if cell == null:
-		info_label.text = "No cell selected."
+		info_label.text = "Choose a land cell to begin." if Game.campaign_start_pending else "No cell selected."
+	elif not Game.campaign_start_pending and not Game.world_state.is_cell_discovered(str(cell.id), "player"):
+		info_label.text = _join_lines([
+			"Selected: %s" % cell.id,
+			"Status: Undiscovered",
+			"Owner: ???",
+		])
 	else:
 		info_label.text = _join_lines([
 			"Selected: %s" % cell.id,
+			"Status: %s" % str(cell.status).capitalize(),
 			"Owner: %s" % _owner_label(cell.owner_id),
 			"Terrain: %s" % cell.terrain.capitalize(),
 			"Biome: %s" % str(cell.biome).capitalize(),
@@ -1030,6 +1379,7 @@ func _new_campaign_with_loading() -> void:
 	await _create_world_with_loading(0, 24, 12, "Creating new world")
 	_hide_world_loading()
 	world_refresh_running = false
+	_begin_campaign_intro()
 
 
 func _on_save_pressed() -> void:
@@ -1063,6 +1413,8 @@ func _load_campaign_with_loading() -> void:
 		await get_tree().create_timer(0.35).timeout
 	_hide_world_loading()
 	world_refresh_running = false
+	if loaded and Game.campaign_start_pending:
+		_begin_campaign_intro()
 
 
 func _on_debug_view_pressed() -> void:
@@ -1093,13 +1445,11 @@ func _refresh_debug_view_with_loading() -> void:
 
 
 func _owner_label(owner_id: String) -> String:
-	match owner_id:
-		"player":
-			return "Player"
-		"bandits":
-			return "Bandits"
-		_:
-			return "Neutral"
+	if owner_id == "neutral":
+		return "Unclaimed"
+	if Game.world_state != null:
+		return Game.world_state.faction_display_name(owner_id)
+	return owner_id.capitalize()
 
 
 func _join_lines(lines: Array) -> String:

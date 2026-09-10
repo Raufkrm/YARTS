@@ -3,6 +3,31 @@ Base Low Poly reference models
 - Source: https://sketchfab.com/3d-models/base-low-poly-1dc0823e8bf547d6b1cadbd9274fad0a
 - Used in YARTS as split male/female modelling references.
 
+Animation references
+- Carrying, walking, running, and walk-to-stop animations from Adobe Mixamo.
+  https://www.mixamo.com/
+- "Universal Animation Library" models/animations by @Quaternius, CC0 1.0 Universal.
+  https://quaternius.com/animviewer.html
+  https://creativecommons.org/publicdomain/zero/1.0/
+- "Universal Animation Library 2" models/animations by @Quaternius, CC0 1.0 Universal.
+  https://quaternius.com
+  https://creativecommons.org/publicdomain/zero/1.0/
+
+Environment asset references
+- "Ultimate Nature Pack" low-poly models by @Quaternius, CC0 1.0 Universal.
+  https://quaternius.com
+  https://creativecommons.org/publicdomain/zero/1.0/
+- "Stylized Nature MegaKit" models by @Quaternius, CC0 1.0 Universal.
+  https://quaternius.com
+  https://creativecommons.org/publicdomain/zero/1.0/
+- "Animated Fish Bundle" models by @Quaternius, CC0 1.0 Universal.
+  https://poly.pizza/bundle/Animated-Fish-Bundle-44zhHN1UbT
+  https://creativecommons.org/publicdomain/zero/1.0/
+- "LowPoly Animated Fish Pack" models by @Quaternius, CC0 1.0 Universal.
+  Used for mixed fish shoals and whale-oil pods.
+  https://opengameart.org/content/animated-fish
+  https://creativecommons.org/publicdomain/zero/1.0/
+
 Shader references and adaptations
 - "SUN Script" by ArmouredJupiter, Godot Shaders, CC0.
   https://godotshaders.com/shader/sun-script/
@@ -22,3 +47,6 @@ Shader references and adaptations
   https://godotshaders.com/shader/simple-animated-3d-water/
 - "LowPoly Water", Godot Shaders.
   https://godotshaders.com/shader/lowpoly-water/
+- "Yet Another Liquid Glass Shader" by Pcniado, Godot Shaders, CC0.
+  Adapted for the YARTS HUD with a reduced-cost blur and dark-green tint.
+  https://godotshaders.com/shader/yet-another-liquid-glass-shader/

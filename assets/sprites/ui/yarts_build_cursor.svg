@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="build" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe65a" stop-opacity="0.98"/>
+      <stop offset="0.55" stop-color="#f2b900" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#8f5900" stop-opacity="0.98"/>
+    </linearGradient>
+  </defs>
+
+  <g>
+
+  <g fill="none" stroke="#ffe870" stroke-linejoin="round" stroke-width="4" opacity="0.34">
+    <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"/>
+    <path d="M30 34 L42 32 L50 37 L49 48 L36 51 L29 46 Z"/>
+  </g>
+
+  <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"
+        fill="url(#build)" stroke="#fff7bd" stroke-linejoin="round" stroke-width="1.25"/>
+
+  <g fill="#8f6200" fill-opacity="0.22" stroke="#fff2a3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+    <path d="M30 34 L42 32 L50 37 L49 48 L36 51 L29 46 Z"/>
+    <path d="M30 34 L37 39 L50 37"/>
+    <path d="M37 39 L36 51"/>
+    <path d="M42 32 L37 39"/>
+    <path d="M29 46 L36 42 L49 40" opacity="0.72"/>
+  </g>
+
+  <path d="M8 7 L35 17.5" fill="none" stroke="#fffceb" stroke-linecap="round" stroke-width="1.4" opacity="0.72"/>
+  </g>
+</svg>

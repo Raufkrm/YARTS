@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="interact" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4ca9ff" stop-opacity="0.98"/>
+      <stop offset="0.55" stop-color="#1766d7" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#082d79" stop-opacity="0.99"/>
+    </linearGradient>
+  </defs>
+
+  <g>
+
+  <g fill="none" stroke="#63b7ff" stroke-linejoin="round" stroke-width="4" opacity="0.34">
+    <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"/>
+    <path d="M29 43 L29 32 C29 29 33 29 33 32 L33 38 L33 27 C33 24 37 24 37 27 L37 37 L37 25 C37 22 41 22 41 25 L41 37 L41 28 C41 25 45 25 45 28 L45 39 L48 36 C50 34 54 37 52 40 L47 47 C44 51 40 53 35 52 C31 51 29 48 29 43 Z"/>
+  </g>
+
+  <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"
+        fill="url(#interact)" stroke="#d8efff" stroke-linejoin="round" stroke-width="1.25"/>
+
+  <path d="M29 43 L29 32 C29 29 33 29 33 32 L33 38 L33 27 C33 24 37 24 37 27 L37 37 L37 25 C37 22 41 22 41 25 L41 37 L41 28 C41 25 45 25 45 28 L45 39 L48 36 C50 34 54 37 52 40 L47 47 C44 51 40 53 35 52 C31 51 29 48 29 43 Z"
+        fill="#0e4ea9" stroke="#d8efff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.45"/>
+  <path d="M8 7 L35 17.5" fill="none" stroke="#eff9ff" stroke-linecap="round" stroke-width="1.4" opacity="0.72"/>
+  </g>
+</svg>

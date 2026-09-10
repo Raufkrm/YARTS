@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+  <defs>
+    <linearGradient id="move" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c05cff" stop-opacity="0.98"/>
+      <stop offset="0.55" stop-color="#7820bd" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#350761" stop-opacity="0.99"/>
+    </linearGradient>
+  </defs>
+
+  <g>
+  <g fill="none" stroke="#ce72ff" stroke-linejoin="round" stroke-width="4" opacity="0.34">
+    <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"/>
+    <path d="M31 29 L41 29 L41 38 L45 38 C49 38 52 41 52 44 L52 47 L31 47 Z"/>
+  </g>
+
+  <path d="M5 5 L49 22 C34 21 22 31 20 50 Z"
+        fill="url(#move)" stroke="#efd8ff" stroke-linejoin="round" stroke-width="1.25"/>
+
+  <path d="M31 29 L41 29 L41 38 L45 38 C49 38 52 41 52 44 L52 47 L31 47 Z"
+        fill="#531080" stroke="#efd8ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.45"/>
+  <path d="M31 34 L41 34 M31 38 L41 38" fill="none" stroke="#d9aaff" stroke-linecap="round" stroke-width="1" opacity="0.78"/>
+  <path d="M8 7 L35 17.5" fill="none" stroke="#f8efff" stroke-linecap="round" stroke-width="1.4" opacity="0.72"/>
+  </g>
+</svg>

@@ -13,15 +13,17 @@ extends Resource
 @export var moisture := 0.0
 @export var temperature := 0.0
 @export var settlement_name := ""
+@export var status := "unsettled"
 @export var threat_level := 1
+@export var rts_state: Dictionary = {}
 @export var resources := {
-	"food": 50,
-	"wood": 50,
-	"stone": 20,
+	"food": 0,
+	"wood": 0,
+	"stone": 0,
 	"metal": 0,
-	"tools": 2,
+	"tools": 0,
 	"weapons": 0,
-	"supply": 25,
+	"supply": 0,
 }
 
 
@@ -31,20 +33,22 @@ func is_player_owned() -> bool:
 
 func to_dict() -> Dictionary:
 	return {
-			"id": id,
-			"x": x,
-			"y": y,
-			"x_span": x_span,
-			"owner_id": owner_id,
-			"terrain": terrain,
-			"biome": biome,
-			"climate": climate,
-			"elevation": elevation,
-			"moisture": moisture,
-			"temperature": temperature,
-			"settlement_name": settlement_name,
-			"threat_level": threat_level,
-			"resources": resources.duplicate(true),
+		"id": id,
+		"x": x,
+		"y": y,
+		"x_span": x_span,
+		"owner_id": owner_id,
+		"terrain": terrain,
+		"biome": biome,
+		"climate": climate,
+		"elevation": elevation,
+		"moisture": moisture,
+		"temperature": temperature,
+		"settlement_name": settlement_name,
+		"status": status,
+		"threat_level": threat_level,
+		"rts_state": rts_state.duplicate(true),
+		"resources": resources.duplicate(true),
 	}
 
 
@@ -61,5 +65,7 @@ func load_from_dict(data: Dictionary) -> void:
 	moisture = float(data.get("moisture", 0.0))
 	temperature = float(data.get("temperature", 0.0))
 	settlement_name = data.get("settlement_name", "")
+	status = str(data.get("status", "settled" if not settlement_name.is_empty() or owner_id != "neutral" else "unsettled"))
 	threat_level = int(data.get("threat_level", 1))
+	rts_state = data.get("rts_state", {}).duplicate(true)
 	resources = data.get("resources", {}).duplicate(true)
