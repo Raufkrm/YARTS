@@ -3,3 +3,39 @@
 /android/
 *.blend1
 .codex-test-*.log
+/tmp/*
+!/tmp/.gdignore
+/tools/__pycache__/
+
+# Local agent instructions and development documentation
+/AGENTS.md
+/docs/
+/README.md
+
+# Development generators, checks, and authoring sources (not scripts/tools/)
+# Root tools and standalone verification scenes stay on this machine.
+# Keep scripts/tools/ and menu-accessible scenes/tools/ previews in Git:
+# gameplay and the scene selector load resources from those directories.
+# Already tracked development files must also be removed with git rm --cached.
+/tools/
+/art/
+/scenes/tools/verify_*.tscn
+/scenes/tools/verify_*.tscn.uid
+*.blend
+*.blend.import
+*.blend[0-9]*
+
+# Local helper installations, caches, build output, and diagnostics
+/.audio_tools/
+/.codex-build/
+/.venv/
+/venv/
+/.vscode/
+/.idea/
+/build/
+/dist/
+__pycache__/
+*.py[cod]
+*.log
+.DS_Store
+Thumbs.db
