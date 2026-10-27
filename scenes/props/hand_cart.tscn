@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/camp_transport/hand_cart_lod0.glb" id="1"]
+[ext_resource type="Script" path="res://scripts/props/pullable_cart_visual.gd" id="2"]
+
+[node name="hand_cart" type="Node3D"]
+script = ExtResource("2")
+wheel_radius = 0.44
+pull_distance = 1.75
+
+[node name="Model" parent="." instance=ExtResource("1")]
+
+[node name="Hitch" type="Marker3D" parent="."]
+position = Vector3(0, 0.91, 2.1)
+
+[node name="LeftGrip" type="Marker3D" parent="."]
+position = Vector3(-0.31, 0.91, 2.1)
+
+[node name="RightGrip" type="Marker3D" parent="."]
+position = Vector3(0.31, 0.91, 2.1)

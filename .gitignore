@@ -25,6 +25,11 @@
 *.blend.import
 *.blend[0-9]*
 
+# Offline asset review images and hand-simplification reports (not game inputs)
+/assets/models/**/*_preview.png
+/assets/models/**/*_preview.png.import
+/assets/reference_models/*_simple_hands.json
+
 # Local helper installations, caches, build output, and diagnostics
 /.audio_tools/
 /.codex-build/

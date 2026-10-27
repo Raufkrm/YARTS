@@ -1,0 +1,4389 @@
+{
+  "version": 2,
+  "license": "Original YARTS meshes; reference images supplied by user",
+  "units": "metres; apply the cell-view scale of five once at the unit root",
+  "authoring_axes": "Blender +X muzzle, +Y lock side, +Z up; Godot +X muzzle, +Y up, -Z lock side",
+  "material_id": "FirearmVertexPalette",
+  "assets": {
+	"early_handgonne": {
+	  "label": "Early handgonne",
+	  "lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/early_handgonne_lod0.glb",
+		  "vertices": 72,
+		  "triangles": 128,
+		  "vertex_budget": 240,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.68,
+			  -0.049,
+			  -0.049
+			],
+			"max": [
+			  0.4,
+			  0.049,
+			  0.049
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Tiller",
+                "Barrel"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.055
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "HeadBand"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.045
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "IgnitionSeat"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.021
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Tiller": [
+			  [
+				-0.68,
+				0.15
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ]
+			],
+			"Barrel": [
+			  [
+				0.095,
+				0.4
+			  ],
+			  [
+				-0.045,
+				0.045
+			  ],
+			  [
+				-0.045,
+				0.045
+			  ]
+			],
+			"HeadBand": [
+			  [
+				0.125,
+				0.17
+			  ],
+			  [
+				-0.049,
+				0.049
+			  ],
+			  [
+				-0.049,
+				0.049
+			  ]
+			],
+			"IgnitionSeat": [
+			  [
+				0.11,
+				0.15
+			  ],
+			  [
+				0.017999999999999995,
+				0.041
+			  ],
+			  [
+				0.024,
+				0.047
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/early_handgonne_lod1.glb",
+		  "vertices": 32,
+		  "triangles": 52,
+		  "vertex_budget": 80,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.68,
+			  -0.049,
+			  -0.049
+			],
+			"max": [
+			  0.4,
+			  0.049,
+			  0.049
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Tiller",
+                "Barrel"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.055
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "HeadBand"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.045
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Tiller": [
+			  [
+				-0.68,
+				0.15
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ]
+			],
+			"Barrel": [
+			  [
+				0.095,
+				0.4
+			  ],
+			  [
+				-0.045,
+				0.045
+			  ],
+			  [
+				-0.045,
+				0.045
+			  ]
+			],
+			"HeadBand": [
+			  [
+				0.125,
+				0.17
+			  ],
+			  [
+				-0.049,
+				0.049
+			  ],
+			  [
+				-0.049,
+				0.049
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/early_handgonne_lod2.glb",
+		  "vertices": 16,
+		  "triangles": 24,
+		  "vertex_budget": 20,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.68,
+			  -0.04,
+			  -0.036
+			],
+			"max": [
+			  0.4,
+			  0.04,
+			  0.036
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Tiller",
+                "Barrel"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.055
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Tiller": [
+			  [
+				-0.68,
+				0.15
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ]
+			],
+			"Barrel": [
+			  [
+				0.095,
+				0.4
+			  ],
+			  [
+				-0.036,
+				0.036
+			  ],
+			  [
+				-0.04,
+				0.04
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "bayonet_lods": [],
+	  "bayonet_compatible": false,
+	  "material_id": "FirearmVertexPalette",
+	  "bayonet_type": "",
+	  "can_fire_with_bayonet": true,
+	  "collision_proxy": null,
+	  "selection_radius": 0,
+	  "impostor_2d": null,
+	  "animation_scope": "Weapon mechanism and rod only; human reload/march clips remain planned",
+	  "sockets": {
+		"trigger_grip": [
+		  0.0,
+		  -0.018,
+		  0.0
+		],
+		"carry_grip": [
+		  -0.35,
+		  -0.026,
+		  0.0
+		],
+		"support_grip": [
+		  -0.03,
+		  -0.026,
+		  0.0
+		],
+		"ramrod_stowed": [
+		  0.45,
+		  -0.03,
+		  0.0
+		],
+		"muzzle_fx": [
+		  0.401,
+		  0.0,
+		  0.0
+		],
+		"ignition_fx": [
+		  0.132,
+		  0.042,
+		  -0.04
+		]
+	  },
+	  "mesh_lod0": "res://assets/models/weapons/firearms/early_handgonne_lod0.glb",
+	  "mesh_lod1": "res://assets/models/weapons/firearms/early_handgonne_lod1.glb",
+	  "mesh_lod2": "res://assets/models/weapons/firearms/early_handgonne_lod2.glb",
+	  "animation_set": [],
+	  "footprint_size": [
+		1.08,
+		0.098
+	  ]
+	},
+	"matchlock_arquebus": {
+	  "label": "Matchlock",
+	  "lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/matchlock_arquebus_lod0.glb",
+		  "vertices": 278,
+		  "triangles": 512,
+		  "vertex_budget": 320,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.070498
+			],
+			"max": [
+			  1.356,
+			  0.184478,
+			  0.042
+			]
+		  },
+		  "bones": 4,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 16,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.018
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.049182
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Trigger"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.0536
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Serpentine"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.029
+			},
+			{
+			  "parts": [
+				"Serpentine",
+                "SlowMatchCord"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.146
+			},
+			{
+			  "parts": [
+				"Serpentine",
+                "SlowMatchCord"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.008125
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.251
+			  ],
+			  [
+				-0.042,
+				0.042
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.3559999999999999
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.12,
+				0.13
+			  ],
+			  [
+				0.024,
+				0.042
+			  ],
+			  [
+				-0.006,
+				0.054
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08673662894964218,
+				0.009633121848106385
+			  ],
+			  [
+				-0.004000000189989805,
+				0.004000000189989805
+			  ],
+			  [
+				-0.03872212967276573,
+				0.010459873225539922
+			  ]
+			],
+			"Trigger": [
+			  [
+				-0.0485,
+				-0.028499999999999998
+			  ],
+			  [
+				-0.004,
+				0.004
+			  ],
+			  [
+				-0.03160000000000001,
+				0.022
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.2759999999999998
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.01623686027918559,
+				0.025763139720814413
+			  ]
+			],
+			"Serpentine": [
+			  [
+				-0.054,
+				0.043
+			  ],
+			  [
+				0.027999999999999997,
+				0.046
+			  ],
+			  [
+				0.025,
+				0.171
+			  ]
+			],
+			"SlowMatchCord": [
+			  [
+				-0.0027390457689762115,
+				0.06618698686361313
+			  ],
+			  [
+				0.03787500411272049,
+				0.0704982727766037
+			  ],
+			  [
+				-0.0853952169418335,
+				0.18447786569595337
+			  ]
+			],
+			"SlowMatchEmber": [
+			  [
+				0.017674380913376808,
+				0.030573302879929543
+			  ],
+			  [
+				0.04820000007748604,
+				0.05779999867081642
+			  ],
+			  [
+				0.13630712032318115,
+				0.14907969534397125
+			  ]
+			],
+			"Pan": [
+			  [
+				0.068,
+				0.13
+			  ],
+			  [
+				0.027999999999999997,
+				0.064
+			  ],
+			  [
+				0.033,
+				0.059
+			  ]
+			],
+			"PanCover": [
+			  [
+				0.062,
+				0.133
+			  ],
+			  [
+				0.028999999999999998,
+				0.065
+			  ],
+			  [
+				0.052,
+				0.064
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/matchlock_arquebus_lod1.glb",
+		  "vertices": 88,
+		  "triangles": 126,
+		  "vertex_budget": 96,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.053
+			],
+			"max": [
+			  1.356,
+			  0.184403,
+			  0.037
+			]
+		  },
+		  "bones": 4,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 12,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.023
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.013
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.048012
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Serpentine"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.024
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.251
+			  ],
+			  [
+				-0.037,
+				0.037
+			  ],
+			  [
+				-0.211,
+				0.05
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.3559999999999999
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.11,
+				0.12
+			  ],
+			  [
+				0.024,
+				0.042
+			  ],
+			  [
+				0.002,
+				0.048
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08573997294157742,
+				0.008662342082709072
+			  ],
+			  [
+				0.0,
+				0.0
+			  ],
+			  [
+				-0.0377915972750634,
+				0.010219904724974185
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.2759999999999998
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.015500000000000002,
+				0.026500000000000003
+			  ]
+			],
+			"Serpentine": [
+			  [
+				-0.049,
+				0.025
+			  ],
+			  [
+				0.027999999999999997,
+				0.046
+			  ],
+			  [
+				0.024,
+				0.16
+			  ]
+			],
+			"SlowMatchCord": [
+			  [
+				-0.001766336478292942,
+				0.06349612829834222
+			  ],
+			  [
+				0.043,
+				0.043
+			  ],
+			  [
+				-0.08518890896171798,
+				0.1844025732204318
+			  ]
+			],
+			"PanCover": [
+			  [
+				0.073,
+				0.122
+			  ],
+			  [
+				0.053,
+				0.053
+			  ],
+			  [
+				0.054000000111758706,
+				0.06399999988824129
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/matchlock_arquebus_lod2.glb",
+		  "vertices": 24,
+		  "triangles": 34,
+		  "vertex_budget": 24,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.032
+			],
+			"max": [
+			  1.356,
+			  0.131057,
+			  0.026
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.022
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.251
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.211,
+				0.05
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.3559999999999999
+			  ],
+			  [
+				-0.016,
+				0.016
+			  ],
+			  [
+				0.028000000000000004,
+				0.07200000000000001
+			  ]
+			],
+			"LockSilhouette": [
+			  [
+				-0.07796893775463104,
+				-0.03703106224536896
+			  ],
+			  [
+				0.032,
+				0.032
+			  ],
+			  [
+				0.04394300382584333,
+				0.13105699617415667
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "bayonet_lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/matchlock_arquebus_bayonet_lod0.glb",
+		  "vertices": 319,
+		  "triangles": 578,
+		  "vertex_budget": 320,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.070498
+			],
+			"max": [
+			  1.786,
+			  0.184478,
+			  0.042
+			]
+		  },
+		  "bones": 4,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 16,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.018
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.049182
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Trigger"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.0536
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Serpentine"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.029
+			},
+			{
+			  "parts": [
+				"Serpentine",
+                "SlowMatchCord"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.146
+			},
+			{
+			  "parts": [
+				"Serpentine",
+                "SlowMatchCord"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.008125
+			},
+			{
+			  "parts": [
+				"PlugHandle",
+                "PlugCollar"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.014
+			},
+			{
+			  "parts": [
+				"PlugCollar",
+                "PlugGuard"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.009
+			},
+			{
+			  "parts": [
+				"PlugGuard",
+                "PlugBlade"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.005
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "PlugHandle"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.18
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.251
+			  ],
+			  [
+				-0.042,
+				0.042
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.3559999999999999
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.12,
+				0.13
+			  ],
+			  [
+				0.024,
+				0.042
+			  ],
+			  [
+				-0.006,
+				0.054
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08673662894964218,
+				0.009633121848106385
+			  ],
+			  [
+				-0.004000000189989805,
+				0.004000000189989805
+			  ],
+			  [
+				-0.03872212967276573,
+				0.010459873225539922
+			  ]
+			],
+			"Trigger": [
+			  [
+				-0.0485,
+				-0.028499999999999998
+			  ],
+			  [
+				-0.004,
+				0.004
+			  ],
+			  [
+				-0.03160000000000001,
+				0.022
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.2759999999999998
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.01623686027918559,
+				0.025763139720814413
+			  ]
+			],
+			"Serpentine": [
+			  [
+				-0.054,
+				0.043
+			  ],
+			  [
+				0.027999999999999997,
+				0.046
+			  ],
+			  [
+				0.025,
+				0.171
+			  ]
+			],
+			"SlowMatchCord": [
+			  [
+				-0.0027390457689762115,
+				0.06618698686361313
+			  ],
+			  [
+				0.03787500411272049,
+				0.0704982727766037
+			  ],
+			  [
+				-0.0853952169418335,
+				0.18447786569595337
+			  ]
+			],
+			"SlowMatchEmber": [
+			  [
+				0.017674380913376808,
+				0.030573302879929543
+			  ],
+			  [
+				0.04820000007748604,
+				0.05779999867081642
+			  ],
+			  [
+				0.13630712032318115,
+				0.14907969534397125
+			  ]
+			],
+			"Pan": [
+			  [
+				0.068,
+				0.13
+			  ],
+			  [
+				0.027999999999999997,
+				0.064
+			  ],
+			  [
+				0.033,
+				0.059
+			  ]
+			],
+			"PanCover": [
+			  [
+				0.062,
+				0.133
+			  ],
+			  [
+				0.028999999999999998,
+				0.065
+			  ],
+			  [
+				0.052,
+				0.064
+			  ]
+			],
+			"PlugHandle": [
+			  [
+				1.176,
+				1.3809999999999998
+			  ],
+			  [
+				-0.013000000000000001,
+				0.013000000000000001
+			  ],
+			  [
+				0.037000000000000005,
+				0.063
+			  ]
+			],
+			"PlugCollar": [
+			  [
+				1.3669999999999998,
+				1.3869999999999998
+			  ],
+			  [
+				-0.016,
+				0.016
+			  ],
+			  [
+				0.034,
+				0.066
+			  ]
+			],
+			"PlugGuard": [
+			  [
+				1.378,
+				1.392
+			  ],
+			  [
+				-0.006,
+				0.006
+			  ],
+			  [
+				0.0,
+				0.1
+			  ]
+			],
+			"PlugBlade": [
+			  [
+				1.3869999999999998,
+				1.7859999999999998
+			  ],
+			  [
+				-0.0045,
+				0.0045
+			  ],
+			  [
+				0.025,
+				0.07500000000000001
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/matchlock_arquebus_bayonet_lod1.glb",
+		  "vertices": 96,
+		  "triangles": 136,
+		  "vertex_budget": 96,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.053
+			],
+			"max": [
+			  1.786,
+			  0.16,
+			  0.037
+			]
+		  },
+		  "bones": 4,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 12,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.023
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.013
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.048012
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Serpentine"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.024
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "PlugHandle"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.18
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.251
+			  ],
+			  [
+				-0.037,
+				0.037
+			  ],
+			  [
+				-0.211,
+				0.05
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.3559999999999999
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.11,
+				0.12
+			  ],
+			  [
+				0.024,
+				0.042
+			  ],
+			  [
+				0.002,
+				0.048
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08573997294157742,
+				0.008662342082709072
+			  ],
+			  [
+				0.0,
+				0.0
+			  ],
+			  [
+				-0.0377915972750634,
+				0.010219904724974185
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.2759999999999998
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.015500000000000002,
+				0.026500000000000003
+			  ]
+			],
+			"Serpentine": [
+			  [
+				-0.049,
+				0.025
+			  ],
+			  [
+				0.027999999999999997,
+				0.046
+			  ],
+			  [
+				0.024,
+				0.16
+			  ]
+			],
+			"SlowMatchCord": [
+			  [
+				0.015160199254751205,
+				0.05346364283561707
+			  ],
+			  [
+				0.043,
+				0.043
+			  ],
+			  [
+				-0.0855708682583645,
+				0.14526427269447595
+			  ]
+			],
+			"PanCover": [
+			  [
+				0.073,
+				0.122
+			  ],
+			  [
+				0.053,
+				0.053
+			  ],
+			  [
+				0.054000000111758706,
+				0.06399999988824129
+			  ]
+			],
+			"PlugHandle": [
+			  [
+				1.176,
+				1.3809999999999998
+			  ],
+			  [
+				-0.013000000000000001,
+				0.013000000000000001
+			  ],
+			  [
+				0.037000000000000005,
+				0.063
+			  ]
+			],
+			"PlugGuard": [
+			  [
+				1.3779999999478458,
+				1.390000000052154
+			  ],
+			  [
+				0,
+				0
+			  ],
+			  [
+				0.0,
+				0.1
+			  ]
+			],
+			"PlugBlade": [
+			  [
+				1.3809999999999998,
+				1.7859999999999998
+			  ],
+			  [
+				-0.008,
+				0.008
+			  ],
+			  [
+				0.043000000000000003,
+				0.057
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/matchlock_arquebus_bayonet_lod2.glb",
+		  "vertices": 24,
+		  "triangles": 36,
+		  "vertex_budget": 24,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.026
+			],
+			"max": [
+			  1.786,
+			  0.072,
+			  0.026
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.022
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.251
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.211,
+				0.05
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.3559999999999999
+			  ],
+			  [
+				-0.016,
+				0.016
+			  ],
+			  [
+				0.028000000000000004,
+				0.07200000000000001
+			  ]
+			],
+			"PlugBlade": [
+			  [
+				1.3559999999999999,
+				1.7859999999999998
+			  ],
+			  [
+				-0.008,
+				0.008
+			  ],
+			  [
+				0.043000000000000003,
+				0.057
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "bayonet_compatible": true,
+	  "material_id": "FirearmVertexPalette",
+	  "bayonet_type": "plug",
+	  "can_fire_with_bayonet": false,
+	  "collision_proxy": null,
+	  "selection_radius": 0,
+	  "impostor_2d": null,
+	  "animation_scope": "Weapon mechanism and rod only; human reload/march clips remain planned",
+	  "sockets": {
+		"trigger_grip": [
+		  0.0,
+		  -0.018,
+		  0.0
+		],
+		"carry_grip": [
+		  -0.12,
+		  -0.02,
+		  0.0
+		],
+		"support_grip": [
+		  0.43,
+		  0.006,
+		  0.0
+		],
+		"ramrod_stowed": [
+		  0.45,
+		  0.021,
+		  0.025
+		],
+		"muzzle_fx": [
+		  1.357,
+		  0.05,
+		  0.0
+		],
+		"pan_fx": [
+		  0.085,
+		  0.061,
+		  -0.063
+		],
+		"cap_seat": [
+		  0.038,
+		  0.069,
+		  -0.039
+		],
+		"bayonet_socket": [
+		  1.356,
+		  0.05,
+		  0.0
+		],
+		"ramrod_hand": [
+		  1.271,
+		  0.021,
+		  0.025
+		]
+	  },
+	  "mesh_lod0": "res://assets/models/weapons/firearms/matchlock_arquebus_lod0.glb",
+	  "mesh_lod1": "res://assets/models/weapons/firearms/matchlock_arquebus_lod1.glb",
+	  "mesh_lod2": "res://assets/models/weapons/firearms/matchlock_arquebus_lod2.glb",
+	  "bayonet_mesh_lod0": "res://assets/models/weapons/firearms/matchlock_arquebus_bayonet_lod0.glb",
+	  "bayonet_mesh_lod1": "res://assets/models/weapons/firearms/matchlock_arquebus_bayonet_lod1.glb",
+	  "bayonet_mesh_lod2": "res://assets/models/weapons/firearms/matchlock_arquebus_bayonet_lod2.glb",
+	  "animation_set": [
+		"Lock_Open",
+		"Lock_Ready",
+		"Lock_Fire",
+        "Ramrod_Draw"
+	  ],
+	  "footprint_size": [
+		1.856,
+		0.11249800000000001
+	  ]
+	},
+	"flintlock_musket": {
+	  "label": "Flintlock",
+	  "lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/flintlock_musket_lod0.glb",
+		  "vertices": 318,
+		  "triangles": 584,
+		  "vertex_budget": 400,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.504,
+			  -0.2116,
+			  -0.051
+			],
+			"max": [
+			  1.538,
+			  0.116,
+			  0.042
+			]
+		  },
+		  "bones": 4,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 16,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.011
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.049182
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Trigger"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.0536
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Cock"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.013
+			},
+			{
+			  "parts": [
+				"Stock",
+                "ButtPlate"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.01
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.042,
+				0.042
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.09,
+				0.086
+			  ],
+			  [
+				0.0245,
+				0.0355
+			  ],
+			  [
+				0.012,
+				0.046
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08673662894964218,
+				0.009633121848106385
+			  ],
+			  [
+				-0.004000000189989805,
+				0.004000000189989805
+			  ],
+			  [
+				-0.032222129672765734,
+				0.01695987322553992
+			  ]
+			],
+			"Trigger": [
+			  [
+				-0.0485,
+				-0.028499999999999998
+			  ],
+			  [
+				-0.004,
+				0.004
+			  ],
+			  [
+				-0.02510000000000001,
+				0.028499999999999998
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.458
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.01623686027918559,
+				0.025763139720814413
+			  ]
+			],
+			"Cock": [
+			  [
+				-0.05758,
+				-0.02068
+			  ],
+			  [
+				0.029,
+				0.039
+			  ],
+			  [
+				0.033,
+				0.106
+			  ]
+			],
+			"FlintJaws": [
+			  [
+				-0.03298,
+				0.007199999999999991
+			  ],
+			  [
+				0.027000000000000003,
+				0.041
+			  ],
+			  [
+				0.089,
+				0.107
+			  ]
+			],
+			"Flint": [
+			  [
+				0.003919999999999993,
+				0.02196
+			  ],
+			  [
+				0.025,
+				0.043000000000000003
+			  ],
+			  [
+				0.086,
+				0.098
+			  ]
+			],
+			"Pan": [
+			  [
+				0.016,
+				0.059
+			  ],
+			  [
+				0.027000000000000003,
+				0.051
+			  ],
+			  [
+				0.043,
+				0.06
+			  ]
+			],
+			"Frizzen": [
+			  [
+				0.016,
+				0.05
+			  ],
+			  [
+				0.0365,
+				0.0415
+			  ],
+			  [
+				0.057,
+				0.116
+			  ]
+			],
+			"MuzzleCap": [
+			  [
+				1.4080000000000001,
+				1.443
+			  ],
+			  [
+				-0.027,
+				0.027
+			  ],
+			  [
+				0.023000000000000003,
+				0.077
+			  ]
+			],
+			"ButtPlate": [
+			  [
+				-0.504,
+				-0.49
+			  ],
+			  [
+				-0.03871111111111111,
+				0.03871111111111111
+			  ],
+			  [
+				-0.21159999999999998,
+				0.024044444444444448
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/flintlock_musket_lod1.glb",
+		  "vertices": 80,
+		  "triangles": 116,
+		  "vertex_budget": 112,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.039
+			],
+			"max": [
+			  1.538,
+			  0.114751,
+			  0.037
+			]
+		  },
+		  "bones": 4,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 12,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.011
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.048012
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Cock"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.008
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.037,
+				0.037
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.087,
+				0.085
+			  ],
+			  [
+				0.0245,
+				0.0355
+			  ],
+			  [
+				0.014,
+				0.042
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08573997294157742,
+				0.008662342082709072
+			  ],
+			  [
+				0.0,
+				0.0
+			  ],
+			  [
+				-0.0312915972750634,
+				0.016719904724974186
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.458
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.015500000000000002,
+				0.026500000000000003
+			  ]
+			],
+			"Cock": [
+			  [
+				-0.05594,
+				-0.02314
+			  ],
+			  [
+				0.034,
+				0.034
+			  ],
+			  [
+				0.034,
+				0.103
+			  ]
+			],
+			"Flint": [
+			  [
+				0.0032767401356995074,
+				0.020963259864300497
+			  ],
+			  [
+				0.037,
+				0.037
+			  ],
+			  [
+				0.086077676769346,
+				0.097922323230654
+			  ]
+			],
+			"Frizzen": [
+			  [
+				0.026615376953035595,
+				0.048384623046964406
+			  ],
+			  [
+				0.039,
+				0.039
+			  ],
+			  [
+				0.059249285319820044,
+				0.11475071468017996
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/flintlock_musket_lod2.glb",
+		  "vertices": 24,
+		  "triangles": 34,
+		  "vertex_budget": 28,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.032
+			],
+			"max": [
+			  1.538,
+			  0.107508,
+			  0.026
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.039837
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.01150000000000001,
+				0.023
+			  ],
+			  [
+				0.03008141571295792,
+				0.06991858428704209
+			  ]
+			],
+			"LockSilhouette": [
+			  [
+				-0.050592565845698115,
+				0.01259256584569812
+			  ],
+			  [
+				0.032,
+				0.032
+			  ],
+			  [
+				0.03849208688363433,
+				0.10750791311636568
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "bayonet_lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/flintlock_musket_bayonet_lod0.glb",
+		  "vertices": 369,
+		  "triangles": 678,
+		  "vertex_budget": 400,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.504,
+			  -0.2116,
+			  -0.06
+			],
+			"max": [
+			  1.933318,
+			  0.116,
+			  0.042
+			]
+		  },
+		  "bones": 4,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 16,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.011
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.049182
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Trigger"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.0536
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Cock"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.013
+			},
+			{
+			  "parts": [
+				"Stock",
+                "ButtPlate"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.01
+			},
+			{
+			  "parts": [
+				"BayonetSocket",
+                "BayonetElbow"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.012793
+			},
+			{
+			  "parts": [
+				"BayonetElbow",
+                "BayonetBlade"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.02
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "BayonetSocket"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.09
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.042,
+				0.042
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.09,
+				0.086
+			  ],
+			  [
+				0.0245,
+				0.0355
+			  ],
+			  [
+				0.012,
+				0.046
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08673662894964218,
+				0.009633121848106385
+			  ],
+			  [
+				-0.004000000189989805,
+				0.004000000189989805
+			  ],
+			  [
+				-0.032222129672765734,
+				0.01695987322553992
+			  ]
+			],
+			"Trigger": [
+			  [
+				-0.0485,
+				-0.028499999999999998
+			  ],
+			  [
+				-0.004,
+				0.004
+			  ],
+			  [
+				-0.02510000000000001,
+				0.028499999999999998
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.458
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.01623686027918559,
+				0.025763139720814413
+			  ]
+			],
+			"Cock": [
+			  [
+				-0.05758,
+				-0.02068
+			  ],
+			  [
+				0.029,
+				0.039
+			  ],
+			  [
+				0.033,
+				0.106
+			  ]
+			],
+			"FlintJaws": [
+			  [
+				-0.03298,
+				0.007199999999999991
+			  ],
+			  [
+				0.027000000000000003,
+				0.041
+			  ],
+			  [
+				0.089,
+				0.107
+			  ]
+			],
+			"Flint": [
+			  [
+				0.003919999999999993,
+				0.02196
+			  ],
+			  [
+				0.025,
+				0.043000000000000003
+			  ],
+			  [
+				0.086,
+				0.098
+			  ]
+			],
+			"Pan": [
+			  [
+				0.016,
+				0.059
+			  ],
+			  [
+				0.027000000000000003,
+				0.051
+			  ],
+			  [
+				0.043,
+				0.06
+			  ]
+			],
+			"Frizzen": [
+			  [
+				0.016,
+				0.05
+			  ],
+			  [
+				0.0365,
+				0.0415
+			  ],
+			  [
+				0.057,
+				0.116
+			  ]
+			],
+			"MuzzleCap": [
+			  [
+				1.4080000000000001,
+				1.443
+			  ],
+			  [
+				-0.027,
+				0.027
+			  ],
+			  [
+				0.023000000000000003,
+				0.077
+			  ]
+			],
+			"ButtPlate": [
+			  [
+				-0.504,
+				-0.49
+			  ],
+			  [
+				-0.03871111111111111,
+				0.03871111111111111
+			  ],
+			  [
+				-0.21159999999999998,
+				0.024044444444444448
+			  ]
+			],
+			"BayonetSocket": [
+			  [
+				1.4480000000000002,
+				1.5430000000000001
+			  ],
+			  [
+				-0.03,
+				0.03
+			  ],
+			  [
+				0.020000000000000004,
+				0.08
+			  ]
+			],
+			"BayonetElbow": [
+			  [
+				1.500358793616295,
+				1.583317678153515
+			  ],
+			  [
+				-0.012901341542601585,
+				0.05346890166401863
+			  ],
+			  [
+				-0.02299999892711639,
+				0.03279265314340592
+			  ]
+			],
+			"BayonetBlade": [
+			  [
+				1.563317678153515,
+				1.9333176781535149
+			  ],
+			  [
+				0.03749999999999999,
+				0.06
+			  ],
+			  [
+				-0.02599038105676657,
+				-9.618943233417887e-06
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/flintlock_musket_bayonet_lod1.glb",
+		  "vertices": 100,
+		  "triangles": 142,
+		  "vertex_budget": 112,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.053
+			],
+			"max": [
+			  1.953,
+			  0.114751,
+			  0.037
+			]
+		  },
+		  "bones": 4,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 12,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.011
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.048012
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Cock"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.008
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "BayonetSocket"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.09
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.037,
+				0.037
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.087,
+				0.085
+			  ],
+			  [
+				0.0245,
+				0.0355
+			  ],
+			  [
+				0.014,
+				0.042
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08573997294157742,
+				0.008662342082709072
+			  ],
+			  [
+				0.0,
+				0.0
+			  ],
+			  [
+				-0.0312915972750634,
+				0.016719904724974186
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.458
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.015500000000000002,
+				0.026500000000000003
+			  ]
+			],
+			"Cock": [
+			  [
+				-0.05594,
+				-0.02314
+			  ],
+			  [
+				0.034,
+				0.034
+			  ],
+			  [
+				0.034,
+				0.103
+			  ]
+			],
+			"Flint": [
+			  [
+				0.0032767401356995074,
+				0.020963259864300497
+			  ],
+			  [
+				0.037,
+				0.037
+			  ],
+			  [
+				0.086077676769346,
+				0.097922323230654
+			  ]
+			],
+			"Frizzen": [
+			  [
+				0.026615376953035595,
+				0.048384623046964406
+			  ],
+			  [
+				0.039,
+				0.039
+			  ],
+			  [
+				0.059249285319820044,
+				0.11475071468017996
+			  ]
+			],
+			"BayonetSocket": [
+			  [
+				1.4480000000000002,
+				1.5430000000000001
+			  ],
+			  [
+				-0.03,
+				0.03
+			  ],
+			  [
+				0.020000000000000004,
+				0.08
+			  ]
+			],
+			"SocketInterior": [
+			  [
+				1.5330000000000001,
+				1.5330000000000001
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"BayonetElbow": [
+			  [
+				1.5073156810477377,
+				1.5736843189522625
+			  ],
+			  [
+				0.024,
+				0.024
+			  ],
+			  [
+				-0.021227303624153135,
+				0.03322730362415314
+			  ]
+			],
+			"BayonetBlade": [
+			  [
+				1.5550000000000002,
+				1.953
+			  ],
+			  [
+				0.024,
+				0.053
+			  ],
+			  [
+				-0.020000000000000004,
+				-0.005999999999999998
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/flintlock_musket_bayonet_lod2.glb",
+		  "vertices": 28,
+		  "triangles": 38,
+		  "vertex_budget": 28,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.053
+			],
+			"max": [
+			  1.953,
+			  0.107508,
+			  0.026
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.039837
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.01150000000000001,
+				0.023
+			  ],
+			  [
+				0.03008141571295792,
+				0.06991858428704209
+			  ]
+			],
+			"LockSilhouette": [
+			  [
+				-0.050592565845698115,
+				0.01259256584569812
+			  ],
+			  [
+				0.032,
+				0.032
+			  ],
+			  [
+				0.03849208688363433,
+				0.10750791311636568
+			  ]
+			],
+			"BayonetBlade": [
+			  [
+				1.5130000000000001,
+				1.953
+			  ],
+			  [
+				0,
+				0.053
+			  ],
+			  [
+				-0.020000000000000004,
+				0.030000000000000002
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "bayonet_compatible": true,
+	  "material_id": "FirearmVertexPalette",
+	  "bayonet_type": "socket",
+	  "can_fire_with_bayonet": true,
+	  "collision_proxy": null,
+	  "selection_radius": 0,
+	  "impostor_2d": null,
+	  "animation_scope": "Weapon mechanism and rod only; human reload/march clips remain planned",
+	  "sockets": {
+		"trigger_grip": [
+		  0.0,
+		  -0.018,
+		  0.0
+		],
+		"carry_grip": [
+		  -0.12,
+		  -0.02,
+		  0.0
+		],
+		"support_grip": [
+		  0.43,
+		  0.006,
+		  0.0
+		],
+		"ramrod_stowed": [
+		  0.45,
+		  0.021,
+		  0.025
+		],
+		"muzzle_fx": [
+		  1.539,
+		  0.05,
+		  0.0
+		],
+		"pan_fx": [
+		  0.038,
+		  0.06,
+		  -0.048
+		],
+		"cap_seat": [
+		  0.038,
+		  0.069,
+		  -0.039
+		],
+		"bayonet_socket": [
+		  1.513,
+		  0.05,
+		  0.0
+		],
+		"ramrod_hand": [
+		  1.453,
+		  0.021,
+		  0.025
+		]
+	  },
+	  "mesh_lod0": "res://assets/models/weapons/firearms/flintlock_musket_lod0.glb",
+	  "mesh_lod1": "res://assets/models/weapons/firearms/flintlock_musket_lod1.glb",
+	  "mesh_lod2": "res://assets/models/weapons/firearms/flintlock_musket_lod2.glb",
+	  "bayonet_mesh_lod0": "res://assets/models/weapons/firearms/flintlock_musket_bayonet_lod0.glb",
+	  "bayonet_mesh_lod1": "res://assets/models/weapons/firearms/flintlock_musket_bayonet_lod1.glb",
+	  "bayonet_mesh_lod2": "res://assets/models/weapons/firearms/flintlock_musket_bayonet_lod2.glb",
+	  "animation_set": [
+		"Lock_Open",
+		"Lock_Ready",
+		"Lock_Fire",
+        "Ramrod_Draw"
+	  ],
+	  "footprint_size": [
+		2.042,
+		0.093
+	  ]
+	},
+	"caplock_musket": {
+	  "label": "Caplock",
+	  "lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/caplock_musket_lod0.glb",
+		  "vertices": 242,
+		  "triangles": 448,
+		  "vertex_budget": 360,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.045
+			],
+			"max": [
+			  1.538,
+			  0.106738,
+			  0.042
+			]
+		  },
+		  "bones": 3,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 16,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.014
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.049182
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Trigger"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.0536
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Hammer"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.026198
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.042,
+				0.042
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.082,
+				0.082
+			  ],
+			  [
+				0.025,
+				0.039
+			  ],
+			  [
+				0.012,
+				0.053
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08673662894964218,
+				0.009633121848106385
+			  ],
+			  [
+				-0.004000000189989805,
+				0.004000000189989805
+			  ],
+			  [
+				-0.032222129672765734,
+				0.01695987322553992
+			  ]
+			],
+			"Trigger": [
+			  [
+				-0.0485,
+				-0.028499999999999998
+			  ],
+			  [
+				-0.004,
+				0.004
+			  ],
+			  [
+				-0.02510000000000001,
+				0.028499999999999998
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.458
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.01623686027918559,
+				0.025763139720814413
+			  ]
+			],
+			"Hammer": [
+			  [
+				-0.0785575807094574,
+				0.025934580713510513
+			  ],
+			  [
+				0.03,
+				0.041999999999999996
+			  ],
+			  [
+				0.026802461594343185,
+				0.10673846304416656
+			  ]
+			],
+			"CapSeat": [
+			  [
+				0.03,
+				0.047
+			  ],
+			  [
+				0.026999999999999996,
+				0.045
+			  ],
+			  [
+				0.052,
+				0.068
+			  ]
+			],
+			"Cap": [
+			  [
+				0.034,
+				0.042
+			  ],
+			  [
+				0.036,
+				0.042
+			  ],
+			  [
+				0.066,
+				0.07200000000000001
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/caplock_musket_lod1.glb",
+		  "vertices": 76,
+		  "triangles": 114,
+		  "vertex_budget": 96,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.039
+			],
+			"max": [
+			  1.538,
+			  0.109822,
+			  0.037
+			]
+		  },
+		  "bones": 3,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 12,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.012
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.048012
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Hammer"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.019198
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.037,
+				0.037
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.08,
+				0.08
+			  ],
+			  [
+				0.025,
+				0.039
+			  ],
+			  [
+				0.014,
+				0.046
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08573997294157742,
+				0.008662342082709072
+			  ],
+			  [
+				0.0,
+				0.0
+			  ],
+			  [
+				-0.0312915972750634,
+				0.016719904724974186
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.458
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.015500000000000002,
+				0.026500000000000003
+			  ]
+			],
+			"Hammer": [
+			  [
+				-0.0785575807094574,
+				0.02696327492594719
+			  ],
+			  [
+				0.036,
+				0.036
+			  ],
+			  [
+				0.026802461594343185,
+				0.10982152819633484
+			  ]
+			],
+			"CapSeat": [
+			  [
+				0.03204020174592733,
+				0.041959798254072665
+			  ],
+			  [
+				0.039,
+				0.039
+			  ],
+			  [
+				0.054434314377140254,
+				0.06956568562285975
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/caplock_musket_lod2.glb",
+		  "vertices": 20,
+		  "triangles": 32,
+		  "vertex_budget": 24,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.026
+			],
+			"max": [
+			  1.538,
+			  0.076,
+			  0.026
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.039837
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.01150000000000001,
+				0.023
+			  ],
+			  [
+				0.03008141571295792,
+				0.06991858428704209
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "bayonet_lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/caplock_musket_bayonet_lod0.glb",
+		  "vertices": 293,
+		  "triangles": 542,
+		  "vertex_budget": 360,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.06
+			],
+			"max": [
+			  1.933318,
+			  0.106738,
+			  0.042
+			]
+		  },
+		  "bones": 3,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 16,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.014
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.049182
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Trigger"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.0536
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Hammer"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.026198
+			},
+			{
+			  "parts": [
+				"BayonetSocket",
+                "BayonetElbow"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.012793
+			},
+			{
+			  "parts": [
+				"BayonetElbow",
+                "BayonetBlade"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.02
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "BayonetSocket"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.09
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.042,
+				0.042
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.082,
+				0.082
+			  ],
+			  [
+				0.025,
+				0.039
+			  ],
+			  [
+				0.012,
+				0.053
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08673662894964218,
+				0.009633121848106385
+			  ],
+			  [
+				-0.004000000189989805,
+				0.004000000189989805
+			  ],
+			  [
+				-0.032222129672765734,
+				0.01695987322553992
+			  ]
+			],
+			"Trigger": [
+			  [
+				-0.0485,
+				-0.028499999999999998
+			  ],
+			  [
+				-0.004,
+				0.004
+			  ],
+			  [
+				-0.02510000000000001,
+				0.028499999999999998
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.458
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.01623686027918559,
+				0.025763139720814413
+			  ]
+			],
+			"Hammer": [
+			  [
+				-0.0785575807094574,
+				0.025934580713510513
+			  ],
+			  [
+				0.03,
+				0.041999999999999996
+			  ],
+			  [
+				0.026802461594343185,
+				0.10673846304416656
+			  ]
+			],
+			"CapSeat": [
+			  [
+				0.03,
+				0.047
+			  ],
+			  [
+				0.026999999999999996,
+				0.045
+			  ],
+			  [
+				0.052,
+				0.068
+			  ]
+			],
+			"Cap": [
+			  [
+				0.034,
+				0.042
+			  ],
+			  [
+				0.036,
+				0.042
+			  ],
+			  [
+				0.066,
+				0.07200000000000001
+			  ]
+			],
+			"BayonetSocket": [
+			  [
+				1.4480000000000002,
+				1.5430000000000001
+			  ],
+			  [
+				-0.03,
+				0.03
+			  ],
+			  [
+				0.020000000000000004,
+				0.08
+			  ]
+			],
+			"BayonetElbow": [
+			  [
+				1.500358793616295,
+				1.583317678153515
+			  ],
+			  [
+				-0.012901341542601585,
+				0.05346890166401863
+			  ],
+			  [
+				-0.02299999892711639,
+				0.03279265314340592
+			  ]
+			],
+			"BayonetBlade": [
+			  [
+				1.563317678153515,
+				1.9333176781535149
+			  ],
+			  [
+				0.03749999999999999,
+				0.06
+			  ],
+			  [
+				-0.02599038105676657,
+				-9.618943233417887e-06
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/caplock_musket_bayonet_lod1.glb",
+		  "vertices": 96,
+		  "triangles": 140,
+		  "vertex_budget": 96,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.053
+			],
+			"max": [
+			  1.953,
+			  0.109822,
+			  0.037
+			]
+		  },
+		  "bones": 3,
+		  "animations": [
+			"Lock_Open",
+			"Lock_Ready",
+			"Lock_Fire",
+            "Ramrod_Draw"
+		  ],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Wrist",
+                "ForeEnd"
+			  ],
+			  "shared_bridge_vertices": 12,
+			  "continuous_surface": true
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.046
+			},
+			{
+			  "parts": [
+				"Stock",
+                "LockPlate"
+			  ],
+			  "axis": "Y",
+			  "overlap_m": 0.012
+			},
+			{
+			  "parts": [
+				"Stock",
+                "Guard"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.048012
+			},
+			{
+			  "parts": [
+				"LockPlate",
+                "Hammer"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.019198
+			},
+			{
+			  "parts": [
+				"Barrel",
+                "BayonetSocket"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.09
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.037,
+				0.037
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"LockPlate": [
+			  [
+				-0.08,
+				0.08
+			  ],
+			  [
+				0.025,
+				0.039
+			  ],
+			  [
+				0.014,
+				0.046
+			  ]
+			],
+			"Guard": [
+			  [
+				-0.08573997294157742,
+				0.008662342082709072
+			  ],
+			  [
+				0.0,
+				0.0
+			  ],
+			  [
+				-0.0312915972750634,
+				0.016719904724974186
+			  ]
+			],
+			"Ramrod": [
+			  [
+				0.055,
+				1.458
+			  ],
+			  [
+				-0.0305,
+				-0.019500000000000003
+			  ],
+			  [
+				0.015500000000000002,
+				0.026500000000000003
+			  ]
+			],
+			"Hammer": [
+			  [
+				-0.0785575807094574,
+				0.02696327492594719
+			  ],
+			  [
+				0.036,
+				0.036
+			  ],
+			  [
+				0.026802461594343185,
+				0.10982152819633484
+			  ]
+			],
+			"CapSeat": [
+			  [
+				0.03204020174592733,
+				0.041959798254072665
+			  ],
+			  [
+				0.039,
+				0.039
+			  ],
+			  [
+				0.054434314377140254,
+				0.06956568562285975
+			  ]
+			],
+			"BayonetSocket": [
+			  [
+				1.4480000000000002,
+				1.5430000000000001
+			  ],
+			  [
+				-0.03,
+				0.03
+			  ],
+			  [
+				0.020000000000000004,
+				0.08
+			  ]
+			],
+			"SocketInterior": [
+			  [
+				1.5330000000000001,
+				1.5330000000000001
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				0.027000000000000003,
+				0.07300000000000001
+			  ]
+			],
+			"BayonetElbow": [
+			  [
+				1.5073156810477377,
+				1.5736843189522625
+			  ],
+			  [
+				0.024,
+				0.024
+			  ],
+			  [
+				-0.021227303624153135,
+				0.03322730362415314
+			  ]
+			],
+			"BayonetBlade": [
+			  [
+				1.5550000000000002,
+				1.953
+			  ],
+			  [
+				0.024,
+				0.053
+			  ],
+			  [
+				-0.020000000000000004,
+				-0.005999999999999998
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/caplock_musket_bayonet_lod2.glb",
+		  "vertices": 24,
+		  "triangles": 36,
+		  "vertex_budget": 24,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.5,
+			  -0.211,
+			  -0.053
+			],
+			"max": [
+			  1.953,
+			  0.076,
+			  0.026
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"Stock",
+                "Barrel"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.039837
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"Stock": [
+			  [
+				-0.5,
+				1.433
+			  ],
+			  [
+				-0.026,
+				0.026
+			  ],
+			  [
+				-0.211,
+				0.076
+			  ]
+			],
+			"Barrel": [
+			  [
+				-0.065,
+				1.538
+			  ],
+			  [
+				-0.01150000000000001,
+				0.023
+			  ],
+			  [
+				0.03008141571295792,
+				0.06991858428704209
+			  ]
+			],
+			"BayonetBlade": [
+			  [
+				1.5130000000000001,
+				1.953
+			  ],
+			  [
+				0,
+				0.053
+			  ],
+			  [
+				-0.020000000000000004,
+				0.030000000000000002
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "bayonet_compatible": true,
+	  "material_id": "FirearmVertexPalette",
+	  "bayonet_type": "socket",
+	  "can_fire_with_bayonet": true,
+	  "collision_proxy": null,
+	  "selection_radius": 0,
+	  "impostor_2d": null,
+	  "animation_scope": "Weapon mechanism and rod only; human reload/march clips remain planned",
+	  "sockets": {
+		"trigger_grip": [
+		  0.0,
+		  -0.018,
+		  0.0
+		],
+		"carry_grip": [
+		  -0.12,
+		  -0.02,
+		  0.0
+		],
+		"support_grip": [
+		  0.43,
+		  0.006,
+		  0.0
+		],
+		"ramrod_stowed": [
+		  0.45,
+		  0.021,
+		  0.025
+		],
+		"muzzle_fx": [
+		  1.539,
+		  0.05,
+		  0.0
+		],
+		"pan_fx": [
+		  0.085,
+		  0.061,
+		  -0.063
+		],
+		"cap_seat": [
+		  0.038,
+		  0.069,
+		  -0.039
+		],
+		"bayonet_socket": [
+		  1.513,
+		  0.05,
+		  0.0
+		],
+		"ramrod_hand": [
+		  1.453,
+		  0.021,
+		  0.025
+		]
+	  },
+	  "mesh_lod0": "res://assets/models/weapons/firearms/caplock_musket_lod0.glb",
+	  "mesh_lod1": "res://assets/models/weapons/firearms/caplock_musket_lod1.glb",
+	  "mesh_lod2": "res://assets/models/weapons/firearms/caplock_musket_lod2.glb",
+	  "bayonet_mesh_lod0": "res://assets/models/weapons/firearms/caplock_musket_bayonet_lod0.glb",
+	  "bayonet_mesh_lod1": "res://assets/models/weapons/firearms/caplock_musket_bayonet_lod1.glb",
+	  "bayonet_mesh_lod2": "res://assets/models/weapons/firearms/caplock_musket_bayonet_lod2.glb",
+	  "animation_set": [
+		"Lock_Open",
+		"Lock_Ready",
+		"Lock_Fire",
+        "Ramrod_Draw"
+	  ],
+	  "footprint_size": [
+		2.0380000000000003,
+		0.087
+	  ]
+	}
+  },
+  "attachments": {
+	"socket_bayonet": {
+	  "compatible_weapons": [
+		"flintlock_musket",
+        "caplock_musket"
+	  ],
+	  "lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/socket_bayonet_lod0.glb",
+		  "vertices": 51,
+		  "triangles": 94,
+		  "vertex_budget": 64,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.065,
+			  -0.07599,
+			  -0.06
+			],
+			"max": [
+			  0.420318,
+			  0.03,
+			  0.03
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"BayonetSocket",
+                "BayonetElbow"
+			  ],
+			  "axis": "Z",
+			  "overlap_m": 0.012793
+			},
+			{
+			  "parts": [
+				"BayonetElbow",
+                "BayonetBlade"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.02
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"BayonetSocket": [
+			  [
+				-0.065,
+				0.03
+			  ],
+			  [
+				-0.03,
+				0.03
+			  ],
+			  [
+				-0.03,
+				0.03
+			  ]
+			],
+			"BayonetElbow": [
+			  [
+				-0.01264120638370514,
+				0.07031767815351486
+			  ],
+			  [
+				-0.012901341542601585,
+				0.05346890166401863
+			  ],
+			  [
+				-0.0729999989271164,
+				-0.017207346856594086
+			  ]
+			],
+			"BayonetBlade": [
+			  [
+				0.05031767815351486,
+				0.42031767815351484
+			  ],
+			  [
+				0.03749999999999999,
+				0.06
+			  ],
+			  [
+				-0.07599038105676657,
+				-0.05000961894323342
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/socket_bayonet_lod1.glb",
+		  "vertices": 20,
+		  "triangles": 26,
+		  "vertex_budget": 24,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.065,
+			  -0.071227,
+			  -0.053
+			],
+			"max": [
+			  0.44,
+			  0.03,
+			  0.03
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [],
+		  "parts_bounds_blender": {
+			"BayonetSocket": [
+			  [
+				-0.065,
+				0.03
+			  ],
+			  [
+				-0.03,
+				0.03
+			  ],
+			  [
+				-0.03,
+				0.03
+			  ]
+			],
+			"SocketInterior": [
+			  [
+				0.02,
+				0.02
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ],
+			  [
+				-0.023,
+				0.023
+			  ]
+			],
+			"BayonetElbow": [
+			  [
+				-0.005684318952262402,
+				0.0606843189522624
+			  ],
+			  [
+				0.024,
+				0.024
+			  ],
+			  [
+				-0.07122730362415314,
+				-0.016772696375846864
+			  ]
+			],
+			"BayonetBlade": [
+			  [
+				0.042,
+				0.44
+			  ],
+			  [
+				0.024,
+				0.053
+			  ],
+			  [
+				-0.07,
+				-0.056
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/socket_bayonet_lod2.glb",
+		  "vertices": 4,
+		  "triangles": 4,
+		  "vertex_budget": 4,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  0.0,
+			  -0.07,
+			  -0.053
+			],
+			"max": [
+			  0.44,
+			  -0.02,
+			  0.0
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [],
+		  "parts_bounds_blender": {
+			"BayonetBlade": [
+			  [
+				0,
+				0.44
+			  ],
+			  [
+				0,
+				0.053
+			  ],
+			  [
+				-0.07,
+				-0.02
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "type": "socket",
+	  "blocks_muzzle": false,
+	  "socket": "bayonet_socket",
+	  "material_id": "FirearmVertexPalette",
+	  "collision_proxy": null,
+	  "mesh_lod0": "res://assets/models/weapons/firearms/socket_bayonet_lod0.glb",
+	  "mesh_lod1": "res://assets/models/weapons/firearms/socket_bayonet_lod1.glb",
+	  "mesh_lod2": "res://assets/models/weapons/firearms/socket_bayonet_lod2.glb",
+	  "impostor_2d": null,
+	  "selection_radius": 0,
+	  "footprint_size": [
+		0.485318,
+		0.09
+	  ]
+	},
+	"plug_bayonet": {
+	  "compatible_weapons": [
+        "matchlock_arquebus"
+	  ],
+	  "lods": [
+		{
+		  "mesh": "res://assets/models/weapons/firearms/plug_bayonet_lod0.glb",
+		  "vertices": 41,
+		  "triangles": 66,
+		  "vertex_budget": 64,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.18,
+			  -0.05,
+			  -0.016
+			],
+			"max": [
+			  0.43,
+			  0.05,
+			  0.016
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [
+			{
+			  "parts": [
+				"PlugHandle",
+                "PlugCollar"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.014
+			},
+			{
+			  "parts": [
+				"PlugCollar",
+                "PlugGuard"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.009
+			},
+			{
+			  "parts": [
+				"PlugGuard",
+                "PlugBlade"
+			  ],
+			  "axis": "X",
+			  "overlap_m": 0.005
+			}
+		  ],
+		  "parts_bounds_blender": {
+			"PlugHandle": [
+			  [
+				-0.18,
+				0.025
+			  ],
+			  [
+				-0.013000000000000001,
+				0.013000000000000001
+			  ],
+			  [
+				-0.013000000000000001,
+				0.013000000000000001
+			  ]
+			],
+			"PlugCollar": [
+			  [
+				0.011,
+				0.031
+			  ],
+			  [
+				-0.016,
+				0.016
+			  ],
+			  [
+				-0.016,
+				0.016
+			  ]
+			],
+			"PlugGuard": [
+			  [
+				0.022,
+				0.036
+			  ],
+			  [
+				-0.006,
+				0.006
+			  ],
+			  [
+				-0.05,
+				0.05
+			  ]
+			],
+			"PlugBlade": [
+			  [
+				0.031,
+				0.43
+			  ],
+			  [
+				-0.0045,
+				0.0045
+			  ],
+			  [
+				-0.025,
+				0.025
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/plug_bayonet_lod1.glb",
+		  "vertices": 16,
+		  "triangles": 18,
+		  "vertex_budget": 24,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  -0.18,
+			  -0.05,
+			  -0.013
+			],
+			"max": [
+			  0.43,
+			  0.05,
+			  0.013
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [],
+		  "parts_bounds_blender": {
+			"PlugHandle": [
+			  [
+				-0.18,
+				0.025
+			  ],
+			  [
+				-0.013000000000000001,
+				0.013000000000000001
+			  ],
+			  [
+				-0.013000000000000001,
+				0.013000000000000001
+			  ]
+			],
+			"PlugGuard": [
+			  [
+				0.021999999947845936,
+				0.03400000005215406
+			  ],
+			  [
+				0,
+				0
+			  ],
+			  [
+				-0.05,
+				0.05
+			  ]
+			],
+			"PlugBlade": [
+			  [
+				0.025,
+				0.43
+			  ],
+			  [
+				-0.008,
+				0.008
+			  ],
+			  [
+				-0.007,
+				0.007
+			  ]
+			]
+		  }
+		},
+		{
+		  "mesh": "res://assets/models/weapons/firearms/plug_bayonet_lod2.glb",
+		  "vertices": 4,
+		  "triangles": 4,
+		  "vertex_budget": 4,
+		  "surfaces": 1,
+		  "material_count": 1,
+		  "bounds_godot": {
+			"min": [
+			  0.0,
+			  -0.007,
+			  -0.008
+			],
+			"max": [
+			  0.43,
+			  0.007,
+			  0.008
+			]
+		  },
+		  "bones": 0,
+		  "animations": [],
+		  "connection_checks": [],
+		  "parts_bounds_blender": {
+			"PlugBlade": [
+			  [
+				0,
+				0.43
+			  ],
+			  [
+				-0.008,
+				0.008
+			  ],
+			  [
+				-0.007,
+				0.007
+			  ]
+			]
+		  }
+		}
+	  ],
+	  "type": "plug",
+	  "blocks_muzzle": true,
+	  "socket": "bayonet_socket",
+	  "material_id": "FirearmVertexPalette",
+	  "collision_proxy": null,
+	  "mesh_lod0": "res://assets/models/weapons/firearms/plug_bayonet_lod0.glb",
+	  "mesh_lod1": "res://assets/models/weapons/firearms/plug_bayonet_lod1.glb",
+	  "mesh_lod2": "res://assets/models/weapons/firearms/plug_bayonet_lod2.glb",
+	  "impostor_2d": null,
+	  "selection_radius": 0,
+	  "footprint_size": [
+		0.61,
+		0.032
+	  ]
+	}
+  },
+  "whole_unit_vertex_ceilings": [
+	1800,
+	800,
+	220
+  ],
+  "far_usage": "Rigid far weapon is intended to merge into the unit silhouette/VAT; no mechanism rig",
+  "impostor_2d": null,
+  "collision_proxy": null,
+  "selection_radius": 0
+}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="128" viewBox="0 0 256 128">
+<defs><radialGradient id="glow"><stop stop-color="#ffe454" stop-opacity=".8"/><stop offset=".3" stop-color="#ffdf42" stop-opacity=".22"/><stop offset="1" stop-color="#ffe454" stop-opacity="0"/></radialGradient></defs>
+<g transform="translate(64 64)">
+<ellipse cy="14" rx="37" ry="37" fill="url(#glow)"/>
+<path d="M-3,-6 Q-40,-30 -40,-10 Q-25,3 -3,4 M3,-6 Q40,-30 40,-10 Q25,3 3,4" fill="#dce6d9" fill-opacity=".7"/>
+<ellipse cy="-5" rx="5" ry="18" fill="#48462d"/><ellipse cy="13" rx="7" ry="11" fill="#ffe356"/>
+<circle cy="-23" r="5" fill="#353a2c"/>
+</g>
+<g transform="translate(192 64)">
+<ellipse cy="14" rx="37" ry="37" fill="url(#glow)"/>
+<path d="M-3,-6 Q-18,4 -13,29 Q-5,22 -3,4 M3,-6 Q18,4 13,29 Q5,22 3,4" fill="#dce6d9" fill-opacity=".7"/>
+<ellipse cy="-5" rx="5" ry="18" fill="#48462d"/><ellipse cy="13" rx="7" ry="11" fill="#ffe356"/>
+<circle cy="-23" r="5" fill="#353a2c"/>
+</g></svg>

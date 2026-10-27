@@ -3,6 +3,8 @@ extends RefCounted
 
 const STAGE_RAW := "raw"
 const STAGE_STANDING_TREE := "standing_tree"
+const STAGE_FALLING_TREE := "falling_tree"
+const STAGE_FALLEN_TREE := "fallen_tree"
 const STAGE_FELLED_LOG := "felled_log"
 
 var id := ""
@@ -62,7 +64,7 @@ func is_available() -> bool:
 
 
 func harvest(requested_limit: int = -1) -> int:
-	if not is_available():
+	if not is_available() or stage in [STAGE_STANDING_TREE, STAGE_FALLING_TREE, STAGE_FALLEN_TREE]:
 		return 0
 	if stage == STAGE_FELLED_LOG and work_progress < max(0.1, work_required):
 		return 0
@@ -107,7 +109,7 @@ func transition_to_felled_log(log_work_required: float) -> void:
 
 
 func has_runtime_changes() -> bool:
-	return depleted or amount_remaining != initial_amount or work_progress > 0.0 or stage == STAGE_FELLED_LOG
+	return depleted or amount_remaining != initial_amount or work_progress > 0.0 or stage in [STAGE_FALLING_TREE, STAGE_FALLEN_TREE, STAGE_FELLED_LOG]
 
 
 func set_visual_batches(batches: Array, instance_index: int) -> void:

@@ -7,7 +7,8 @@ signal battle_finished(cell_id: String, victory: bool)
 const WorldStateScript = preload("res://scripts/data/world_state.gd")
 const SaveManagerScript = preload("res://scripts/managers/save_manager.gd")
 const CAMPAIGN_SAVE_PATH := "user://campaign.json"
-const WORLD_ROTATION_SPEED := 0.025
+const WORLD_DAY_NIGHT_CYCLE_SECONDS := 20.0 * 60.0
+const WORLD_ROTATION_SPEED := TAU / WORLD_DAY_NIGHT_CYCLE_SECONDS
 const YARTS_DEFAULT_CURSOR_PATH := "res://assets/sprites/ui/yarts_default_cursor.svg"
 const YARTS_THING_SELECTED_CURSOR_PATH := "res://assets/sprites/ui/yarts_thing_selected_cursor.svg"
 const YARTS_BUILD_CURSOR_PATH := "res://assets/sprites/ui/yarts_build_cursor.svg"
@@ -54,6 +55,12 @@ var campaign_start_pending := false
 func _ready() -> void:
 	_apply_yarts_cursor()
 	refresh_keyboard_layout()
+
+
+func _exit_tree() -> void:
+	# Release the platform cursor's texture before the rendering server shuts down.
+	Input.set_custom_mouse_cursor(null)
+	Input.set_custom_mouse_cursor(null, Input.CURSOR_POINTING_HAND)
 
 
 func _apply_yarts_cursor() -> void:
@@ -357,6 +364,9 @@ func finish_battle(victory: bool) -> void:
 
 
 func save_campaign() -> bool:
+	var current = get_tree().current_scene
+	if current != null and current.has_method("_snapshot_current_cell_state"):
+		current._snapshot_current_cell_state()
 	if world_state == null:
 		return false
 

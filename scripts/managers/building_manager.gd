@@ -49,10 +49,13 @@ func create_building(
 
 
 func cost_for(building_type: String) -> Dictionary:
+	if BuildingDataScript.Catalog.DEFINITIONS.has(building_type):
+		return BuildingDataScript.Catalog.DEFINITIONS[building_type].cost.duplicate(true)
 	return BUILDING_COSTS.get(building_type, {}).duplicate(true)
 
 
 func can_construct(resources: Dictionary, building_type: String) -> bool:
+	if not BUILDING_COSTS.has(building_type) and not BuildingDataScript.Catalog.DEFINITIONS.has(building_type): return false
 	var cost := cost_for(building_type)
 	for resource_name in cost.keys():
 		if int(resources.get(resource_name, 0)) < int(cost[resource_name]):

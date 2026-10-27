@@ -1,0 +1,792 @@
+{
+  "schema": 2,
+  "units": "meters",
+  "authoring_axes": {
+    "up": "+Z",
+    "front": "-Y"
+  },
+  "project_scale_reference_m": 1.65,
+  "rules": "docs/rts_asset_lod_plan.md",
+  "generator": "tools/create_primitive_reference_assets.py",
+  "assets": {
+    "primitive_stone_axe": {
+      "category": "tool",
+      "symmetry": [
+        {
+          "axis": "Y",
+          "center_m": 0.0
+        }
+      ],
+      "lod0": {
+        "source_vertices": 95,
+        "triangles": 182,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "Y": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -0.05999999865889549,
+            0.25600001215934753
+          ],
+          [
+            -0.03999999910593033,
+            0.03999999910593033
+          ],
+          [
+            0.0,
+            0.699999988079071
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_stone_axe_lod0.glb",
+        "exported_vertices": 170,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "lod1": {
+        "source_vertices": 31,
+        "triangles": 54,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "Y": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -0.05999999865889549,
+            0.25600001215934753
+          ],
+          [
+            -0.03999999910593033,
+            0.03999999910593033
+          ],
+          [
+            0.0,
+            0.699999988079071
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_stone_axe_lod1.glb",
+        "exported_vertices": 54,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.316000010818243,
+        0.07999999821186066
+      ],
+      "expected_dimensions_m": [
+        0.316000010818243,
+        0.07999999821186066,
+        0.699999988079071
+      ],
+      "selection_radius_m": 0.1580000054091215,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "attachment_points_blender": {
+        "grip": [
+          0,
+          0,
+          0.23
+        ]
+      },
+      "far_representation": "hidden or merged into unit LOD budget"
+    },
+    "primitive_stone_axe_narrow": {
+      "category": "tool",
+      "symmetry": [
+        {
+          "axis": "Y",
+          "center_m": 0.0
+        }
+      ],
+      "lod0": {
+        "source_vertices": 95,
+        "triangles": 182,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "Y": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -0.05999999865889549,
+            0.1509999930858612
+          ],
+          [
+            -0.03936000168323517,
+            0.03936000168323517
+          ],
+          [
+            0.0,
+            0.699999988079071
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_stone_axe_narrow_lod0.glb",
+        "exported_vertices": 170,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "lod1": {
+        "source_vertices": 31,
+        "triangles": 54,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "Y": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -0.05999999865889549,
+            0.1509999930858612
+          ],
+          [
+            -0.03771999850869179,
+            0.03771999850869179
+          ],
+          [
+            0.0,
+            0.699999988079071
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_stone_axe_narrow_lod1.glb",
+        "exported_vertices": 54,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.2109999917447567,
+        0.07872000336647034
+      ],
+      "expected_dimensions_m": [
+        0.2109999917447567,
+        0.07872000336647034,
+        0.699999988079071
+      ],
+      "selection_radius_m": 0.10549999587237835,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "attachment_points_blender": {
+        "grip": [
+          0,
+          0,
+          0.23
+        ]
+      },
+      "far_representation": "hidden or merged into unit LOD budget"
+    },
+    "primitive_stone_spear": {
+      "category": "tool",
+      "symmetry": [
+        {
+          "axis": "X",
+          "center_m": 0.0
+        },
+        {
+          "axis": "Y",
+          "center_m": 0.0
+        }
+      ],
+      "lod0": {
+        "source_vertices": 228,
+        "triangles": 444,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.10300000011920929,
+            0.10300000011920929
+          ],
+          [
+            -0.03200000151991844,
+            0.03200000151991844
+          ],
+          [
+            0.0,
+            1.9700000286102295
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_stone_spear_lod0.glb",
+        "exported_vertices": 336,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "lod1": {
+        "source_vertices": 38,
+        "triangles": 64,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.10300000011920929,
+            0.10300000011920929
+          ],
+          [
+            -0.03200000151991844,
+            0.03200000151991844
+          ],
+          [
+            0.0,
+            1.9700000286102295
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_stone_spear_lod1.glb",
+        "exported_vertices": 56,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.20600000023841858,
+        0.06400000303983688
+      ],
+      "expected_dimensions_m": [
+        0.20600000023841858,
+        0.06400000303983688,
+        1.9700000286102295
+      ],
+      "selection_radius_m": 0.10300000011920929,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "attachment_points_blender": {
+        "grip": [
+          0,
+          0,
+          0.85
+        ]
+      },
+      "far_representation": "hidden or merged into unit LOD budget"
+    },
+    "primitive_self_bow": {
+      "category": "tool",
+      "symmetry": [
+        {
+          "axis": "Y",
+          "center_m": 0.0
+        },
+        {
+          "axis": "Z",
+          "center_m": 0.793
+        }
+      ],
+      "lod0": {
+        "source_vertices": 252,
+        "triangles": 492,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "Y": 0.0,
+          "Z": 5.960464477539063e-08
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.28299999237060547,
+            0.008006054908037186
+          ],
+          [
+            -0.03200000151991844,
+            0.03200000151991844
+          ],
+          [
+            0.013888733461499214,
+            1.5721112489700317
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_self_bow_lod0.glb",
+        "exported_vertices": 252,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "lod1": {
+        "source_vertices": 104,
+        "triangles": 196,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "Y": 0.0,
+          "Z": 5.960464477539063e-08
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.28700000047683716,
+            0.006961145903915167
+          ],
+          [
+            -0.03200000151991844,
+            0.03200000151991844
+          ],
+          [
+            0.01449395902454853,
+            1.5715060234069824
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_self_bow_lod1.glb",
+        "exported_vertices": 104,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.29100604727864265,
+        0.06400000303983688
+      ],
+      "expected_dimensions_m": [
+        0.29100604727864265,
+        0.06400000303983688,
+        1.5582225155085325
+      ],
+      "selection_radius_m": 0.14550302363932133,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "attachment_points_blender": {
+        "grip": [
+          -0.255,
+          0,
+          0.793
+        ]
+      },
+      "far_representation": "hidden or merged into unit LOD budget"
+    },
+    "primitive_antler_pick": {
+      "category": "tool",
+      "symmetry": "intentional one-sided tusk",
+      "lod0": {
+        "source_vertices": 254,
+        "triangles": 492,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 6,
+        "bounds_m_blender": [
+          [
+            -0.38690340518951416,
+            0.23623065650463104
+          ],
+          [
+            -0.07000000029802322,
+            0.07000000029802322
+          ],
+          [
+            0.0,
+            0.9325461387634277
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_antler_pick_lod0.glb",
+        "exported_vertices": 254,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "lod1": {
+        "source_vertices": 78,
+        "triangles": 144,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -0.3865709900856018,
+            0.23623065650463104
+          ],
+          [
+            -0.07000000029802322,
+            0.07000000029802322
+          ],
+          [
+            0.0,
+            0.9325461387634277
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/primitive_antler_pick_lod1.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.6231340616941452,
+        0.14000000059604645
+      ],
+      "expected_dimensions_m": [
+        0.6231340616941452,
+        0.14000000059604645,
+        0.9325461387634277
+      ],
+      "selection_radius_m": 0.3115670308470726,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "attachment_points_blender": {
+        "grip": [
+          0,
+          0,
+          0.23
+        ]
+      },
+      "far_representation": "hidden or merged into unit LOD budget"
+    },
+    "bone_hide_shelter": {
+      "category": "building",
+      "symmetry": [
+        {
+          "axis": "X",
+          "center_m": 0.0
+        }
+      ],
+      "lod0": {
+        "source_vertices": 1950,
+        "triangles": 3812,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 25,
+        "bounds_m_blender": [
+          [
+            -1.5788464546203613,
+            1.5788464546203613
+          ],
+          [
+            -1.2996675968170166,
+            1.350000023841858
+          ],
+          [
+            -0.019999999552965164,
+            1.8569494485855103
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/bone_hide_shelter_lod0.glb",
+        "exported_vertices": 2858,
+        "surfaces": 1,
+        "vertex_budget_max": 3500
+      },
+      "lod1": {
+        "source_vertices": 552,
+        "triangles": 1040,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 16,
+        "bounds_m_blender": [
+          [
+            -1.474456548690796,
+            1.474456548690796
+          ],
+          [
+            -1.2983253002166748,
+            1.350000023841858
+          ],
+          [
+            -0.019999999552965164,
+            1.8616130352020264
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/bone_hide_shelter_lod1.glb",
+        "exported_vertices": 879,
+        "surfaces": 1,
+        "vertex_budget_max": 1200
+      },
+      "lod2": {
+        "source_vertices": 108,
+        "triangles": 200,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -1.4792346954345703,
+            1.4792346954345703
+          ],
+          [
+            -1.292623519897461,
+            1.350000023841858
+          ],
+          [
+            -0.022162778303027153,
+            1.8300000429153442
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/bone_hide_shelter_lod2.glb",
+        "exported_vertices": 234,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "footprint_size_m": [
+        3.1576929092407227,
+        2.6496676206588745
+      ],
+      "expected_dimensions_m": [
+        3.1576929092407227,
+        2.6496676206588745,
+        1.8769494481384754
+      ],
+      "selection_radius_m": 1.5788464546203613,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "collision_proxy": "assets/models/buildings/bone_hide_shelter_collision.glb",
+      "impostor_2d": "assets/models/buildings/impostors/bone_hide_shelter.png"
+    },
+    "conical_reed_hut": {
+      "category": "building",
+      "symmetry": [
+        {
+          "axis": "X",
+          "center_m": 0.0
+        }
+      ],
+      "lod0": {
+        "source_vertices": 2558,
+        "triangles": 4924,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 52,
+        "bounds_m_blender": [
+          [
+            -2.078097343444824,
+            2.078097343444824
+          ],
+          [
+            -2.0468058586120605,
+            2.049999952316284
+          ],
+          [
+            -0.025372512638568878,
+            3.513533353805542
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/conical_reed_hut_lod0.glb",
+        "exported_vertices": 3458,
+        "surfaces": 1,
+        "vertex_budget_max": 3500
+      },
+      "lod1": {
+        "source_vertices": 728,
+        "triangles": 1348,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 28,
+        "bounds_m_blender": [
+          [
+            -2.050401210784912,
+            2.050401210784912
+          ],
+          [
+            -2.0461885929107666,
+            2.049999952316284
+          ],
+          [
+            -0.025670912116765976,
+            3.5161490440368652
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/conical_reed_hut_lod1.glb",
+        "exported_vertices": 1051,
+        "surfaces": 1,
+        "vertex_budget_max": 1200
+      },
+      "lod2": {
+        "source_vertices": 108,
+        "triangles": 200,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -2.0193428993225098,
+            2.0193428993225098
+          ],
+          [
+            -2.045088291168213,
+            2.049999952316284
+          ],
+          [
+            -0.026198523119091988,
+            3.5
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/conical_reed_hut_lod2.glb",
+        "exported_vertices": 234,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "footprint_size_m": [
+        4.156194686889648,
+        4.096805810928345
+      ],
+      "expected_dimensions_m": [
+        4.156194686889648,
+        4.096805810928345,
+        3.538905866444111
+      ],
+      "selection_radius_m": 2.078097343444824,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "collision_proxy": "assets/models/buildings/conical_reed_hut_collision.glb",
+      "impostor_2d": "assets/models/buildings/impostors/conical_reed_hut.png"
+    },
+    "oval_thatch_longhouse": {
+      "category": "building",
+      "symmetry": [
+        {
+          "axis": "X",
+          "center_m": 0.0
+        }
+      ],
+      "lod0": {
+        "source_vertices": 2520,
+        "triangles": 4872,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 46,
+        "bounds_m_blender": [
+          [
+            -3.3717610836029053,
+            3.3717610836029053
+          ],
+          [
+            -2.135328769683838,
+            2.1329216957092285
+          ],
+          [
+            -0.019999999552965164,
+            3.1486101150512695
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/oval_thatch_longhouse_lod0.glb",
+        "exported_vertices": 3428,
+        "surfaces": 1,
+        "vertex_budget_max": 3500
+      },
+      "lod1": {
+        "source_vertices": 718,
+        "triangles": 1328,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 28,
+        "bounds_m_blender": [
+          [
+            -3.374480724334717,
+            3.374480724334717
+          ],
+          [
+            -2.134864568710327,
+            2.131133794784546
+          ],
+          [
+            -0.019999999552965164,
+            3.1533212661743164
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/oval_thatch_longhouse_lod1.glb",
+        "exported_vertices": 1045,
+        "surfaces": 1,
+        "vertex_budget_max": 1200
+      },
+      "lod2": {
+        "source_vertices": 108,
+        "triangles": 200,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -3.2790615558624268,
+            3.2790615558624268
+          ],
+          [
+            -2.1328952312469482,
+            2.0999999046325684
+          ],
+          [
+            -0.019999999552965164,
+            3.119999885559082
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/buildings/oval_thatch_longhouse_lod2.glb",
+        "exported_vertices": 234,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "footprint_size_m": [
+        6.7435221672058105,
+        4.268250465393066
+      ],
+      "expected_dimensions_m": [
+        6.7435221672058105,
+        4.268250465393066,
+        3.1686101146042347
+      ],
+      "selection_radius_m": 3.3717610836029053,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "collision_proxy": "assets/models/buildings/oval_thatch_longhouse_collision.glb",
+      "impostor_2d": "assets/models/buildings/impostors/oval_thatch_longhouse.png"
+    }
+  }
+}

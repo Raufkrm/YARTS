@@ -13,6 +13,8 @@ var work_required := 1.0
 var work_done := 0.0
 var harvest_amount := 1
 var range := 8.0
+var has_interaction_slot := true
+var slot_retry_remaining := 0.0
 var state := STATE_APPROACH
 
 

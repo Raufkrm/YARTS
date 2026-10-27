@@ -14,19 +14,29 @@ const TEST_SMALL_RIVER_HALF_WIDTH := 0.010
 const TEST_SMALL_RIVER_START_V := 0.16
 const TEST_RESOURCE_START_X := -1325.0
 const TEST_DEPOSIT_SIZES := ["small", "medium", "large"]
+const TEST_HOUSING := [
+	["Bone hide shelter", "res://assets/models/buildings/bone_hide_shelter_lod0.glb"],
+	["Conical reed hut", "res://assets/models/buildings/conical_reed_hut_lod0.glb"],
+	["Thatch longhouse", "res://assets/models/buildings/oval_thatch_longhouse_lod0.glb"],
+	["Thatch roundhouse", "res://scenes/props/swept_thatch_roundhouse.tscn"],
+	["Hemp tent", "res://scenes/props/hemp_ridge_tent.tscn"],
+]
+const TEST_ANIMALS := ["horse_brown", "horse_white", "deer", "wild_boar", "camel", "polar_bear", "penguin", "sheep", "cow", "goat", "seagull", "crow"]
+var scale_exhibits: Array[Node3D] = []
+var scale_exhibit_selector: OptionButton
 const TEST_RESOURCE_ASSETS := [
 	{"type": "wood", "label": "Wood", "path": "res://assets/models/resources/resource_wood_logs.glb", "scale": 3.0},
 	{"type": "stone", "label": "Stone", "path": "res://assets/models/resources/resource_stone_pile.glb", "scale": 3.2},
 	{"type": "food", "label": "Food", "path": "res://assets/models/resources/resource_food_pot.glb", "scale": 3.0},
 	{"type": "gold", "label": "Gold bars", "path": "res://assets/models/resources/resource_gold_bars.glb", "scale": 3.0},
 	{"type": "flint", "label": "Flint", "path": "res://assets/models/details/flint_stone_01.glb", "scale": 3.2},
-	{"type": "coal", "label": "Coal", "path": "res://assets/models/resources/ore_coal.glb", "scale": 3.0},
-	{"type": "copper", "label": "Copper", "path": "res://assets/models/resources/ore_copper.glb", "scale": 3.0},
-	{"type": "tin", "label": "Tin", "path": "res://assets/models/resources/ore_tin.glb", "scale": 3.0},
-	{"type": "iron", "label": "Iron", "path": "res://assets/models/resources/ore_iron.glb", "scale": 3.0},
-	{"type": "silver", "label": "Silver", "path": "res://assets/models/resources/ore_silver.glb", "scale": 3.0},
-	{"type": "gold_ore", "label": "Gold ore", "path": "res://assets/models/resources/ore_gold.glb", "scale": 3.0},
-	{"type": "uranium", "label": "Uranium", "path": "res://assets/models/resources/ore_uranium.glb", "scale": 3.0},
+	{"type": "coal", "label": "Coal", "path": ORE_DEPOSIT_ASSETS.coal, "scale": 3.0},
+	{"type": "copper", "label": "Copper", "path": ORE_DEPOSIT_ASSETS.copper, "scale": 3.0},
+	{"type": "tin", "label": "Tin", "path": ORE_DEPOSIT_ASSETS.tin, "scale": 3.0},
+	{"type": "iron", "label": "Iron", "path": ORE_DEPOSIT_ASSETS.iron, "scale": 3.0},
+	{"type": "silver", "label": "Silver", "path": ORE_DEPOSIT_ASSETS.silver, "scale": 3.0},
+	{"type": "gold_ore", "label": "Gold ore", "path": ORE_DEPOSIT_ASSETS.gold_ore, "scale": 3.0},
+	{"type": "uranium", "label": "Uranium", "path": ORE_DEPOSIT_ASSETS.uranium, "scale": 3.0},
 	{"type": "fish", "label": "Deep mixed fish shoal", "path": "res://assets/models/fish/quaternius_animated_fish_pack/fish_1.fbx", "scale": 0.25, "water": true, "water_x": -420.0, "water_z": 1650.0},
 	{"type": "fish_shallow", "label": "Shallow fish school", "path": "res://assets/models/fish/quaternius_animated_fish_pack/fish_1.fbx", "scale": 0.18, "water": true, "water_x": 0.0, "water_z": 1120.0},
 	{"type": "whale_oil", "label": "Whale oil pod", "path": "res://assets/models/fish/quaternius_animated_fish_pack/whale.fbx", "scale": 0.60, "water": true, "water_x": 420.0, "water_z": 1650.0},
@@ -78,6 +88,7 @@ func _load_control_test_cell() -> void:
 	await get_tree().process_frame
 	_spawn_control_test_resources()
 	_spawn_control_test_labels()
+	_spawn_scale_exhibits()
 	_rebuild_resource_ring_batches()
 	_apply_minimap_data(data)
 	_set_loading("Control test range ready", 1.0)
@@ -88,10 +99,13 @@ func _load_control_test_cell() -> void:
 
 func _build_control_test_data() -> Dictionary:
 	var props := _control_test_tree_props()
+	var terrain_mesh := _build_control_test_terrain_mesh()
 	return {
-		"terrain_mesh": _build_control_test_terrain_mesh(),
-		"water_mesh": _build_water_plane_mesh(),
-		"river_mesh": _build_river_surface_mesh(),
+		"terrain_mesh": terrain_mesh,
+		"terrain_heights": terrain_surface_heights,
+		"terrain_row_length": terrain_surface_row_length,
+		"water_mesh": _build_water_plane_mesh(terrain_surface_heights, terrain_surface_row_length),
+		"river_mesh": _build_river_surface_mesh(terrain_surface_heights, terrain_surface_row_length),
 		"grid_mesh": _build_terrain_grid_mesh(),
 		"props": props,
 		"minimap_texture": _build_minimap_texture(props),
@@ -134,13 +148,16 @@ func _build_control_test_terrain_mesh() -> ArrayMesh:
 			var base_index := z_index * row_length + x_index
 			indices.append_array(PackedInt32Array([
 				base_index,
-				base_index + row_length,
-				base_index + 1,
 				base_index + 1,
 				base_index + row_length,
+				base_index + 1,
 				base_index + row_length + 1,
+				base_index + row_length,
 			]))
 
+	terrain_surface_heights = PackedFloat32Array()
+	for vertex in vertices: terrain_surface_heights.append(vertex.y)
+	terrain_surface_row_length = row_length
 	return _mesh_from_arrays(vertices, normals, colors, uvs, indices)
 
 
@@ -309,6 +326,82 @@ func _spawn_control_test_resource(resource_data: Dictionary, position: Vector3, 
 	full_model_entity_count += 1
 
 
+func _spawn_scale_exhibits() -> void:
+	var layer := CanvasLayer.new()
+	layer.name = "ScaleExhibitNavigation"
+	add_child(layer)
+	var root := Control.new()
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(root)
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	scale_exhibit_selector = OptionButton.new()
+	scale_exhibit_selector.name = "ScaleExhibits"
+	root.add_child(scale_exhibit_selector)
+	scale_exhibit_selector.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	scale_exhibit_selector.offset_left = -130
+	scale_exhibit_selector.offset_right = 130
+	scale_exhibit_selector.offset_top = 104
+	scale_exhibit_selector.offset_bottom = 138
+	scale_exhibit_selector.add_item("Control range")
+	scale_exhibit_selector.item_selected.connect(_focus_scale_exhibit)
+	for index in range(TEST_HOUSING.size()):
+		var entry: Array = TEST_HOUSING[index]
+		_add_scale_exhibit(entry[0], entry[1], Vector3(-1100 + index * 250, 0, -1730))
+	for index in range(TEST_ANIMALS.size()):
+		var animal: String = TEST_ANIMALS[index]
+		_add_scale_exhibit(animal.capitalize(), "res://scenes/props/%s.tscn" % animal,
+			Vector3(-1100 + (index % 6) * 210, 0, -1510 + (index / 6) * 100))
+
+
+func _add_scale_exhibit(title: String, path: String, at: Vector3) -> void:
+	var stand := Node3D.new()
+	stand.name = title.to_pascal_case() + "ScaleExhibit"
+	stand.position = _ground_position_for_local(at.x, at.z)
+	terrain_root.add_child(stand)
+	var model := (load(path) as PackedScene).instantiate() as Node3D
+	stand.add_child(model)
+	if model.has_method("set_lod"): model.set_lod(0)
+	model.scale = Vector3.ONE * UNIT_VISUAL_SCALE
+	if TEST_ANIMALS.has(path.get_file().get_basename()): model.rotation.y = PI * 0.32
+	model.set_meta("scale_exhibit_asset", path)
+	if model.get_script() == preload("res://scripts/props/cosmetic_bird_flock.gd"):
+		model.altitude = 1.1
+		model.set_lod(0)
+		model.birds.visibility_range_end = 0.0
+	else:
+		model.position.y -= _resource_member_bottom_y(model) * UNIT_VISUAL_SCALE
+	var bounds := _combined_local_bounds(model)
+	var side := 25.0
+	if bounds.get("valid", false): side = maxf(side, absf((bounds["max"] as Vector3).x) * UNIT_VISUAL_SCALE + 12.0)
+	var human := (load(UNIT_MODEL_MALE) as PackedScene).instantiate() as Node3D
+	stand.add_child(human)
+	human.name = "HumanScaleReference"
+	_fit_model_to_height(human, UNIT_VISUAL_HEIGHT)
+	human.position.x = -side
+	var library := _get_unit_animation_library()
+	if library != null and library.has_animation(UNIT_DEFAULT_ANIMATION):
+		var player := AnimationPlayer.new()
+		human.add_child(player)
+		player.add_animation_library("", library)
+		player.play(UNIT_DEFAULT_ANIMATION)
+	_set_shadow_casting(stand, true)
+	_add_test_label(title, stand.position + Vector3(0, 1.0, 30.0), 20, 0.12)
+	scale_exhibits.append(stand)
+	scale_exhibit_selector.add_item(title)
+
+
+func _focus_scale_exhibit(index: int) -> void:
+	if camera == null: return
+	scale_exhibit_selector.select(index)
+	var target := Vector3.ZERO if index == 0 else scale_exhibits[index - 1].global_position
+	camera.fov = 50.0 if index == 0 else 32.0
+	camera.position = target + (Vector3(0, 420, 420) if index == 0 else Vector3(0, 90, 140))
+	camera.look_at(target + Vector3(0, 8, 0), Vector3.UP)
+	free_roam_yaw = camera.rotation.y
+	free_roam_pitch = camera.rotation.x
+	_update_ore_lod(0.3)
+
+
 func _spawn_control_test_labels() -> void:
 	var tree_labels := ["Leaf trees", "Conifers", "Snow conifers", "Palms", "Dead trees", "Snow dead trees"]
 	for index in range(tree_labels.size()):
@@ -329,11 +422,12 @@ func _spawn_control_test_labels() -> void:
 	_add_test_label("SMALL RIVER", Vector3(lerpf(-MAP_SIZE * 0.5, MAP_SIZE * 0.5, small_river_label_u), 18.0, lerpf(-MAP_SIZE * 0.5, MAP_SIZE * 0.5, river_label_v)), 18)
 
 
-func _add_test_label(text: String, position: Vector3, font_size: int = 16) -> void:
+func _add_test_label(text: String, position: Vector3, font_size: int = 16, pixel_size: float = 0.005) -> void:
 	var label := Label3D.new()
 	label.text = text
 	label.position = position
 	label.font_size = font_size
+	label.pixel_size = pixel_size
 	label.outline_size = 5
 	label.modulate = Color(0.90, 0.97, 0.91)
 	label.outline_modulate = Color(0.02, 0.06, 0.04, 0.92)

@@ -1,5 +1,7 @@
 extends Node3D
 
+var hud
+
 class HudMapPreview:
 	extends Control
 
@@ -156,15 +158,19 @@ class HudStatText:
 const MAP_SIZE := 4000.0
 const GRID_STEP := 100.0
 const TERRAIN_STEPS := 192
-const RTS_CACHE_VERSION := 52
+const RTS_CACHE_VERSION := 62
+const WetlandLayout = preload("res://scripts/battle/rts_wetland_layout.gd")
+var wetlands
+const ForestLayout = preload("res://scripts/battle/rts_forest_layout.gd")
+const TerrainDressing = preload("res://scripts/battle/terrain_dressing.gd")
+const OreVisual = preload("res://scripts/props/ore_prototype.gd")
 const MINIMAP_TEXTURE_SIZE := 160
 const WORLD_GLOBE_VIEWPORT_SIZE := Vector2i(208, 138)
 const WORLD_GLOBE_TEXTURE_SIZE := Vector2i(256, 128)
 const WORLD_GLOBE_UPDATE_INTERVAL := 0.35
 const WORLD_GLOBE_TEXTURE_VERSION := 1
 const WORLD_GLOBE_RADIUS := 1.0
-const WORLD_GLOBE_GRID_RADIUS := 1.006
-const WORLD_GLOBE_OUTLINE_RADIUS := 1.014
+const GlobeCellOverlay = preload("res://scripts/world/globe_cell_overlay.gd")
 const WORLD_GLOBE_CAMERA_DISTANCE := 2.45
 const WORLD_GLOBE_LONGITUDE_SEGMENTS := 48
 const WORLD_GLOBE_LATITUDE_SEGMENTS := 24
@@ -187,6 +193,8 @@ const UNIT_HEAD_RADIUS := 0.15
 const UNIT_MODEL_MALE := "res://assets/reference_models/base_low_poly_male_reference_ual_rigged.glb"
 const UNIT_MODEL_FEMALE := "res://assets/reference_models/base_low_poly_female_reference_ual_rigged.glb"
 const UNIT_ANIMATION_REFERENCE_MODEL := UNIT_MODEL_MALE
+const KneelingAnimation = preload("res://scripts/tools/kneeling_work_animation.gd")
+const SpawnTools = preload("res://scripts/battle/rts_spawn_tools.gd")
 const UNIT_ANIMATION_PACKS := [
 	{
 		"label": "UAL1",
@@ -232,6 +240,27 @@ const UNIT_ANIMATION_PACKS := [
 		"path": "res://assets/animations/mixamo/swimming/Treading Water.fbx",
 		"animation_name": "Mixamo_Treading_Water",
 		"loop": true,
+	},
+	{
+		"label": "Mixamo Stand",
+		"path": "res://assets/animations/mixamo/transitions/Stand.fbx",
+		"animation_name": "Mixamo_Stand",
+		"source_animation": "mixamo_com",
+		"loop": false,
+	},
+	{
+		"label": "Mixamo Standing To Crouched",
+		"path": "res://assets/animations/mixamo/transitions/Standing To Crouched.fbx",
+		"animation_name": "Mixamo_Standing_To_Crouched",
+		"source_animation": "mixamo_com",
+		"loop": false,
+	},
+	{
+		"label": "Mixamo Arm Stretching",
+		"path": "res://assets/animations/mixamo/transitions/Arm Stretching.fbx",
+		"animation_name": "Mixamo_Arm_Stretching",
+		"source_animation": "mixamo_com",
+		"loop": false,
 	},
 ]
 const UNIT_DEFAULT_ANIMATION := "Idle"
@@ -369,7 +398,8 @@ const UNIT_ARM_SWING_CROUCH := 0.07
 const UNIT_ARM_SWING_KEYS := 8
 const MIN_TREE_TO_HUMAN_HEIGHT_RATIO := 10.0
 const MAX_TREE_TO_HUMAN_HEIGHT_RATIO := 25.0
-const TERRAIN_HEIGHT_SCALE := 38.0
+const TERRAIN_HEIGHT_SCALE := 18.0
+const TERRAIN_MAX_RELIEF := 12.0
 const TERRAIN_SMOOTH_PASSES := 2
 const TERRAIN_SMOOTH_BLEND := 0.55
 const TERRAIN_BASE_HEIGHT := -1.5
@@ -382,6 +412,7 @@ const RIVER_RENDER_FULL := 0.68
 const TREE_SHORE_HEIGHT_BUFFER := 0.75
 const TREE_RIVER_NO_SPAWN_THRESHOLD := 0.045
 const TREE_RIVER_BANK_BUFFER_METERS := 150.0
+const FOREST_BANK_BUFFER := 30.0
 const TREE_RIVER_NEARBY_THRESHOLD := 0.025
 const TREE_SPACING_BUCKET_SIZE := 24.0
 const TREE_SPACING_RADIUS_RATIO := 0.15
@@ -389,6 +420,8 @@ const TREE_SPACING_RADIUS_MIN := 3.8
 const TREE_SPACING_RADIUS_MAX := 9.5
 const TREE_SPACING_TOUCH_ALLOWANCE := 0.88
 const TREE_FULL_MODEL_MAX := 2200
+const TREE_BATCH_CHUNK_SIZE := 640.0
+const FOREST_INFILL_MAX := 4200
 const TREE_FULL_MODEL_NEAR_RADIUS := 430.0
 const TREE_FULL_MODEL_GRID_BUCKET := 95.0
 const TREE_IMPOSTORS_ENABLED := false
@@ -403,11 +436,12 @@ const TREE_IMPOSTOR_FULL_LOD_SCREEN_MARGIN := 180.0
 const TREE_IMPOSTOR_FULL_LOD_DEPTH_WEIGHT := 0.00025
 const TREE_IMPOSTOR_LOD_UPDATE_INTERVAL := 0.28
 const DEAD_TREE_FREQUENCY := 25
-const TREE_SHADOW_MAX_DISTANCE := 1600.0
-const TREE_SHADOW_OPACITY := 0.56
-const TREE_SHADOW_BLUR := 2.8
-const TREE_SHADOW_BIAS := 0.08
-const TREE_SHADOW_NORMAL_BIAS := 1.6
+const TREE_SHADOW_MAX_DISTANCE := 900.0
+const TREE_SHADOW_OPACITY := 0.68
+const TREE_SHADOW_BLUR := 0.9
+const TREE_SHADOW_BIAS := 0.10
+const TREE_SHADOW_NORMAL_BIAS := 1.2
+const SUN_SHADOW_UPDATE_INTERVAL := 10.0
 const TREE_GROUND_SHADOW_SURFACE_OFFSET := 0.075
 const TREE_GROUND_SHADOW_ALPHA := 0.32
 const GRID_SURFACE_OFFSET := 0.16
@@ -501,7 +535,8 @@ const RESOURCE_RING_SURFACE_OFFSET := 0.18
 const TREE_CHOP_RANGE := 11.0
 const TREE_CHOPPED_DOWN_THRESHOLD := 3.2
 const FELLED_LOG_PROCESS_SECONDS := 2.4
-const TREE_FALL_DURATION := 2.15
+const FALLEN_TREE_SPLIT_SECONDS := 4.0
+const TREE_FALL_DURATION := 3.0
 const TREE_IMPACT_BOUNCE_DURATION := 0.55
 const TREE_IMPACT_REBOUND_RADIANS := 0.105
 const SPLIT_WOOD_PIECE_COUNT := 5
@@ -519,6 +554,11 @@ const FISH_DEPOSIT_AMOUNT := 300
 const SHALLOW_FISH_DEPOSIT_AMOUNT := 90
 const WHALE_OIL_DEPOSIT_AMOUNT := 240
 const MINERAL_DEPOSIT_SAMPLE_COUNT := 180
+const ROCKY_ORE_SAMPLE_COUNT := 360
+const ROCKY_ORE_MAX := 48
+const ROCKY_ORE_FOOTPRINT := 45.0
+const ORE_MODEL_FOOTPRINT_RADIUS := 2.1 # Covers every variant and LOD in the ore manifest.
+const ORE_BANK_CLEARANCE := 3.0
 const FISH_DEPOSIT_SAMPLE_COUNT := 260
 const SHALLOW_FISH_DEPOSIT_SAMPLE_COUNT := 300
 const WHALE_OIL_DEPOSIT_SAMPLE_COUNT := 180
@@ -619,13 +659,13 @@ const FLINT_STONE_ASSETS := [
 	"res://assets/models/details/flint_stone_01.glb",
 ]
 const ORE_DEPOSIT_ASSETS := {
-	"coal": "res://assets/models/resources/ore_coal.glb",
-	"copper": "res://assets/models/resources/ore_copper.glb",
-	"tin": "res://assets/models/resources/ore_tin.glb",
-	"iron": "res://assets/models/resources/ore_iron.glb",
-	"silver": "res://assets/models/resources/ore_silver.glb",
-	"gold_ore": "res://assets/models/resources/ore_gold.glb",
-	"uranium": "res://assets/models/resources/ore_uranium.glb",
+	"coal": "res://scenes/props/ore_prototypes/coal.tscn",
+	"copper": "res://scenes/props/ore_prototypes/copper.tscn",
+	"tin": "res://scenes/props/ore_prototypes/tin.tscn",
+	"iron": "res://scenes/props/ore_prototypes/iron.tscn",
+	"silver": "res://scenes/props/ore_prototypes/silver.tscn",
+	"gold_ore": "res://scenes/props/ore_prototypes/gold.tscn",
+	"uranium": "res://scenes/props/ore_prototypes/uranium.tscn",
 }
 const FISH_DEPOSIT_ASSETS := [
 	"res://assets/models/fish/quaternius_animated_fish_pack/fish_1.fbx",
@@ -679,9 +719,16 @@ const CARRIED_WOOD_VISUAL_LENGTH := 2.4
 var cell
 var camera: Camera3D
 var sun_light: DirectionalLight3D
+var sun_shadow_light: DirectionalLight3D
+var sun_shadow_cancel_light: DirectionalLight3D
 var night_fill_light: DirectionalLight3D
 var battle_environment: Environment
+static var terrain_detail_texture: NoiseTexture2D
 var sky_material: ShaderMaterial
+var sun_shadow_elapsed := 0.0
+var cell_shadow_sun_direction := Vector3(0.45, 0.82, 0.35).normalized()
+var cell_lighting_sun_direction := Vector3(0.45, 0.82, 0.35).normalized()
+var cell_lighting_sun_amount := 0.82
 var summary_label: HudStatText
 var resource_rail_panel: PanelContainer
 var settlement_strip_panel: PanelContainer
@@ -708,8 +755,6 @@ var world_globe_viewport: SubViewport
 var world_globe_root: Node3D
 var world_globe_scene_root: Node3D
 var world_globe_planet: MeshInstance3D
-var world_globe_grid: MeshInstance3D
-var world_globe_cell_outline: MeshInstance3D
 var world_globe_camera: Camera3D
 var world_globe_sun_light: DirectionalLight3D
 var world_globe_update_elapsed := WORLD_GLOBE_UPDATE_INTERVAL
@@ -748,6 +793,7 @@ var fish_school_elapsed := 0.0
 var resource_ring_mesh: ArrayMesh
 var resource_ring_batches_by_type: Dictionary = {}
 var resource_hover_ring: MeshInstance3D
+var hovered_tool_id := ""
 var hovered_resource = null
 var resource_hover_cursor_active := false
 var carried_resource_visuals_by_unit_id: Dictionary = {}
@@ -787,10 +833,18 @@ var tree_impostor_lod_entries: Array = []
 var active_tree_impostor_full_nodes: Dictionary = {}
 var tree_impostor_lod_root: Node3D
 var tree_impostor_lod_elapsed := 0.0
+var ore_lod_members: Array[Node3D] = []
+var ore_lod_elapsed := 0.0
 var loaded_entity_count := 0
 var full_model_entity_count := 0
 var impostor_entity_count := 0
 var rts_state_ready := false
+var navigation
+var fog_of_war
+var construction
+var wildlife
+var gameplay_props: Array = []
+var tool_pickups
 
 
 func _ready() -> void:
@@ -805,29 +859,58 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	Game.advance_battle_sun(delta)
-	_sync_sun_lighting()
+	_update_sun_lighting(delta)
 	if free_roam_enabled:
 		_update_free_roam_camera(delta)
 	else:
 		_update_rts_camera(delta)
 	if TREE_IMPOSTORS_ENABLED:
 		_update_tree_impostor_lod(delta)
+	_update_ore_lod(delta)
 	_update_unit_movement(delta)
+	if fog_of_war != null: fog_of_war.update(delta)
 	_update_unit_gather_actions(delta)
-	_update_unit_delivery_actions()
+	_update_unit_delivery_actions(delta)
+	if tool_pickups != null: tool_pickups.update(delta)
+	if construction != null: construction.update(delta)
+	if wildlife != null: wildlife.update(delta)
 	_update_falling_trees(delta)
 	_update_unit_actor_animation_queues(delta)
 	_update_carried_unit_animation_state()
 	_update_fish_school_motion(delta)
+	if wetlands != null: wetlands.update(delta)
 	_update_unit_selection_marker()
 	_update_world_globe_preview(delta)
 	_update_minimap_preview(delta)
 	_update_hud_stat_tooltip(delta)
 	_update_hovered_resource_visual()
+	if hud != null: hud.update(delta)
 
 
 func _input(event: InputEvent) -> void:
 	if camera == null:
+		return
+	if event is InputEventMouseMotion and not free_roam_enabled:
+		_update_resource_hover(event.position)
+	if not free_roam_enabled and hud != null and hud.input(event):
+		get_viewport().set_input_as_handled()
+		return
+	var jog_order := false
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and not free_roam_enabled and not _is_screen_point_in_hud(event.position) and (construction == null or construction.preview == null):
+		jog_order = event.double_click or _is_jog_move_order_click(event.position)
+		_remember_move_order_click(event.position)
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and not free_roam_enabled and tool_pickups != null and not _is_screen_point_in_hud(event.position) and (construction == null or construction.preview == null):
+		var item: Dictionary = tool_pickups.at_screen(event.position)
+		if not item.is_empty():
+			if not tool_pickups.issue_pickup(item, _valid_selected_unit_ids(), jog_order) and hud != null:
+				hud.notify("Select a person with a clear path to collect this tool.", item.center)
+			get_viewport().set_input_as_handled()
+			return
+	if not free_roam_enabled and construction != null and construction.input(event, jog_order):
+		get_viewport().set_input_as_handled()
+		return
+	if not free_roam_enabled and wildlife != null and wildlife.input(event, jog_order):
+		get_viewport().set_input_as_handled()
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -852,9 +935,6 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 
-	if event is InputEventMouseMotion and not free_roam_enabled:
-		_update_resource_hover(event.position)
-
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not free_roam_enabled:
 		if event.pressed:
 			if not _is_screen_point_in_hud(event.position):
@@ -867,9 +947,8 @@ func _input(event: InputEvent) -> void:
 			return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and not free_roam_enabled:
-		var jog_order := _is_jog_move_order_click(event.position)
 		var resource_hit = _resource_at_screen(event.position)
-		if not _is_screen_point_in_hud(event.position) and resource_hit != null and _issue_gather_order_to_selected_units(resource_hit):
+		if not _is_screen_point_in_hud(event.position) and resource_hit != null and _issue_gather_order_to_selected_units(resource_hit, jog_order):
 			_remember_move_order_click(event.position)
 			get_viewport().set_input_as_handled()
 			return
@@ -928,8 +1007,22 @@ func _build_scene() -> void:
 
 	sun_light = DirectionalLight3D.new()
 	sun_light.name = "BattleSun"
-	sun_light.shadow_enabled = true
+	sun_light.shadow_enabled = false
 	add_child(sun_light)
+	# Equal opposite lights cancel their direct diffuse contribution, leaving only
+	# the positive light's occlusion. Only this light renders a shadow map.
+	sun_shadow_light = DirectionalLight3D.new()
+	sun_shadow_light.name = "BattleSunShadows"
+	sun_shadow_cancel_light = DirectionalLight3D.new()
+	sun_shadow_cancel_light.name = "BattleSunShadowCancellation"
+	sun_shadow_cancel_light.light_negative = true
+	for light in [sun_shadow_light, sun_shadow_cancel_light]:
+		light.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_ONLY
+		light.light_specular = 0.0
+		light.light_indirect_energy = 0.0
+		light.light_volumetric_fog_energy = 0.0
+		light.light_bake_mode = Light3D.BAKE_DISABLED
+		add_child(light)
 	_configure_tree_shadow_quality()
 
 	night_fill_light = DirectionalLight3D.new()
@@ -949,10 +1042,20 @@ func _build_scene() -> void:
 	sky.sky_material = sky_material
 	battle_environment.sky = sky
 	battle_environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	battle_environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	battle_environment.tonemap_white = 2.0
+	battle_environment.fog_enabled = true
+	battle_environment.fog_density = 0.000065
+	battle_environment.fog_height_density = 0.0
+	battle_environment.fog_sky_affect = 0.0
+	battle_environment.fog_light_color = Color(0.62, 0.72, 0.81)
+	battle_environment.fog_sun_scatter = 0.10
 	world_environment.environment = battle_environment
 	add_child(world_environment)
 
+	sun_shadow_elapsed = 0.0
 	_sync_sun_lighting()
+	_sync_sun_shadow_direction()
 
 	camera = Camera3D.new()
 	camera.name = "RTSCamera"
@@ -964,18 +1067,18 @@ func _build_scene() -> void:
 
 
 func _configure_tree_shadow_quality() -> void:
-	if sun_light == null:
+	if sun_shadow_light == null:
 		return
 
-	sun_light.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
-	sun_light.directional_shadow_max_distance = TREE_SHADOW_MAX_DISTANCE
-	sun_light.directional_shadow_fade_start = 0.72
-	sun_light.directional_shadow_pancake_size = 20.0
-	sun_light.directional_shadow_blend_splits = false
-	sun_light.shadow_opacity = TREE_SHADOW_OPACITY
-	sun_light.shadow_blur = TREE_SHADOW_BLUR
-	sun_light.shadow_bias = TREE_SHADOW_BIAS
-	sun_light.shadow_normal_bias = TREE_SHADOW_NORMAL_BIAS
+	sun_shadow_light.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+	sun_shadow_light.directional_shadow_max_distance = TREE_SHADOW_MAX_DISTANCE
+	sun_shadow_light.directional_shadow_fade_start = 0.72
+	sun_shadow_light.directional_shadow_pancake_size = 20.0
+	sun_shadow_light.directional_shadow_blend_splits = false
+	sun_shadow_light.shadow_opacity = TREE_SHADOW_OPACITY
+	sun_shadow_light.shadow_blur = TREE_SHADOW_BLUR
+	sun_shadow_light.shadow_bias = TREE_SHADOW_BIAS
+	sun_shadow_light.shadow_normal_bias = TREE_SHADOW_NORMAL_BIAS
 
 
 func _build_terrain_grid_mesh() -> ArrayMesh:
@@ -1091,15 +1194,26 @@ func _spawn_starter_battle_entities() -> void:
 			0
 		))
 
+	unit_manager.free()
 	for unit in battle_units:
+		# Saves retain horizontal positions, not the height of an obsolete terrain mesh.
+		unit.position = _unit_surface_position_for_local(unit.position.x, unit.position.z)
 		_spawn_unit_from_data(unit)
 	_restore_unit_runtime_state()
+	if saved_units.is_empty() and cell != null and cell.rts_state.has("founding_clearing") and camera != null:
+		var point: Array = cell.rts_state.founding_clearing
+		var focus := Vector3(point[0], point[1], point[2])
+		camera.position = focus + Vector3(0, 130, 160)
+		camera.look_at(focus)
 
 	loaded_entity_count += battle_units.size() + battle_buildings.size()
 	full_model_entity_count += battle_units.size() + battle_buildings.size()
 
 
 func _find_initial_dry_spawn_center() -> Vector3:
+	if cell != null and cell.rts_state.has("founding_clearing"):
+		var point: Array = cell.rts_state.founding_clearing
+		return Vector3(point[0], point[1], point[2]) + Vector3(0, 0, 40)
 	var half_size := MAP_SIZE * 0.5 - 80.0
 	var step := 48.0
 	var z := 0.0
@@ -1159,6 +1273,7 @@ func _spawn_unit_from_data(unit_data) -> void:
 
 	var unit = RTSUnitActorScript.new()
 	unit.configure(unit_data)
+	unit.movement_neighbors = Callable(self, "_unit_movement_neighbors")
 	battle_entity_root.add_child(unit)
 	unit_nodes_by_id[str(unit_data.id)] = unit
 	unit_actors_by_id[str(unit_data.id)] = unit
@@ -1168,16 +1283,19 @@ func _spawn_unit_from_data(unit_data) -> void:
 		var model := (unit_resource as PackedScene).instantiate()
 		if model is Node3D:
 			var model_3d := model as Node3D
-			model_3d.name = "TposeUnit_%s" % str(unit_data.profession)
+			model_3d.name = "HumanModel"
 			unit.add_child(model_3d)
 			_fit_model_to_height(model_3d, UNIT_VISUAL_HEIGHT)
 			_apply_unit_faction_color(model_3d, str(unit_data.faction_id))
 			_set_shadow_casting(model_3d, true)
 			_attach_unit_animation_player(str(unit_data.id), model_3d)
+			unit.setup_collected_tool_visual(_find_first_skeleton(model_3d), UNIT_VISUAL_SCALE)
+			SpawnTools.spawn(self, unit)
 			return
 		model.queue_free()
 
 	_spawn_placeholder_scale_unit(unit)
+	SpawnTools.spawn(self, unit)
 
 
 func _unit_model_path(unit_id: String) -> String:
@@ -1220,6 +1338,7 @@ func _attach_unit_animation_player(unit_id: String, model_root: Node3D) -> void:
 	var library := _get_unit_animation_library()
 	if library == null or unit_animation_names.is_empty():
 		return
+
 
 	var player := AnimationPlayer.new()
 	player.name = "UnitAnimationPlayer"
@@ -1293,6 +1412,8 @@ func _get_unit_animation_library() -> AnimationLibrary:
 				continue
 			for animation_name_value in source_library.get_animation_list():
 				var source_animation_name := str(animation_name_value)
+				if source_animation_name == "RESET": continue
+				if pack.has("source_animation") and source_animation_name != str(pack.source_animation): continue
 				var animation_name := preferred_animation_name if not preferred_animation_name.is_empty() else source_animation_name
 				var source_animation := source_library.get_animation(animation_name_value)
 				var remapped_animation := (
@@ -1302,6 +1423,8 @@ func _get_unit_animation_library() -> AnimationLibrary:
 				)
 				if remapped_animation == null or remapped_animation.get_track_count() <= 0:
 					continue
+				if animation_name in ["Fixing_Kneeling", "Mixamo_Stand", "Mixamo_Standing_To_Crouched"]:
+					KneelingAnimation.preserve_vertical_motion(remapped_animation, source_animation, source_skeleton, target_skeleton, target_skeleton_path)
 				var trim_tail := float(pack.get("trim_tail", 0.0))
 				if trim_tail > 0.0 and remapped_animation.length > trim_tail:
 					remapped_animation = _trim_unit_animation_tail(remapped_animation, trim_tail)
@@ -1312,6 +1435,7 @@ func _get_unit_animation_library() -> AnimationLibrary:
 				unit_animation_names.append(library_animation_name)
 
 		source_root.queue_free()
+	KneelingAnimation.add_phases(library, unit_animation_names)
 	target_root.queue_free()
 	if unit_animation_names.is_empty():
 		unit_animation_status = "No compatible animation tracks found."
@@ -1772,7 +1896,7 @@ func _unit_at_screen(screen_position: Vector2) -> Dictionary:
 	for unit_data in battle_units:
 		var unit_id := str(unit_data.id)
 		var unit_node := unit_nodes_by_id.get(unit_id) as Node3D
-		if unit_node == null:
+		if unit_node == null or not unit_node.visible or not unit_data.is_alive():
 			continue
 
 		var world_center := unit_node.global_position + Vector3(0.0, UNIT_VISUAL_HEIGHT * 0.48, 0.0)
@@ -1795,6 +1919,7 @@ func _unit_at_screen(screen_position: Vector2) -> Dictionary:
 		"id": best_unit_id,
 		"data": best_unit_data,
 		"node": best_unit_node,
+		"screen_distance_sq": best_distance_sq,
 	}
 
 
@@ -1825,9 +1950,18 @@ func _resource_at_screen(screen_position: Vector2):
 
 
 func _update_resource_hover(screen_position: Vector2) -> void:
-	if _is_screen_point_in_hud(screen_position):
+	if free_roam_enabled or _is_screen_point_in_hud(screen_position) or (construction != null and construction.preview != null):
 		_clear_resource_hover()
 		return
+	var item: Dictionary = tool_pickups.at_screen(screen_position) if tool_pickups != null else {}
+	if not item.is_empty():
+		hovered_resource = null
+		hovered_tool_id = str(item.id)
+		_ensure_resource_hover_ring()
+		_sync_unit_selection_cursor()
+		_update_hovered_resource_visual()
+		return
+	if not hovered_tool_id.is_empty(): _clear_resource_hover()
 	var resource = _resource_at_screen(screen_position)
 	if resource == hovered_resource:
 		return
@@ -1841,6 +1975,16 @@ func _update_resource_hover(screen_position: Vector2) -> void:
 
 
 func _update_hovered_resource_visual() -> void:
+	if not hovered_tool_id.is_empty():
+		if free_roam_enabled or tool_pickups == null or not tool_pickups.items.has(hovered_tool_id):
+			_clear_resource_hover()
+			return
+		var item: Dictionary = tool_pickups.items[hovered_tool_id]
+		_ensure_resource_hover_ring()
+		resource_hover_ring.position = _ground_position_for_local(item.center.x, item.center.z) + Vector3(0, RESOURCE_RING_SURFACE_OFFSET + 0.04, 0)
+		resource_hover_ring.scale = Vector3(item.radius, 1, item.radius)
+		resource_hover_ring.visible = true
+		return
 	if hovered_resource != null and (not hovered_resource.is_available() or free_roam_enabled):
 		_clear_resource_hover()
 		return
@@ -1875,6 +2019,8 @@ func _resource_hover_ring_material() -> StandardMaterial3D:
 
 func _clear_resource_hover() -> void:
 	hovered_resource = null
+	hovered_tool_id = ""
+	Game.set_thing_selected_cursor_active(not _valid_selected_unit_ids().is_empty())
 	if resource_hover_ring != null:
 		resource_hover_ring.visible = false
 	if resource_hover_cursor_active:
@@ -1883,7 +2029,12 @@ func _clear_resource_hover() -> void:
 
 
 func _select_unit_from_screen(screen_position: Vector2, additive: bool = false) -> void:
+	if wildlife != null and wildlife.select_at(screen_position): return
+	if construction != null and construction.select_at(screen_position): return
 	var hit := _unit_at_screen(screen_position)
+	if construction != null:
+		construction.selected_id = ""
+		construction._refresh_panel()
 	if hit.is_empty():
 		if not additive:
 			_clear_unit_selection()
@@ -1944,13 +2095,17 @@ func _update_drag_selection_overlay(visible: bool) -> void:
 func _select_units_in_screen_rect(start_position: Vector2, end_position: Vector2, additive: bool = false) -> void:
 	if camera == null:
 		return
+	if construction != null: construction.selected_id = ""
+	if wildlife != null:
+		wildlife.selected_id = ""
+		wildlife.follow_mode = false
 
 	var selection_rect := _screen_rect_from_points(start_position, end_position)
 	var unit_ids: Array = []
 	for unit_data in battle_units:
 		var unit_id := str(unit_data.id)
 		var unit_node := unit_nodes_by_id.get(unit_id) as Node3D
-		if unit_node == null:
+		if unit_node == null or not unit_node.visible:
 			continue
 
 		var world_center := unit_node.global_position + Vector3(0.0, UNIT_VISUAL_HEIGHT * 0.48, 0.0)
@@ -1984,6 +2139,7 @@ func _unit_data_by_id(unit_id: String):
 
 
 func _set_selected_unit(unit_id: String, unit_data, unit_node: Node3D) -> void:
+	if unit_node == null or not unit_node.visible: return
 	selected_unit_ids.clear()
 	selected_unit_ids.append(unit_id)
 	selected_unit_id = unit_id
@@ -2001,9 +2157,14 @@ func _set_selected_units(unit_ids: Array) -> void:
 	selected_unit_ids.clear()
 	for unit_id in unit_ids:
 		var id_text := str(unit_id)
+		var candidate = unit_nodes_by_id.get(id_text)
+		if candidate == null or not candidate.visible: continue
 		if not selected_unit_ids.has(id_text):
 			selected_unit_ids.append(id_text)
 
+	if selected_unit_ids.is_empty():
+		_clear_unit_selection()
+		return
 	selected_unit_id = str(selected_unit_ids[0])
 	selected_unit_data = _unit_data_by_id(selected_unit_id)
 	selected_unit_node = unit_nodes_by_id.get(selected_unit_id) as Node3D
@@ -2014,6 +2175,8 @@ func _set_selected_units(unit_ids: Array) -> void:
 func _add_selected_units(unit_ids: Array) -> void:
 	for unit_id in unit_ids:
 		var id_text := str(unit_id)
+		var candidate = unit_nodes_by_id.get(id_text)
+		if candidate == null or not candidate.visible: continue
 		if id_text.is_empty() or selected_unit_ids.has(id_text):
 			continue
 		selected_unit_ids.append(id_text)
@@ -2022,6 +2185,9 @@ func _add_selected_units(unit_ids: Array) -> void:
 		_clear_unit_selection()
 		return
 
+	if selected_unit_ids.is_empty():
+		_clear_unit_selection()
+		return
 	selected_unit_id = str(selected_unit_ids[0])
 	selected_unit_data = _unit_data_by_id(selected_unit_id)
 	selected_unit_node = unit_nodes_by_id.get(selected_unit_id) as Node3D
@@ -2030,6 +2196,8 @@ func _add_selected_units(unit_ids: Array) -> void:
 
 
 func _toggle_unit_selection(unit_id: String) -> void:
+	var candidate = unit_nodes_by_id.get(unit_id)
+	if candidate == null or not candidate.visible: return
 	if unit_id.is_empty():
 		return
 
@@ -2042,6 +2210,9 @@ func _toggle_unit_selection(unit_id: String) -> void:
 		_clear_unit_selection()
 		return
 
+	if selected_unit_ids.is_empty():
+		_clear_unit_selection()
+		return
 	selected_unit_id = str(selected_unit_ids[0])
 	selected_unit_data = _unit_data_by_id(selected_unit_id)
 	selected_unit_node = unit_nodes_by_id.get(selected_unit_id) as Node3D
@@ -2060,10 +2231,11 @@ func _clear_unit_selection() -> void:
 
 func _sync_unit_selection_cursor() -> void:
 	var has_selected_human := not _valid_selected_unit_ids().is_empty()
-	Game.set_thing_selected_cursor_active(has_selected_human)
-	if hovered_resource == null:
+	var has_hovered_tool := not hovered_tool_id.is_empty()
+	Game.set_thing_selected_cursor_active(has_selected_human or has_hovered_tool)
+	if hovered_resource == null and not has_hovered_tool:
 		return
-	if has_selected_human:
+	if has_selected_human or has_hovered_tool:
 		resource_hover_cursor_active = true
 		Game.set_interact_order_cursor_active(true)
 	elif resource_hover_cursor_active:
@@ -2079,7 +2251,7 @@ func _update_unit_selection_marker() -> void:
 	for unit_id_value in selected_unit_ids:
 		var unit_id := str(unit_id_value)
 		var unit_node := unit_nodes_by_id.get(unit_id) as Node3D
-		if unit_node == null or not is_instance_valid(unit_node):
+		if unit_node == null or not is_instance_valid(unit_node) or not unit_node.visible:
 			continue
 
 		var marker := _selection_marker_for_unit_id(unit_id)
@@ -2127,7 +2299,7 @@ func _update_unit_visibility_markers() -> void:
 		for unit_data in battle_units:
 			var unit_id := str(unit_data.id)
 			var unit_node := unit_nodes_by_id.get(unit_id) as Node3D
-			if unit_node == null or not is_instance_valid(unit_node):
+			if unit_node == null or not is_instance_valid(unit_node) or not unit_node.visible:
 				continue
 
 			var marker := _visibility_marker_for_unit_id(unit_id)
@@ -2175,7 +2347,7 @@ func _update_move_order_markers() -> void:
 			continue
 
 		var unit_node := unit_nodes_by_id.get(unit_id) as Node3D
-		if unit_node == null or not is_instance_valid(unit_node):
+		if unit_node == null or not is_instance_valid(unit_node) or not unit_node.visible:
 			continue
 
 		var target: Vector3 = actor.move_order_target()
@@ -2299,7 +2471,7 @@ func _remember_move_order_click(screen_position: Vector2) -> void:
 	last_move_order_click_position = screen_position
 
 
-func _issue_gather_order_to_selected_units(resource) -> bool:
+func _issue_gather_order_to_selected_units(resource, jog_order: bool = false) -> bool:
 	var selected_ids := _valid_selected_unit_ids()
 	if selected_ids.is_empty() or resource == null or not resource.is_available():
 		return false
@@ -2321,9 +2493,11 @@ func _issue_gather_order_to_selected_units(resource) -> bool:
 
 		var action = _make_gather_action_for_unit(actor, resource, index, gather_ids.size())
 		actor.issue_gather_action(action)
-		actor.issue_move_order(_make_unit_move_order(action.approach_position, false), false)
-		if not move_animation.is_empty():
+		if action.has_interaction_slot:
+			actor.issue_move_order(_make_unit_move_order(action.approach_position, false), false)
+		if action.has_interaction_slot and not move_animation.is_empty():
 			_play_unit_animation(unit_id, move_animation, UNIT_WALK_ANIMATION_SPEED)
+		if jog_order: _sprint_task_approach(actor)
 
 	Game.debug_event("gather_order units=%d target=%s type=%s" % [gather_ids.size(), str(resource.id), str(resource.resource_type)])
 	_update_unit_selection_marker()
@@ -2331,26 +2505,76 @@ func _issue_gather_order_to_selected_units(resource) -> bool:
 	return true
 
 
-func _make_gather_action_for_unit(actor, resource, unit_index: int, unit_count: int):
-	var target_position: Vector3 = resource.world_position
-	var direction := Vector3(actor.position.x - target_position.x, 0.0, actor.position.z - target_position.z)
-	if direction.length_squared() <= 0.001:
-		var angle: float = TAU * float(unit_index) / float(max(1, unit_count))
-		direction = Vector3(cos(angle), 0.0, sin(angle))
-	direction = direction.normalized()
-	var side_angle: float = (float(unit_index) - float(unit_count - 1) * 0.5) * 0.18
-	direction = direction.rotated(Vector3.UP, side_angle)
-	var approach_distance: float = max(2.4, float(resource.gather_range) * 0.70)
-	var approach := _ground_position_for_local(target_position.x + direction.x * approach_distance, target_position.z + direction.z * approach_distance)
-	return RTSUnitGatherActionScript.new(
-		str(resource.id),
-		str(resource.resource_type),
-		target_position,
-		approach,
-		float(resource.work_required),
-		int(resource.harvest_amount),
-		float(resource.gather_range)
-	)
+func _make_gather_action_for_unit(actor, resource, _unit_index: int, _unit_count: int):
+	var chosen := _resource_approach(resource, actor)
+	var action = RTSUnitGatherActionScript.new(str(resource.id), str(resource.resource_type), resource.world_position,
+		chosen.get("position", actor.position), float(resource.work_required), int(resource.harvest_amount), float(resource.gather_range))
+	action.has_interaction_slot = not chosen.is_empty()
+	return action
+
+func _resource_approach(resource, actor) -> Dictionary:
+	var radius := maxf(2.4, float(resource.gather_range) - 0.5)
+	var count := maxi(1, floori(TAU * radius / 6.5))
+	var points: Array[Vector3] = []
+	for index in range(count):
+		var angle := TAU * index / count
+		points.append(_ground_position_for_local(resource.world_position.x + cos(angle) * radius, resource.world_position.z + sin(angle) * radius))
+	points.sort_custom(func(a: Vector3, b: Vector3): return a.distance_squared_to(actor.position) < b.distance_squared_to(actor.position))
+	for point in points:
+		if not _unit_position_available(point, actor.unit_id): continue
+		if navigation != null:
+			if not navigation.clear(point) or not navigation.segment_clear(point, resource.world_position, 2.0, resource.id): continue
+			if navigation.route(actor.position, point).is_empty(): continue
+		return {"position": point}
+	return {}
+
+# Reservations belong to actions, including workers already at their spot.
+# Passing people are handled by movement; they do not invalidate a reservation.
+func _unit_slot_reserved(point: Vector3, ignore_id: String) -> bool:
+	for actor in unit_actors_by_id.values():
+		if actor == null or not is_instance_valid(actor) or actor.unit_id == ignore_id or not actor.unit_data.is_alive(): continue
+		var reserved: Vector3
+		if actor.has_delivery_action() and actor.delivery_action().has_interaction_slot:
+			reserved = actor.delivery_action().target_position
+		elif actor.has_gather_action() and actor.gather_action().has_interaction_slot:
+			reserved = actor.gather_action().approach_position
+		elif actor.has_move_order(): reserved = actor.move_order_target()
+		else: continue
+		if Vector2(reserved.x - point.x, reserved.z - point.z).length() < RTSUnitActorScript.PERSONAL_SPACE + 0.5: return true
+	if construction != null:
+		for id in construction.jobs:
+			if id == ignore_id: continue
+			var actor = unit_actors_by_id.get(id)
+			if actor == null or not actor.unit_data.is_alive() or actor.action_revision != construction.jobs[id].revision: continue
+			var target: Vector3 = construction.jobs[id].target
+			if Vector2(target.x - point.x, target.z - point.z).length() < RTSUnitActorScript.PERSONAL_SPACE + 0.5: return true
+	return false
+
+func _wait_for_interaction_slot(actor) -> void:
+	actor.clear_move_order()
+	actor.finish_kneeling_work()
+	var candidates := UNIT_CARRY_IDLE_ANIMATION_CANDIDATES if actor.carried_total() > 0 else UNIT_IDLE_ANIMATION_CANDIDATES
+	actor.play_animation(_first_available_unit_animation(candidates))
+
+func _update_gather_slot(actor, resource, delta: float) -> bool:
+	var action = actor.gather_action()
+	action.slot_retry_remaining = maxf(0.0, action.slot_retry_remaining - delta)
+	var blocked: bool = not action.has_interaction_slot or _unit_slot_reserved(action.approach_position, actor.unit_id) or actor.people_wait_time >= 0.8
+	if not blocked: return true
+	if action.slot_retry_remaining > 0.0: return action.has_interaction_slot
+	action.slot_retry_remaining = 0.75
+	var chosen := _resource_approach(resource, actor)
+	if chosen.is_empty():
+		action.has_interaction_slot = false
+		_wait_for_interaction_slot(actor)
+		return false
+	var point: Vector3 = chosen.position
+	action.has_interaction_slot = true
+	if point.distance_to(action.approach_position) > 0.1 or not actor.has_move_order():
+		action.approach_position = point
+		actor.issue_move_order(_make_unit_move_order(point, false), false)
+		actor.play_animation(_first_available_unit_animation(UNIT_CARRY_WALK_ANIMATION_CANDIDATES if actor.carried_total() > 0 else UNIT_WALK_ANIMATION_CANDIDATES))
+	return true
 
 
 func _selection_has_carried_resources(unit_ids: Array) -> bool:
@@ -2363,6 +2587,7 @@ func _selection_has_carried_resources(unit_ids: Array) -> bool:
 
 func _issue_move_order_to_selected_units(screen_position: Vector2, jog_order: bool = false) -> bool:
 	var selected_ids := _valid_selected_unit_ids()
+	if wildlife != null: wildlife.selected_id = ""
 	if selected_ids.is_empty():
 		return false
 
@@ -2383,12 +2608,13 @@ func _issue_move_order_to_selected_units(screen_position: Vector2, jog_order: bo
 		if actor == null or not is_instance_valid(actor):
 			continue
 		var is_carrying: bool = actor.carried_total() > 0
-		var unit_jog_order: bool = jog_order and not is_carrying
+		var unit_jog_order: bool = jog_order
 		actor.issue_move_order(_make_unit_move_order(formation_targets[unit_id], unit_jog_order))
 		var unit_move_animation := jog_animation if unit_jog_order else walk_animation
 		var animation_speed := 1.0 if unit_jog_order else UNIT_WALK_ANIMATION_SPEED
 		if is_carrying and not carry_walk_animation.is_empty():
 			unit_move_animation = carry_walk_animation
+			if jog_order: animation_speed = UNIT_WALK_ANIMATION_SPEED * UNIT_JOG_SPEED_MULTIPLIER / UNIT_WALK_SPEED_MULTIPLIER
 		if unit_jog_order:
 			jogging_unit_count += 1
 		if not unit_move_animation.is_empty():
@@ -2399,6 +2625,17 @@ func _issue_move_order_to_selected_units(screen_position: Vector2, jog_order: bo
 	_update_unit_selection_marker()
 	_refresh_overlay()
 	return true
+
+
+# Upgrade only the approach; keep route, task revision, reservation and work progress.
+func _sprint_task_approach(actor) -> void:
+	if not actor.has_move_order(): return
+	actor.current_order.gait = RTSUnitMoveOrderScript.GAIT_JOG
+	actor.current_order.speed_multiplier = UNIT_JOG_SPEED_MULTIPLIER
+	var carrying: bool = actor.carried_total() > 0
+	actor.current_order.animation_speed = UNIT_WALK_ANIMATION_SPEED * UNIT_JOG_SPEED_MULTIPLIER / UNIT_WALK_SPEED_MULTIPLIER if carrying else 1.0
+	var clip := _first_available_unit_animation(UNIT_CARRY_WALK_ANIMATION_CANDIDATES if carrying else UNIT_JOG_ANIMATION_CANDIDATES)
+	if not clip.is_empty(): _play_unit_animation(actor.unit_id, clip, actor.current_order.animation_speed)
 
 
 func _make_unit_move_order(target: Vector3, jog_order: bool):
@@ -2416,12 +2653,33 @@ func _screen_to_ground_position(screen_position: Vector2) -> Dictionary:
 
 	var origin: Vector3 = camera.project_ray_origin(screen_position)
 	var direction: Vector3 = camera.project_ray_normal(screen_position)
-	if abs(direction.y) <= 0.0001:
+	if direction.y >= -0.0001:
 		return {}
 
 	var distance_to_plane: float = -origin.y / direction.y
 	if distance_to_plane < 0.0:
 		return {}
+
+	if not terrain_surface_heights.is_empty():
+		var flat_speed := Vector2(direction.x, direction.z).length()
+		var ray_step := MAP_SIZE / float(TERRAIN_STEPS) * 0.5 / maxf(flat_speed, 0.05)
+		var end_distance := minf(camera.far, (origin.y + 8.0) / -direction.y)
+		var previous_distance := 0.0
+		# Find the first surface crossing, then refine only that short interval.
+		for step in range(1, ceili(end_distance / ray_step) + 1):
+			var ray_distance := minf(end_distance, step * ray_step)
+			var point := origin + direction * ray_distance
+			if absf(point.x) <= MAP_SIZE * 0.5 and absf(point.z) <= MAP_SIZE * 0.5 and point.y <= _cached_pick_surface_height(point):
+				for refinement in range(12):
+					var middle := (previous_distance + ray_distance) * 0.5
+					var midpoint := origin + direction * middle
+					if midpoint.y > _cached_pick_surface_height(midpoint):
+						previous_distance = middle
+					else:
+						ray_distance = middle
+				var hit := origin + direction * ray_distance
+				return {"position": _ground_position_for_local(hit.x, hit.z)}
+			previous_distance = ray_distance
 
 	var approximate_hit: Vector3 = origin + direction * distance_to_plane
 	var half_size := MAP_SIZE * 0.5
@@ -2432,13 +2690,19 @@ func _screen_to_ground_position(screen_position: Vector2) -> Dictionary:
 	}
 
 
+func _cached_pick_surface_height(point: Vector3) -> float:
+	return maxf(WATER_SURFACE_HEIGHT, _height_from_smoothed_terrain_at_uv(
+		point.x / MAP_SIZE + 0.5, point.z / MAP_SIZE + 0.5,
+		terrain_surface_heights, terrain_surface_row_length))
+
+
 func _valid_selected_unit_ids() -> Array:
 	var unit_ids: Array = []
 	for unit_id_value in selected_unit_ids:
 		var unit_id := str(unit_id_value)
 		var unit_node := unit_nodes_by_id.get(unit_id) as Node3D
 		var unit_data = _unit_data_by_id(unit_id)
-		if unit_node == null or not is_instance_valid(unit_node) or unit_data == null:
+		if unit_node == null or not is_instance_valid(unit_node) or unit_data == null or not unit_data.is_alive() or unit_data.faction_id != "player":
 			continue
 		unit_ids.append(unit_id)
 	return unit_ids
@@ -2473,7 +2737,7 @@ func _formation_targets_for_units(unit_ids: Array, center: Vector3) -> Dictionar
 	for unit_id_value in unit_ids:
 		var unit_id := str(unit_id_value)
 		var unit_node := unit_nodes_by_id.get(unit_id) as Node3D
-		if unit_node == null:
+		if unit_node == null or not unit_node.visible:
 			continue
 		sorted_entries.append({
 			"id": unit_id,
@@ -2502,7 +2766,7 @@ func _selected_units_center(unit_ids: Array) -> Vector3:
 	var count := 0
 	for unit_id_value in unit_ids:
 		var unit_node := unit_nodes_by_id.get(str(unit_id_value)) as Node3D
-		if unit_node == null:
+		if unit_node == null or not unit_node.visible:
 			continue
 		center += unit_node.global_position
 		count += 1
@@ -2531,6 +2795,20 @@ func _camera_flat_right() -> Vector3:
 	return right.normalized()
 
 
+func _unit_movement_neighbors(point: Vector3, radius: float) -> Array:
+	var result := []
+	for actor in unit_actors_by_id.values():
+		if actor == null or not is_instance_valid(actor) or not actor.unit_data.is_alive(): continue
+		if Vector2(actor.position.x - point.x, actor.position.z - point.z).length() <= radius:
+			result.append(actor)
+	return result
+
+func _unit_position_available(point: Vector3, ignore_id: String = "") -> bool:
+	if _unit_slot_reserved(point, ignore_id): return false
+	for actor in _unit_movement_neighbors(point, RTSUnitActorScript.PERSONAL_SPACE + 0.5):
+		if actor.unit_id != ignore_id: return false
+	return true
+
 func _update_unit_movement(delta: float) -> void:
 	if unit_actors_by_id.is_empty():
 		return
@@ -2548,13 +2826,29 @@ func _update_unit_movement(delta: float) -> void:
 		var actor = unit_actors_by_id.get(unit_id)
 		if actor == null or not is_instance_valid(actor):
 			continue
+		if not actor.unit_data.is_alive():
+			actor.stop()
+			actor.visible = false
+			continue
+		actor.movement_neighbors = Callable(self, "_unit_movement_neighbors")
+		actor.recover_personal_space(surface_position_provider)
 		var was_swimming := bool(actor.get_meta("is_swimming", false))
 		if actor.has_move_order():
 			var move_gait := str(actor.current_order.gait)
 			var is_carrying: bool = actor.carried_total() > 0
+			var was_blocked := bool(actor.get_meta("route_blocked", false)) or bool(actor.get_meta("people_waiting", false))
 			var arrived: bool = actor.update_movement(delta, surface_position_provider, UNIT_MOVE_ARRIVAL_RADIUS, "")
 			var is_swimming := _is_unit_swimming_at(actor.position.x, actor.position.z)
 			actor.set_meta("is_swimming", is_swimming)
+			if bool(actor.get_meta("people_waiting", false)):
+				if actor.people_wait_time >= 0.2: actor.play_animation(carry_idle_animation if is_carrying else idle_animation)
+				continue
+			if bool(actor.get_meta("route_blocked", false)):
+				actor.play_animation(carry_idle_animation if is_carrying else idle_animation)
+				continue
+			if was_blocked and not arrived:
+				var resumed := carry_walk_animation if is_carrying else (jog_animation if move_gait == RTSUnitMoveOrderScript.GAIT_JOG else walk_animation)
+				actor.play_animation(resumed, 0.18, actor.current_order.animation_speed)
 			if is_swimming:
 				var water_animation := tread_animation if arrived else swim_animation
 				if arrived:
@@ -2629,14 +2923,18 @@ func _update_unit_gather_actions(delta: float) -> void:
 		if actor == null or not is_instance_valid(actor) or not actor.has_gather_action():
 			continue
 
+		if actor.has_move_order() and bool(actor.get_meta("route_blocked", false)): continue
 		var action = actor.gather_action()
 		var resource = resource_nodes_by_id.get(str(action.target_id))
+		if resource != null and resource.stage == RTSResourceNodeScript.STAGE_FALLING_TREE:
+			continue
 		if resource == null or not resource.is_available():
-			actor.clear_gather_action()
+			actor.stop()
 			continue
 
+		if not _update_gather_slot(actor, resource, delta): continue
 		var distance := Vector2(actor.position.x, actor.position.z).distance_to(Vector2(resource.world_position.x, resource.world_position.z))
-		if distance > float(action.range):
+		if distance > float(action.range) or actor.position.distance_to(action.approach_position) > 0.3:
 			if not actor.has_move_order():
 				actor.issue_move_order(_make_unit_move_order(action.approach_position, false), false)
 				var move_animation := carry_walk_animation if actor.carried_total() > 0 and not carry_walk_animation.is_empty() else _first_available_unit_animation(UNIT_WALK_ANIMATION_CANDIDATES)
@@ -2644,15 +2942,23 @@ func _update_unit_gather_actions(delta: float) -> void:
 					_play_unit_animation(unit_id, move_animation, UNIT_WALK_ANIMATION_SPEED)
 			continue
 
+		if navigation != null and not navigation.segment_clear(actor.position, resource.world_position, 2.0, str(resource.id)):
+			actor.stop()
+			continue
 		actor.clear_move_order()
 		actor.face_position(resource.world_position)
-		var work_animation := chop_animation if str(resource.resource_type) == "wood" else pickup_animation
-		if not work_animation.is_empty():
-			_play_unit_animation(unit_id, work_animation, 1.0)
+		var standing_tree := str(resource.stage) == RTSResourceNodeScript.STAGE_STANDING_TREE
+		var work_delta := delta
+		if standing_tree:
+			if not chop_animation.is_empty(): _play_unit_animation(unit_id, chop_animation, 1.0)
+		else:
+			work_delta = actor.work_while_kneeling(delta, "gather:" + str(resource.id))
 		var work_rate: float = TREE_CHOP_WORK_RATE * max(0.5, float(actor.unit_data.equipment_quality) if actor.unit_data != null else 1.0)
-		if resource.add_work(delta * work_rate):
+		if resource.add_work(work_delta * work_rate):
 			if str(resource.stage) == RTSResourceNodeScript.STAGE_STANDING_TREE:
 				_fell_tree_resource(resource)
+			elif resource.stage == RTSResourceNodeScript.STAGE_FALLEN_TREE:
+				_split_fallen_tree_resource(resource)
 			else:
 				_complete_gather_action(actor, action, resource, pickup_animation, carry_idle_animation, carry_walk_animation)
 
@@ -2668,14 +2974,17 @@ func _complete_gather_action(actor, action, resource, pickup_animation: String, 
 			_sync_split_wood_piece_visibility(resource)
 	if resource.depleted:
 		resource.hide_visual()
+		if navigation != null: navigation.remove_obstacle(str(resource.id))
 	actor.clear_gather_action()
+	var was_kneeling: bool = actor.kneeling_phase != ""
+	actor.finish_kneeling_work()
 	var delivery_started := _start_delivery_if_available(actor)
-	if not pickup_animation.is_empty():
+	if not was_kneeling and not pickup_animation.is_empty():
 		actor.play_animation(pickup_animation, 0.12, 1.0)
 	if actor.carried_total() > 0:
 		var next_animation := carry_walk_animation if delivery_started else carry_idle_animation
 		if not next_animation.is_empty():
-			actor.queue_animation(next_animation, 0.55, 0.18, 1.0)
+			actor.queue_animation(next_animation, actor.kneeling_remaining + 0.05 if was_kneeling else 0.55, 0.18, 1.0)
 	Game.debug_event("resource_gathered unit=%s type=%s amount=%d remaining=%d hp=%d/%d" % [
 		str(actor.unit_id),
 		str(action.resource_type),
@@ -2691,33 +3000,38 @@ func _fell_tree_resource(resource) -> void:
 	resource.hide_visual(false)
 	resource.set_visual_batches([], -1)
 	resource.interaction_locked = true
+	resource.stage = RTSResourceNodeScript.STAGE_FALLING_TREE
 	resource.show_ring = false
 	resource.work_progress = 0.0
-	_clear_gather_actions_for_resource(resource)
+	_pause_gather_actions_for_tree_fall(resource)
 	var falling_visual := _spawn_falling_tree_visual(resource)
 	if falling_visual == null:
 		_complete_tree_fall(resource)
 		return
-	var fall_sign := -1.0 if (str(resource.id).hash() & 1) == 0 else 1.0
+	var fall_sign := _tree_fall_sign(resource)
 	resource.set_meta("tree_fall_sign", fall_sign)
 	falling_tree_animations.append({
 		"resource": resource,
 		"node": falling_visual,
 		"elapsed": 0.0,
 		"fall_sign": fall_sign,
+		"target_angle": _tree_landing_angle(falling_visual, fall_sign),
 	})
 	_rebuild_resource_ring_batches()
 	Game.debug_event("tree_fall_started target=%s" % str(resource.id))
 
 
-func _clear_gather_actions_for_resource(resource) -> void:
+func _pause_gather_actions_for_tree_fall(resource) -> void:
 	for actor_value in unit_actors_by_id.values():
 		var actor = actor_value
 		if actor == null or not is_instance_valid(actor) or not actor.has_gather_action():
 			continue
 		var action = actor.gather_action()
 		if str(action.target_id) == str(resource.id):
-			actor.clear_gather_action()
+			actor.clear_move_order()
+			actor.queued_animation = ""
+			actor.finish_kneeling_work()
+			actor.play_animation("Idle")
 
 
 func _spawn_falling_tree_visual(resource) -> Node3D:
@@ -2747,6 +3061,41 @@ func _spawn_falling_tree_visual(resource) -> Node3D:
 	return pivot
 
 
+func _tree_landing_angle(pivot: Node3D, fall_sign: float) -> float:
+	# Test actual mesh vertices: a whole-tree box includes empty space below the crown.
+	var points: Array[Vector3] = []
+	_collect_tree_contact_points(pivot, Transform3D.IDENTITY, points)
+	var tree_height := 0.0
+	for point in points: tree_height = maxf(tree_height, point.y)
+	var low := 0.0
+	var high := PI * 0.5
+	var yaw := Basis(Vector3.UP, pivot.rotation.y)
+	for iteration in range(12):
+		var angle := (low + high) * 0.5
+		var tilt := yaw * Basis(Vector3.BACK, fall_sign * angle)
+		var touches := false
+		for point in points:
+			# The cut base is the hinge; allow its small cross-section into the soil.
+			if point.y < tree_height * 0.08: continue
+			var world_point: Vector3 = pivot.position + tilt * point
+			if world_point.y < _terrain_surface_height_for_local(world_point.x, world_point.z):
+				touches = true
+				break
+		if touches: high = angle
+		else: low = angle
+	return fall_sign * low
+
+
+func _collect_tree_contact_points(node: Node3D, relative: Transform3D, points: Array[Vector3]) -> void:
+	if node is MeshInstance3D and node.mesh != null:
+		for surface in range(node.mesh.get_surface_count()):
+			var arrays: Array = node.mesh.surface_get_arrays(surface)
+			for vertex in arrays[Mesh.ARRAY_VERTEX]: points.append(relative * vertex)
+	for child in node.get_children():
+		if child is Node3D:
+			_collect_tree_contact_points(child, relative * child.transform, points)
+
+
 func _update_falling_trees(delta: float) -> void:
 	for index in range(falling_tree_animations.size() - 1, -1, -1):
 		var fall := falling_tree_animations[index] as Dictionary
@@ -2755,19 +3104,19 @@ func _update_falling_trees(delta: float) -> void:
 		var elapsed := float(fall.get("elapsed", 0.0)) + maxf(0.0, delta)
 		fall["elapsed"] = elapsed
 		var fall_sign := float(fall.get("fall_sign", 1.0))
-		var target_angle := fall_sign * PI * 0.5
+		var target_angle := float(fall.get("target_angle", fall_sign * PI * 0.5))
 		if pivot != null and is_instance_valid(pivot):
 			if elapsed < TREE_FALL_DURATION:
 				var fall_ratio := clampf(elapsed / TREE_FALL_DURATION, 0.0, 1.0)
-				var eased_fall := 1.0 - pow(1.0 - fall_ratio, 3.0)
+				var eased_fall := pow(fall_ratio, 2.6)
 				pivot.rotation.z = target_angle * eased_fall
 			else:
 				var bounce_ratio := clampf((elapsed - TREE_FALL_DURATION) / TREE_IMPACT_BOUNCE_DURATION, 0.0, 1.0)
 				pivot.rotation.z = target_angle - fall_sign * sin(bounce_ratio * PI) * TREE_IMPACT_REBOUND_RADIANS * (1.0 - bounce_ratio * 0.35)
 		if elapsed < TREE_FALL_DURATION + TREE_IMPACT_BOUNCE_DURATION:
 			continue
-		if pivot != null and is_instance_valid(pivot):
-			pivot.queue_free()
+		if resource != null and pivot != null and is_instance_valid(pivot):
+			resource.visual_node = pivot
 		_complete_tree_fall(resource)
 		falling_tree_animations.remove_at(index)
 
@@ -2775,14 +3124,33 @@ func _update_falling_trees(delta: float) -> void:
 func _complete_tree_fall(resource) -> void:
 	if resource == null:
 		return
-	resource.transition_to_felled_log(FELLED_LOG_PROCESS_SECONDS)
+	resource.stage = RTSResourceNodeScript.STAGE_FALLEN_TREE
+	resource.work_required = FALLEN_TREE_SPLIT_SECONDS
+	resource.work_progress = 0.0
 	resource.interaction_locked = false
-	var tree_length := _tree_base_height_for_asset(str(resource.asset_path)) * float(resource.scale_value)
-	resource.visual_radius = max(4.5, tree_length * 0.48)
+	resource.show_ring = true
 	resource.selection_height = max(1.4, float(resource.scale_value) * 1.1)
-	resource.visual_node = _spawn_felled_resource_visual(resource)
+	if resource.visual_node == null or not is_instance_valid(resource.visual_node) or not resource.visual_node.visible:
+		resource.visual_node = _spawn_falling_tree_visual(resource)
+		if resource.visual_node != null:
+			resource.visual_node.rotation.z = _tree_landing_angle(resource.visual_node, _tree_fall_sign(resource))
+	_reset_gather_actions_for_felled_log(resource)
 	_rebuild_resource_ring_batches()
-	Game.debug_event("tree_felled target=%s pieces=%d" % [str(resource.id), SPLIT_WOOD_PIECE_COUNT])
+	Game.debug_event("tree_landed target=%s" % str(resource.id))
+
+
+func _tree_fall_sign(resource) -> float:
+	return -1.0 if (str(resource.id).hash() & 1) == 0 else 1.0
+
+
+func _split_fallen_tree_resource(resource) -> void:
+	if resource.visual_node != null and is_instance_valid(resource.visual_node):
+		resource.visual_node.queue_free()
+	resource.transition_to_felled_log(FELLED_LOG_PROCESS_SECONDS)
+	resource.visual_node = _spawn_felled_resource_visual(resource)
+	_reset_gather_actions_for_felled_log(resource)
+	_rebuild_resource_ring_batches()
+	Game.debug_event("tree_split target=%s pieces=%d" % [str(resource.id), SPLIT_WOOD_PIECE_COUNT])
 
 
 func _reset_gather_actions_for_felled_log(resource) -> void:
@@ -2799,40 +3167,70 @@ func _reset_gather_actions_for_felled_log(resource) -> void:
 
 
 func _start_delivery_if_available(actor) -> bool:
+	if actor != null and Time.get_ticks_msec() < int(actor.get_meta("delivery_slot_retry_after", 0)): return false
+	if actor != null and Time.get_ticks_msec() < int(actor.get_meta("route_retry_after", 0)): return false
 	if actor == null or actor.carried_total() <= 0:
 		return false
-	var storage: RTSBuildingData = _nearest_storage_for_actor(actor)
-	if storage == null:
+	var approach := _delivery_destination_for_actor(actor)
+	if approach.is_empty():
+		actor.set_meta("delivery_slot_retry_after", Time.get_ticks_msec() + 750)
 		return false
-	var action = RTSUnitDeliveryActionScript.new(str(storage.id), storage.position, STORAGE_DELIVERY_RANGE)
+	var storage: RTSBuildingData = approach.storage
+	var target: Vector3 = approach.position
+	var action = RTSUnitDeliveryActionScript.new(str(storage.id), target, STORAGE_DELIVERY_RANGE)
 	actor.issue_delivery_action(action)
-	actor.issue_move_order(_make_unit_move_order(storage.position, false), false)
+	actor.issue_move_order(_make_unit_move_order(target, false), false)
+	actor.apply_prepared_route(approach)
 	var carry_walk_animation := _first_available_unit_animation(UNIT_CARRY_WALK_ANIMATION_CANDIDATES)
 	if not carry_walk_animation.is_empty():
 		actor.play_animation(carry_walk_animation, 0.18, UNIT_WALK_ANIMATION_SPEED)
 	return true
 
 
-func _update_unit_delivery_actions() -> void:
+func _update_unit_delivery_actions(delta: float = 1.0 / 60.0) -> void:
 	for actor_value in unit_actors_by_id.values():
 		var actor = actor_value
 		if actor == null or not is_instance_valid(actor):
 			continue
 		if not actor.has_delivery_action():
+			if _actor_has_gameplay_task(actor): continue
 			if actor.carried_total() > 0 and not actor.has_gather_action() and not actor.has_move_order():
+				_start_delivery_if_available(actor)
+			continue
+		if actor.has_move_order() and bool(actor.get_meta("route_blocked", false)):
+			if Time.get_ticks_msec() >= int(actor.get_meta("route_retry_after", 0)):
+				actor.clear_move_order()
+				actor.clear_delivery_action()
 				_start_delivery_if_available(actor)
 			continue
 		var action = actor.delivery_action()
 		var storage: RTSBuildingData = _building_by_id(str(action.target_id))
-		if storage == null or not storage.completed or not storage.can_store_resources():
+		if storage == null or not storage.completed or not storage.can_store_resources() or not storage.is_supply_source() or storage.faction_id != actor.faction_id or _building_remaining_storage(storage) <= 0:
+			actor.clear_move_order()
 			actor.clear_delivery_action()
 			continue
-		action.target_position = storage.position
-		var distance := Vector2(actor.position.x, actor.position.z).distance_to(Vector2(storage.position.x, storage.position.z))
-		if distance > float(action.range):
+		action.slot_retry_remaining = maxf(0.0, action.slot_retry_remaining - delta)
+		var blocked: bool = not action.has_interaction_slot or _unit_slot_reserved(action.target_position, actor.unit_id) or actor.people_wait_time >= 0.8 or (navigation != null and not navigation.clear(action.target_position))
+		if blocked and action.slot_retry_remaining <= 0.0:
+			action.slot_retry_remaining = 0.75
+			var approach := _storage_approach(storage, actor)
+			if approach.is_empty():
+				action.has_interaction_slot = false
+				_wait_for_interaction_slot(actor)
+				continue
+			action.has_interaction_slot = true
+			var point: Vector3 = approach.position
+			if point.distance_to(action.target_position) > 0.1 or not actor.has_move_order():
+				action.target_position = point
+				actor.issue_move_order(_make_unit_move_order(point, false), false)
+				actor.apply_prepared_route(approach)
+		if not action.has_interaction_slot: continue
+		var distance := Vector2(actor.position.x, actor.position.z).distance_to(Vector2(action.target_position.x, action.target_position.z))
+		if distance > minf(0.3, float(action.range)) or storage.edge_distance(actor.position) > 8.0:
 			if not actor.has_move_order():
-				actor.issue_move_order(_make_unit_move_order(storage.position, false), false)
+				actor.issue_move_order(_make_unit_move_order(action.target_position, false), false)
 			continue
+		if navigation != null and not navigation.segment_clear(actor.position, action.target_position): continue
 		actor.clear_move_order()
 		_deposit_actor_resources(actor, storage)
 		action.complete()
@@ -2842,19 +3240,39 @@ func _update_unit_delivery_actions() -> void:
 			actor.play_animation(idle_animation)
 
 
-func _nearest_storage_for_actor(actor) -> RTSBuildingData:
-	var nearest: RTSBuildingData = null
-	var nearest_distance: float = INF
+func _storage_approach(building, actor) -> Dictionary:
+	var points: Array[Vector3] = building.perimeter_positions(actor.position)
+	if building.edge_distance(actor.position) <= 8.0: points.push_front(actor.position)
+	for point in points:
+		if not _unit_position_available(point, actor.unit_id): continue
+		if construction != null and not construction._space_available(point, actor.unit_id): continue
+		if navigation != null:
+			point = navigation.ground(point)
+			if not navigation.clear(point): continue
+			var route: PackedVector3Array = navigation.route(actor.position, point)
+			if route.is_empty(): continue
+			return {"position": point, "distance": navigation.route_length(actor.position, route), "route": route, "origin": actor.position, "revision": navigation.revision}
+		return {"position": point, "distance": actor.position.distance_to(point)}
+	return {}
+
+func _delivery_destination_for_actor(actor) -> Dictionary:
+	var chosen := {}
+	var nearest_distance := INF
 	for building in battle_buildings:
-		if building == null or not building.completed or not building.can_store_resources():
-			continue
-		if str(building.faction_id) != str(actor.faction_id) or _building_remaining_storage(building) <= 0:
-			continue
-		var distance: float = actor.position.distance_squared_to(building.position)
+		if building == null or not building.completed or not building.can_store_resources(): continue
+		if str(building.faction_id) != str(actor.faction_id) or _building_remaining_storage(building) <= 0: continue
+		if not building.is_supply_source(): continue
+		# A route cannot beat the straight-line distance to the perimeter. Skip
+		# farther stores once a nearer reachable destination has been found.
+		if maxf(0.0, building.edge_distance(actor.position) - 6.0) >= nearest_distance: continue
+		var approach := _storage_approach(building, actor)
+		if approach.is_empty(): continue
+		var distance: float = approach.distance
 		if distance < nearest_distance:
 			nearest_distance = distance
-			nearest = building
-	return nearest
+			chosen = approach
+			chosen["storage"] = building
+	return chosen
 
 
 func _building_by_id(building_id: String) -> RTSBuildingData:
@@ -2865,6 +3283,7 @@ func _building_by_id(building_id: String) -> RTSBuildingData:
 
 
 func _building_remaining_storage(building) -> int:
+	if construction != null: return construction.remaining_storage() if building.can_store_resources() else 0
 	var stored_total := 0
 	for amount_value in building.stored_resources.values():
 		stored_total += int(amount_value)
@@ -2877,7 +3296,7 @@ func _deposit_actor_resources(actor, storage) -> void:
 		var resource_type := str(resource_type_value)
 		var carried_amount := int(actor.carried_resources.get(resource_type_value, 0))
 		var amount: int = mini(carried_amount, _building_remaining_storage(storage))
-		if amount <= 0 or not storage.store_resource(resource_type, amount):
+		if amount <= 0 or (construction == null and not storage.store_resource(resource_type, amount)):
 			continue
 		actor.carried_resources[resource_type_value] = carried_amount - amount
 		deposited[resource_type] = amount
@@ -2893,51 +3312,34 @@ func _deposit_actor_resources(actor, storage) -> void:
 
 
 func _sync_actor_carried_resource_visual(actor) -> void:
-	if actor == null or not is_instance_valid(actor):
-		return
+	if actor == null or not is_instance_valid(actor): return
 	var unit_id := str(actor.unit_id)
-	var carries_wood := int(actor.carried_resources.get("wood", 0)) > 0
-	var current_visual := carried_resource_visuals_by_unit_id.get(unit_id) as Node3D
-	if not carries_wood:
-		if current_visual != null and is_instance_valid(current_visual):
-			current_visual.queue_free()
-		carried_resource_visuals_by_unit_id.erase(unit_id)
-		return
-	if current_visual != null and is_instance_valid(current_visual):
-		return
-
-	var skeleton := _find_first_skeleton(actor)
-	if skeleton == null or skeleton.find_bone("Hand.R") < 0:
-		return
-	var scene := _tree_scene_for_path(CARRIED_WOOD_MODEL)
-	if scene == null:
-		return
-	var instantiated := scene.instantiate()
-	if not instantiated is Node3D:
-		instantiated.queue_free()
-		return
-
-	var attachment := BoneAttachment3D.new()
-	attachment.name = "CarriedWoodAttachment"
-	attachment.bone_name = "Hand.R"
-	skeleton.add_child(attachment)
-	var log_model := instantiated as Node3D
-	log_model.name = "CarriedWoodLog"
-	attachment.add_child(log_model)
-	var inherited_scale := attachment.global_basis.get_scale().abs()
-	var parent_scale: float = max(0.001, max(inherited_scale.x, max(inherited_scale.y, inherited_scale.z)))
-	_fit_model_to_max_dimension(log_model, CARRIED_WOOD_VISUAL_LENGTH / parent_scale)
-	log_model.rotation = Vector3(0.0, 0.0, PI * 0.5)
-	log_model.position += Vector3(0.08, -0.04, 0.12)
-	_apply_battle_lit_materials(log_model)
-	_set_shadow_casting(log_model, true)
-	carried_resource_visuals_by_unit_id[unit_id] = attachment
+	var kind := ""
+	for key in actor.carried_resources:
+		if int(actor.carried_resources[key]) > 0:
+			kind = str(key)
+			if kind == "wood": break
+	var current = carried_resource_visuals_by_unit_id.get(unit_id)
+	if is_instance_valid(current):
+		if current.resource_type == kind: return
+		current.visible = false
+		current.queue_free()
+	carried_resource_visuals_by_unit_id.erase(unit_id)
+	if kind.is_empty(): return
+	var cargo = preload("res://scripts/props/carried_resource_visual.gd").new()
+	cargo.name = "CarriedResource"
+	actor.add_child(cargo)
+	cargo.configure(actor, kind)
+	if not actor.has_move_order() and not actor.has_gather_action():
+		actor.play_animation(_first_available_unit_animation(UNIT_CARRY_IDLE_ANIMATION_CANDIDATES))
+	carried_resource_visuals_by_unit_id[unit_id] = cargo
 
 
 func _update_unit_actor_animation_queues(delta: float) -> void:
 	for actor_value in unit_actors_by_id.values():
 		var actor = actor_value
 		if actor != null and is_instance_valid(actor):
+			actor.update_kneeling_exit(delta)
 			actor.update_animation_queue(delta)
 
 
@@ -3140,14 +3542,9 @@ func _build_overlay() -> void:
 	canvas.add_child(root)
 
 	_build_drag_selection_overlay(root)
-	_build_resource_rail(root)
-	_build_settlement_strip(root)
-	_build_region_header(root)
-	_build_world_view_window(root)
-	_build_notification_tray(root)
-	_build_context_panel(root)
-	_build_minimap_window(root)
-	_build_order_sidebar(root)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud = preload("res://scripts/battle/rts_hud.gd").new()
+	hud.configure(self, root)
 	_build_hud_stat_tooltip(root)
 
 
@@ -3287,6 +3684,10 @@ func _build_world_globe_view(container: SubViewportContainer) -> void:
 	material.roughness = 0.86
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	material.albedo_texture = _build_world_globe_texture()
+	if Game.world_state != null:
+		var cell_material := GlobeCellOverlay.create_material(Game.world_state, Color(0.82, 0.90, 1.0, 0.20))
+		cell_material.set_shader_parameter("selected_rect", GlobeCellOverlay.cell_rect(cell))
+		material.next_pass = cell_material
 	world_globe_planet.material_override = material
 	world_globe_scene_root.add_child(world_globe_planet)
 
@@ -3305,16 +3706,6 @@ func _build_world_globe_view(container: SubViewportContainer) -> void:
 	atmosphere_material.cull_mode = BaseMaterial3D.CULL_FRONT
 	atmosphere.material_override = atmosphere_material
 	world_globe_scene_root.add_child(atmosphere)
-
-	world_globe_grid = MeshInstance3D.new()
-	world_globe_grid.name = "MiniWorldGrid"
-	world_globe_grid.mesh = _build_world_globe_grid_mesh()
-	world_globe_scene_root.add_child(world_globe_grid)
-
-	world_globe_cell_outline = MeshInstance3D.new()
-	world_globe_cell_outline.name = "MiniCurrentCellOutline"
-	world_globe_cell_outline.mesh = _build_world_globe_cell_outline_mesh()
-	world_globe_scene_root.add_child(world_globe_cell_outline)
 
 	var globe_camera := Camera3D.new()
 	globe_camera.name = "GlobePreviewCamera"
@@ -3416,106 +3807,6 @@ func _build_world_globe_planet_mesh() -> ArrayMesh:
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	return mesh
-
-
-func _build_world_globe_grid_mesh() -> ArrayMesh:
-	var mesh := ArrayMesh.new()
-	if Game.world_state == null:
-		return mesh
-
-	var vertices := PackedVector3Array()
-	var colors := PackedColorArray()
-	var grid_color := Color(0.82, 0.90, 1.0, 0.20)
-	var width: int = int(Game.world_state.width)
-	var height: int = int(Game.world_state.height)
-	var segments := 64
-
-	for row in range(1, height):
-		var lat: float = lerpf(PI / 2.0, -PI / 2.0, float(row) / float(height))
-		for segment in range(segments):
-			var lon_a: float = lerpf(-PI, PI, float(segment) / float(segments))
-			var lon_b: float = lerpf(-PI, PI, float(segment + 1) / float(segments))
-			vertices.append(_direction_from_lat_lon(lat, lon_a) * WORLD_GLOBE_GRID_RADIUS)
-			vertices.append(_direction_from_lat_lon(lat, lon_b) * WORLD_GLOBE_GRID_RADIUS)
-			colors.append(grid_color)
-			colors.append(grid_color)
-
-	for column in range(width):
-		var lon: float = lerpf(-PI, PI, float(column) / float(width))
-		for segment in range(segments):
-			var lat_a: float = lerpf(PI / 2.0, -PI / 2.0, float(segment) / float(segments))
-			var lat_b: float = lerpf(PI / 2.0, -PI / 2.0, float(segment + 1) / float(segments))
-			vertices.append(_direction_from_lat_lon(lat_a, lon) * WORLD_GLOBE_GRID_RADIUS)
-			vertices.append(_direction_from_lat_lon(lat_b, lon) * WORLD_GLOBE_GRID_RADIUS)
-			colors.append(grid_color)
-			colors.append(grid_color)
-
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_COLOR] = colors
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arrays)
-
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.vertex_color_use_as_albedo = true
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mesh.surface_set_material(0, material)
-	return mesh
-
-
-func _build_world_globe_cell_outline_mesh() -> ArrayMesh:
-	var mesh := ArrayMesh.new()
-	if Game.world_state == null or cell == null:
-		return mesh
-
-	var vertices := PackedVector3Array()
-	var colors := PackedColorArray()
-	var color := Color(1.0, 0.92, 0.25, 0.95)
-	var corners := _world_globe_cell_corner_directions(cell.x, cell.y, cell.x_span)
-	var edges := [
-		[corners[0], corners[1]],
-		[corners[1], corners[2]],
-		[corners[2], corners[3]],
-		[corners[3], corners[0]],
-	]
-
-	for edge in edges:
-		for segment in range(8):
-			var t_a := float(segment) / 8.0
-			var t_b := float(segment + 1) / 8.0
-			vertices.append(edge[0].slerp(edge[1], t_a).normalized() * WORLD_GLOBE_OUTLINE_RADIUS)
-			vertices.append(edge[0].slerp(edge[1], t_b).normalized() * WORLD_GLOBE_OUTLINE_RADIUS)
-			colors.append(color)
-			colors.append(color)
-
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_COLOR] = colors
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arrays)
-
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.vertex_color_use_as_albedo = true
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	mesh.surface_set_material(0, material)
-	return mesh
-
-
-func _world_globe_cell_corner_directions(x_index: int, y_index: int, x_span: int = 1) -> Array:
-	var width: int = int(Game.world_state.width)
-	var height: int = int(Game.world_state.height)
-	var lon_left: float = lerpf(-PI, PI, float(x_index) / float(width))
-	var lon_right: float = lerpf(-PI, PI, float(x_index + x_span) / float(width))
-	var lat_top: float = lerpf(PI / 2.0, -PI / 2.0, float(y_index) / float(height))
-	var lat_bottom: float = lerpf(PI / 2.0, -PI / 2.0, float(y_index + 1) / float(height))
-	return [
-		_direction_from_lat_lon(lat_top, lon_left),
-		_direction_from_lat_lon(lat_top, lon_right),
-		_direction_from_lat_lon(lat_bottom, lon_right),
-		_direction_from_lat_lon(lat_bottom, lon_left),
-	]
 
 
 func _direction_from_lat_lon(lat: float, lon: float) -> Vector3:
@@ -3740,6 +4031,7 @@ func _build_order_sidebar(root: Control) -> void:
 
 func _on_order_mode_pressed(mode: String) -> void:
 	active_order_mode = mode
+	if construction != null and mode == "build": construction.begin_preview("town_center")
 	_clear_resource_hover()
 	_apply_active_order_cursor()
 
@@ -3873,11 +4165,11 @@ func _add_hud_margin(parent: Control, left: int, top: int, right: int, bottom: i
 
 func _hud_panel_style(alpha: float = 0.74) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.018, 0.075, 0.047, alpha * 0.28)
-	style.border_color = Color(0.38, 0.78, 0.57, 0.42)
+	style.bg_color = Color(0.037, 0.047, 0.043, alpha * 0.78)
+	style.border_color = Color(0.27, 0.34, 0.30, 0.68)
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(7)
-	style.shadow_color = Color(0.0, 0.02, 0.012, 0.44)
+	style.shadow_color = Color(0.0, 0.0, 0.0, 0.42)
 	style.shadow_size = 6
 	style.shadow_offset = Vector2(0.0, 2.0)
 	return style
@@ -3893,8 +4185,9 @@ func _add_hud_glass(panel: PanelContainer, opacity: float = 0.76) -> void:
 	if shader_resource is Shader:
 		var material := ShaderMaterial.new()
 		material.shader = shader_resource
-		material.set_shader_parameter("glass_tint", Color(0.018, 0.14, 0.085, opacity))
-		material.set_shader_parameter("edge_tint", Color(0.40, 0.88, 0.62, 0.42))
+		material.set_shader_parameter("glass_tint", Color(0.035, 0.052, 0.045, opacity))
+		material.set_shader_parameter("edge_tint", Color(0.23, 0.33, 0.27, 0.30))
+		material.set_shader_parameter("tint_strength", 0.96)
 		glass.material = material
 	panel.add_child(glass)
 	panel.move_child(glass, 0)
@@ -3903,7 +4196,7 @@ func _add_hud_glass(panel: PanelContainer, opacity: float = 0.76) -> void:
 func _hud_control_style(color: Color, border_alpha: float = 0.34) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
-	style.border_color = Color(0.38, 0.78, 0.57, border_alpha)
+	style.border_color = Color(0.32, 0.41, 0.36, border_alpha)
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(5)
 	style.content_margin_left = 8.0
@@ -3912,13 +4205,15 @@ func _hud_control_style(color: Color, border_alpha: float = 0.34) -> StyleBoxFla
 
 
 func _apply_hud_control_theme(control: Control) -> void:
-	control.add_theme_color_override("font_color", Color(0.90, 0.98, 0.93))
+	control.add_theme_color_override("font_color", Color("e5e8e5"))
 	control.add_theme_color_override("font_hover_color", Color.WHITE)
-	control.add_theme_color_override("font_pressed_color", Color(0.78, 1.0, 0.86))
-	control.add_theme_stylebox_override("normal", _hud_control_style(Color(0.018, 0.10, 0.061, 0.82)))
-	control.add_theme_stylebox_override("hover", _hud_control_style(Color(0.035, 0.19, 0.11, 0.90), 0.62))
-	control.add_theme_stylebox_override("pressed", _hud_control_style(Color(0.022, 0.23, 0.12, 0.94), 0.78))
-	control.add_theme_stylebox_override("focus", _hud_control_style(Color(0.025, 0.16, 0.09, 0.86), 0.78))
+	control.add_theme_color_override("font_pressed_color", Color("c3d1c7"))
+	control.add_theme_color_override("font_disabled_color", Color("737d77"))
+	control.add_theme_stylebox_override("normal", _hud_control_style(Color("151b18")))
+	control.add_theme_stylebox_override("hover", _hud_control_style(Color("242e28"), 0.70))
+	control.add_theme_stylebox_override("pressed", _hud_control_style(Color("2a3830"), 0.86))
+	control.add_theme_stylebox_override("focus", _hud_control_style(Color(0.12, 0.17, 0.14, 0.3), 0.85))
+	control.add_theme_stylebox_override("disabled", _hud_control_style(Color("111613"), 0.18))
 
 
 func _make_compact_button(text: String) -> Button:
@@ -3940,6 +4235,9 @@ func _make_icon_button(text: String) -> Button:
 
 
 func _is_screen_point_in_hud(screen_position: Vector2) -> bool:
+	if hud != null and hud.contains(screen_position): return true
+	if construction != null and _visible_control_contains(construction.panel, screen_position): return true
+	if wildlife != null and _visible_control_contains(wildlife.panel, screen_position): return true
 	var controls: Array[Control] = [
 		resource_rail_panel,
 		settlement_strip_panel,
@@ -4090,6 +4388,8 @@ func _load_rts_cell() -> void:
 	if cached_cell is Dictionary:
 		_set_loading("Loading cached terrain meshes...", 0.92)
 		await get_tree().process_frame
+		_set_loading("Restoring resources, units, wildlife, and navigation...", 0.94)
+		await get_tree().process_frame
 		_apply_rts_cell_data(cached_cell)
 		_hide_loading_overlay()
 		_refresh_overlay()
@@ -4097,6 +4397,8 @@ func _load_rts_cell() -> void:
 
 	var generated_cell: Dictionary = await _generate_rts_cell_data()
 	Game.set_rts_cell_cache(cache_key, generated_cell)
+	_set_loading("Preparing resources, units, wildlife, and navigation...", 0.94)
+	await get_tree().process_frame
 	_apply_rts_cell_data(generated_cell)
 	_hide_loading_overlay()
 	_refresh_overlay()
@@ -4123,6 +4425,9 @@ func _generate_rts_cell_data() -> Dictionary:
 	var terrain_uvs := PackedVector2Array()
 	var terrain_indices := PackedInt32Array()
 	var terrain_heights := PackedFloat32Array()
+	var river_bed_ceilings := PackedFloat32Array()
+	var terrain_samples: Array[Dictionary] = []
+	var land_mask := PackedByteArray()
 	var row_length := TERRAIN_STEPS + 1
 	var half_size := MAP_SIZE * 0.5
 
@@ -4136,7 +4441,10 @@ func _generate_rts_cell_data() -> Dictionary:
 			var height := _height_from_sample(sample)
 			terrain_vertices.append(Vector3(x, height, z))
 			terrain_heights.append(height)
-			terrain_colors.append(_terrain_color_from_sample(sample))
+			river_bed_ceilings.append(height if float(sample.get("river", 0.0)) >= 0.22 else INF)
+			terrain_samples.append(sample)
+			land_mask.append(0 if sample.terrain == "water" else 1)
+			terrain_colors.append(_terrain_biome_color_from_sample(sample))
 			terrain_uvs.append(Vector2(u, v))
 
 		if z_index % 8 == 0:
@@ -4145,7 +4453,10 @@ func _generate_rts_cell_data() -> Dictionary:
 
 	_set_loading("Building terrain mesh...", 0.54)
 	await get_tree().process_frame
-	terrain_heights = _smooth_terrain_heights(terrain_heights, row_length, TERRAIN_SMOOTH_PASSES)
+	terrain_colors = _blend_terrain_biome_colors(terrain_colors, land_mask, row_length)
+	for vertex_index in range(terrain_colors.size()):
+		terrain_colors[vertex_index] = _terrain_color_from_sample(terrain_samples[vertex_index], terrain_colors[vertex_index])
+	terrain_heights = _smooth_terrain_heights(terrain_heights, row_length, TERRAIN_SMOOTH_PASSES, river_bed_ceilings)
 	terrain_surface_heights = terrain_heights.duplicate()
 	terrain_surface_row_length = row_length
 	for vertex_index in range(terrain_vertices.size()):
@@ -4166,32 +4477,49 @@ func _generate_rts_cell_data() -> Dictionary:
 			var up_height: float = terrain_heights[up_z * row_length + x_index]
 			var normal := Vector3(left_height - right_height, vertex_spacing * 2.0, down_height - up_height).normalized()
 			terrain_normals.append(normal)
+			var center_height: float = terrain_heights[z_index * row_length + x_index]
+			var concavity := maxf(0.0, (left_height + right_height + down_height + up_height) * 0.25 - center_height)
+			var ground_color := terrain_colors[z_index * row_length + x_index]
+			ground_color.a = 1.0 - clampf(concavity * 0.035, 0.0, 0.22)
+			terrain_colors[z_index * row_length + x_index] = ground_color
 
 	for z_index in range(TERRAIN_STEPS):
 		for x_index in range(TERRAIN_STEPS):
 			var base_index := z_index * row_length + x_index
 			terrain_indices.append(base_index)
-			terrain_indices.append(base_index + row_length)
-			terrain_indices.append(base_index + 1)
 			terrain_indices.append(base_index + 1)
 			terrain_indices.append(base_index + row_length)
+			terrain_indices.append(base_index + 1)
 			terrain_indices.append(base_index + row_length + 1)
+			terrain_indices.append(base_index + row_length)
 
 	_set_loading("Building shared water plane...", 0.68)
 	await get_tree().process_frame
 
-	_set_loading("Preparing cached RTS meshes...", 0.86)
+	_set_loading("Preparing cached RTS meshes...", 0.69)
 	await get_tree().process_frame
 	var terrain_mesh := _mesh_from_arrays(terrain_vertices, terrain_normals, terrain_colors, terrain_uvs, terrain_indices)
+	_set_loading("Building ocean shoreline...", 0.70)
+	await get_tree().process_frame
 	var water_mesh := _build_water_plane_mesh(terrain_heights, row_length)
+	_set_loading("Building river surfaces...", 0.74)
+	await get_tree().process_frame
 	var river_mesh := _build_river_surface_mesh(terrain_heights, row_length)
 	var grid_mesh := _build_terrain_grid_mesh()
+	_set_loading("Placing forests, resources, and terrain details...", 0.80)
+	await get_tree().process_frame
 	var prop_data := _generate_prop_data(terrain_heights, row_length)
+	_set_loading("Painting cell minimap...", 0.88)
+	await get_tree().process_frame
 	var minimap_texture := _build_minimap_texture(prop_data)
 	var center_height := _height_from_smoothed_terrain_at_uv(0.5, 0.5, terrain_heights, row_length)
+	var wetland_data := WetlandLayout.generate(self, terrain_heights, row_length)
 
 	return {
 		"terrain_mesh": terrain_mesh,
+		"smoothed_river_map": smoothed_river_map,
+		"smoothed_river_map_size": smoothed_river_map_size,
+		"wetlands": wetland_data,
 		"terrain_heights": terrain_heights,
 		"terrain_row_length": row_length,
 		"water_mesh": water_mesh,
@@ -4205,6 +4533,8 @@ func _generate_rts_cell_data() -> Dictionary:
 
 func _apply_rts_cell_data(data: Dictionary) -> void:
 	rts_state_ready = false
+	smoothed_river_map = data.get("smoothed_river_map", PackedFloat32Array())
+	smoothed_river_map_size = int(data.get("smoothed_river_map_size", 0))
 	_clear_generated_nodes()
 	_create_unit_selection_marker()
 	terrain_surface_heights = data.get("terrain_heights", PackedFloat32Array())
@@ -4239,8 +4569,18 @@ func _apply_rts_cell_data(data: Dictionary) -> void:
 		grid.visible = grid_visible
 		terrain_root.add_child(grid)
 
-	_spawn_cached_props(data.get("props", []))
+	navigation = preload("res://scripts/battle/rts_navigation.gd").new()
+	navigation.configure(self)
+	# Terrain classification is static for this cache key; obstacles are rebuilt
+	# from current resources/buildings so depletion and construction still apply.
+	navigation.terrain_cache = data.get("navigation_terrain_cache", {}).duplicate()
+	gameplay_props = preload("res://scripts/battle/rts_opening_setup.gd").prepare(self, navigation, data.get("props", []))
+	wetlands = preload("res://scripts/battle/rts_wetlands.gd").new()
+	wetlands.configure(self, data.get("wetlands", {}))
+	_spawn_cached_props(gameplay_props)
 	_spawn_starter_battle_entities()
+	_initialize_settlement_gameplay()
+	data["navigation_terrain_cache"] = navigation.terrain_cache.duplicate()
 	_apply_minimap_data(data)
 	rts_state_ready = true
 func _apply_minimap_data(data: Dictionary) -> void:
@@ -4268,8 +4608,9 @@ func _build_minimap_texture(props: Array) -> Texture2D:
 		if not prop is Dictionary:
 			continue
 		var prop_data := prop as Dictionary
+		if prop_data.get("forest_suppressed", false): continue
 		var prop_type := str(prop_data.get("type", ""))
-		if prop_type != "tree" and prop_type != "tree_impostor":
+		if prop_type not in ["tree", "tree_impostor", "forest_tree"]:
 			continue
 		if not prop_data.has("position") or not prop_data["position"] is Vector3:
 			continue
@@ -4355,6 +4696,7 @@ func _minimap_friendly_points() -> PackedVector2Array:
 	var points := PackedVector2Array()
 	var half_size := MAP_SIZE * 0.5
 	for unit_data in battle_units:
+		if unit_data.faction_id != "player" or not unit_data.is_alive(): continue
 		var position: Vector3 = unit_data.position
 		points.append(Vector2(
 			clamp(inverse_lerp(-half_size, half_size, position.x), 0.0, 1.0),
@@ -4388,6 +4730,16 @@ func _clear_generated_nodes() -> void:
 	if terrain_root == null:
 		return
 
+	if construction != null and is_instance_valid(construction.panel): construction.panel.queue_free()
+	if wildlife != null and is_instance_valid(wildlife.panel): wildlife.panel.queue_free()
+	construction = null
+	wildlife = null
+	wetlands = null
+	fish_school_members.clear()
+	fish_school_elapsed = 0.0
+	navigation = null
+	if fog_of_war != null and is_instance_valid(fog_of_war.overlay): fog_of_war.overlay.queue_free()
+	fog_of_war = null
 	loaded_entity_count = 0
 	full_model_entity_count = 0
 	impostor_entity_count = 0
@@ -4399,6 +4751,8 @@ func _clear_generated_nodes() -> void:
 	active_tree_impostor_full_nodes.clear()
 	tree_impostor_lod_root = null
 	tree_impostor_lod_elapsed = 0.0
+	ore_lod_members.clear()
+	ore_lod_elapsed = 0.0
 	for child in terrain_root.get_children():
 		child.queue_free()
 
@@ -4417,7 +4771,7 @@ func _mesh_from_arrays(vertices: PackedVector3Array, normals: PackedVector3Array
 	return mesh
 
 
-func _smooth_terrain_heights(heights: PackedFloat32Array, row_length: int, passes: int) -> PackedFloat32Array:
+func _smooth_terrain_heights(heights: PackedFloat32Array, row_length: int, passes: int, river_bed_ceilings: PackedFloat32Array = PackedFloat32Array()) -> PackedFloat32Array:
 	var smoothed := heights
 	if passes <= 0:
 		return smoothed
@@ -4439,6 +4793,9 @@ func _smooth_terrain_heights(heights: PackedFloat32Array, row_length: int, passe
 					+ smoothed[index + row_length + 1] * 0.5
 				) / 7.0
 				next_heights[index] = lerpf(smoothed[index], average, TERRAIN_SMOOTH_BLEND)
+				# High adjacent slopes must not fill narrow channels during smoothing.
+				if river_bed_ceilings.size() == heights.size():
+					next_heights[index] = minf(next_heights[index], river_bed_ceilings[index])
 		smoothed = next_heights
 	return smoothed
 
@@ -4457,7 +4814,7 @@ func _build_water_plane_mesh(terrain_heights: PackedFloat32Array = PackedFloat32
 		var v: float = float(z_index) / float(WATER_PLANE_STEPS)
 		for x_index in range(WATER_PLANE_STEPS + 1):
 			var u: float = float(x_index) / float(WATER_PLANE_STEPS)
-			var sample := _sample_cell_uv(u, v)
+			var sample := _sample_cell_uv_raw(u, v)
 			var elevation := float(sample.get("elevation", WorldState.SEA_LEVEL + 1.0))
 			var ocean_alpha := 1.0 - smoothstep(WorldState.SEA_LEVEL - 0.008, WorldState.SEA_LEVEL + 0.006, elevation)
 			if str(sample.get("terrain", "land")) == "water":
@@ -4491,6 +4848,8 @@ func _build_water_plane_mesh(terrain_heights: PackedFloat32Array = PackedFloat32
 
 
 func _build_river_surface_mesh(terrain_heights: PackedFloat32Array = PackedFloat32Array(), terrain_row_length: int = 0) -> ArrayMesh:
+	if not smoothed_river_map.is_empty() and smoothed_river_map.count(0.0) == smoothed_river_map.size():
+		return ArrayMesh.new()
 	var terrain_vertices := PackedVector3Array()
 	var sampled_heights := PackedFloat32Array()
 	var river_values := PackedFloat32Array()
@@ -4522,7 +4881,7 @@ func _is_water_surface_sample(sample: Dictionary) -> bool:
 
 func _water_mesh_from_arrays(vertices: PackedVector3Array, uvs: PackedVector2Array, indices: PackedInt32Array, normals: PackedVector3Array = PackedVector3Array(), colors: PackedColorArray = PackedColorArray()) -> ArrayMesh:
 	var mesh := ArrayMesh.new()
-	if vertices.is_empty():
+	if vertices.is_empty() or indices.is_empty():
 		return mesh
 
 	if normals.is_empty():
@@ -4808,27 +5167,37 @@ func _build_smoothed_river_map() -> void:
 			var sample: Dictionary = _sample_cell_uv_raw(u, v)
 			raw[y_index * smoothed_river_map_size + x_index] = float(sample.get("river", 0.0))
 
+	if raw.count(0.0) == raw.size():
+		return
+
+	# The circular kernel is constant for every texel. Calculate its distances
+	# and falloffs once, preserving the original accumulation order exactly.
 	var radius := RIVER_SMOOTH_RADIUS
+	var offsets: Array[Vector2i] = []
+	var weights: Array[float] = []
+	var falloffs: Array[float] = []
+	var total_weight := 0.0
+	for y_offset in range(-radius, radius + 1):
+		for x_offset in range(-radius, radius + 1):
+			var distance := Vector2(float(x_offset), float(y_offset)).length()
+			if distance > float(radius): continue
+			var weight := 1.0 - smoothstep(0.0, float(radius), distance)
+			weight = maxf(weight * weight, 0.018)
+			offsets.append(Vector2i(x_offset, y_offset))
+			weights.append(weight)
+			falloffs.append(1.0 - smoothstep(0.35, float(radius), distance))
+			total_weight += weight
 	for y_index in range(smoothed_river_map_size):
 		for x_index in range(smoothed_river_map_size):
 			var weighted_sum := 0.0
-			var total_weight := 0.0
 			var dilated := 0.0
-			for y_offset in range(-radius, radius + 1):
-				for x_offset in range(-radius, radius + 1):
-					var offset := Vector2(float(x_offset), float(y_offset))
-					var distance: float = offset.length()
-					if distance > float(radius):
-						continue
-					var sx: int = clamp(x_index + x_offset, 0, smoothed_river_map_size - 1)
-					var sy: int = clamp(y_index + y_offset, 0, smoothed_river_map_size - 1)
-					var raw_river: float = raw[sy * smoothed_river_map_size + sx]
-					var weight: float = 1.0 - smoothstep(0.0, float(radius), distance)
-					weight = max(weight * weight, 0.018)
-					weighted_sum += raw_river * weight
-					total_weight += weight
-					var rounded_falloff: float = 1.0 - smoothstep(0.35, float(radius), distance)
-					dilated = max(dilated, raw_river * rounded_falloff)
+			for kernel_index in range(offsets.size()):
+				var offset := offsets[kernel_index]
+				var sx := clampi(x_index + offset.x, 0, smoothed_river_map_size - 1)
+				var sy := clampi(y_index + offset.y, 0, smoothed_river_map_size - 1)
+				var raw_river: float = raw[sy * smoothed_river_map_size + sx]
+				weighted_sum += raw_river * weights[kernel_index]
+				dilated = maxf(dilated, raw_river * falloffs[kernel_index])
 
 			var softened: float = weighted_sum / max(total_weight, 0.001)
 			var connected: float = max(dilated, softened * 1.22)
@@ -4846,8 +5215,10 @@ func _height_from_sample(sample: Dictionary) -> float:
 		return TERRAIN_BASE_HEIGHT - depth
 
 	var land_height: float = max(0.0, elevation - WorldState.SEA_LEVEL) * TERRAIN_HEIGHT_SCALE
-	land_height += (ridge - 0.45) * 4.0
-	land_height += (raw_noise - 0.5) * 2.0
+	# Keep the playable heightfield almost flat; mountains are separate scenery.
+	land_height += (ridge - 0.45) * 2.0
+	land_height += raw_noise - 0.5
+	land_height = minf(land_height, TERRAIN_MAX_RELIEF)
 	if river > 0.06:
 		var bank_cut: float = smoothstep(0.06, 0.22, river)
 		var floor_cut: float = smoothstep(0.16, 0.52, river)
@@ -4858,14 +5229,42 @@ func _height_from_sample(sample: Dictionary) -> float:
 	return land_height
 
 
-func _terrain_color_from_sample(sample: Dictionary) -> Color:
+func _blend_terrain_biome_colors(colors: PackedColorArray, land_mask: PackedByteArray, row_length: int) -> PackedColorArray:
+	# Bake a roughly one-grid-cell transition into land vertices only. Shore and
+	# river colours are applied afterward so small channels keep their definition.
+	var radius := 6
+	var weights := PackedFloat32Array()
+	for offset in range(-radius, radius + 1):
+		weights.append(exp(-float(offset * offset) / (2.0 * 2.6 * 2.6)))
+	var source := colors
+	var rows := colors.size() / row_length
+	for axis in range(2):
+		var blended := source.duplicate()
+		for z in range(rows):
+			for x in range(row_length):
+				var index := z * row_length + x
+				if land_mask[index] == 0: continue
+				var total := Color(0, 0, 0, 0)
+				var weight_sum := 0.0
+				for offset in range(-radius, radius + 1):
+					var nx := clampi(x + offset, 0, row_length - 1) if axis == 0 else x
+					var nz := clampi(z + offset, 0, rows - 1) if axis == 1 else z
+					var neighbor := nz * row_length + nx
+					if land_mask[neighbor] == 0: continue
+					var weight := weights[offset + radius]
+					total += source[neighbor] * weight
+					weight_sum += weight
+				blended[index] = total / weight_sum
+		source = blended
+	return source
+
+
+func _terrain_biome_color_from_sample(sample: Dictionary) -> Color:
 	var terrain: String = str(sample["terrain"])
 	var elevation: float = float(sample["elevation"])
 	var moisture: float = float(sample["moisture"])
 	var temperature: float = float(sample["temperature"])
-	var river: float = float(sample.get("river", 0.0))
 	var ridge: float = float(sample.get("ridge", 0.0))
-	var land_height: float = clamp((elevation - WorldState.SEA_LEVEL) / max(1.0 - WorldState.SEA_LEVEL, 0.001), 0.0, 1.0)
 	var color := Color(0.32, 0.56, 0.24)
 	match terrain:
 		"water":
@@ -4890,6 +5289,16 @@ func _terrain_color_from_sample(sample: Dictionary) -> Color:
 		_:
 			var dry: float = clamp((1.0 - moisture) * 0.7 + temperature * 0.18, 0.0, 1.0)
 			color = Color(0.32, 0.56, 0.24).lerp(Color(0.69, 0.60, 0.34), dry * 0.45)
+	return color
+
+
+func _terrain_color_from_sample(sample: Dictionary, biome_color: Color = Color(-1, -1, -1)) -> Color:
+	var color := _terrain_biome_color_from_sample(sample) if biome_color.r < 0.0 else biome_color
+	if str(sample.terrain) == "water": return color
+	var elevation := float(sample.elevation)
+	var ridge := float(sample.get("ridge", 0.0))
+	var river := float(sample.get("river", 0.0))
+	var land_height := clampf((elevation - WorldState.SEA_LEVEL) / maxf(1.0 - WorldState.SEA_LEVEL, 0.001), 0.0, 1.0)
 
 	var coast_edge: float = 1.0 - smoothstep(WorldState.SEA_LEVEL + 0.004, WorldState.SEA_LEVEL + 0.060, elevation)
 	if coast_edge > 0.0:
@@ -5163,7 +5572,191 @@ func _generate_prop_data(terrain_heights: PackedFloat32Array, row_length: int) -
 				"cluster_spread": rng.randf_range(4.5, 6.5),
 			})
 		props.append(cover_prop)
-	return props
+	props.append_array(_generate_forest_infill(props, terrain_heights, row_length))
+	props.append_array(_generate_rocky_ore(props, terrain_heights, row_length))
+	props.append_array(_generate_terrain_dressing(props, terrain_heights, row_length))
+	props.append_array(_generate_outcrop_ore(props, terrain_heights, row_length))
+	return ForestLayout.prepare(self, props)
+
+
+func _generate_outcrop_ore(props: Array, heights: PackedFloat32Array, row_length: int) -> Array:
+	var result: Array = []
+	var formations: Array = []
+	var obstacles: Array = []
+	for prop in props:
+		var point := Vector2(prop.position.x, prop.position.z)
+		var profile := TerrainDressing.profile(str(prop.get("asset", "")))
+		if str(profile.get("group", "")).ends_with("_rocks"):
+			formations.append(prop)
+			obstacles.append({"point": point, "radius": float(prop.footprint)})
+		elif prop.get("type", "") == "resource_deposit":
+			obstacles.append({"point": point, "radius": 60.0})
+		elif prop.get("type", "") in ["tree", "forest_tree", "tree_impostor"]:
+			obstacles.append({"point": point, "radius": _tree_spacing_radius_for_asset(prop.asset, prop.scale)})
+	var rng := RandomNumberGenerator.new()
+	rng.seed = (int(Game.world_state.seed) + int(cell.x) * 99173 + int(cell.y) * 57121) ^ 0x524F434B
+	var spawn := _find_initial_dry_spawn_center()
+	for formation in formations:
+		# Local, capped bonus: no changes to the existing resource-placement RNG.
+		if rng.randf() > 0.85: continue
+		var center := Vector2(formation.position.x, formation.position.z)
+		var desired := rng.randi_range(1, 2)
+		var placed := 0
+		for attempt in range(20):
+			if placed >= desired or result.size() >= 8: break
+			var angle := rng.randf() * TAU
+			var point := center + Vector2(cos(angle), sin(angle)) * (float(formation.footprint) + rng.randf_range(65.0, 135.0))
+			if point.distance_to(Vector2(spawn.x, spawn.z)) < 110.0: continue
+			var blocked := false
+			for obstacle in obstacles:
+				if point.distance_to(obstacle.point) < float(obstacle.radius) + 50.0:
+					blocked = true
+					break
+			if blocked: continue
+			var uv := point / MAP_SIZE + Vector2.ONE * 0.5
+			if not _ore_deposit_footprint_is_dry(Vector3(point.x, 0, point.y), 50.0, heights, row_length): continue
+			var ore_type := _ore_deposit_type_for_sample(_sample_cell_uv(uv.x, uv.y), rng)
+			result.append({"type": "resource_deposit", "rocky_bonus": true, "outcrop_bonus": true,
+				"resource_type": ore_type, "asset": ORE_DEPOSIT_ASSETS[ore_type],
+				"position": Vector3(point.x, _height_from_smoothed_terrain_at_uv(uv.x, uv.y, heights, row_length), point.y),
+				"scale": rng.randf_range(2.2, 3.2), "rotation": rng.randf() * TAU,
+				"amount": _resource_deposit_amount(ore_type), "cluster_count": rng.randi_range(5, 8),
+				"cluster_spread": rng.randf_range(4.6, 6.4)})
+			obstacles.append({"point": point, "radius": 60.0})
+			placed += 1
+	return result
+
+
+func _generate_rocky_ore(props: Array, heights: PackedFloat32Array, row_length: int) -> Array:
+	var result: Array = []
+	var rng := RandomNumberGenerator.new()
+	rng.seed = (int(Game.world_state.seed) + int(cell.x) * 99173 + int(cell.y) * 57121) ^ 0x4F524542
+	var spacing: Dictionary = {}
+	var deposits: Array[Vector2] = []
+	var spawn := _find_initial_dry_spawn_center()
+	for prop in props:
+		var point := Vector2(prop.position.x, prop.position.z)
+		if prop.type == "resource_deposit": deposits.append(point)
+		if prop.type in ["tree", "tree_impostor", "forest_tree"]:
+			_remember_tree_position(spacing, point.x, point.y, _tree_spacing_radius_for_asset(prop.asset, prop.scale))
+	var extent := MAP_SIZE * 0.5 - PROP_EDGE_INSET
+	for attempt in range(ROCKY_ORE_SAMPLE_COUNT):
+		if result.size() >= ROCKY_ORE_MAX: break
+		var point := Vector2(rng.randf_range(-extent, extent), rng.randf_range(-extent, extent))
+		var uv := point / MAP_SIZE + Vector2.ONE * 0.5
+		var sample := _sample_cell_uv(uv.x, uv.y)
+		if TerrainDressing.habitat(sample) != "rock" or rng.randf() > 0.11: continue
+		if point.distance_to(Vector2(spawn.x, spawn.z)) < 90.0: continue
+		if not _can_place_tree_at(spacing, point.x, point.y, ROCKY_ORE_FOOTPRINT): continue
+		var blocked := false
+		for deposit in deposits:
+			if point.distance_to(deposit) < 90.0:
+				blocked = true
+				break
+		if blocked or not _rocky_ore_footprint_is_dry(uv, heights, row_length): continue
+		var ore_type := _ore_deposit_type_for_sample(sample, rng)
+		result.append({
+			"type": "resource_deposit", "rocky_bonus": true,
+			"resource_type": ore_type, "asset": ORE_DEPOSIT_ASSETS[ore_type],
+			"position": Vector3(point.x, _height_from_smoothed_terrain_at_uv(uv.x, uv.y, heights, row_length), point.y),
+			"scale": rng.randf_range(2.2, 3.2), "rotation": rng.randf() * TAU,
+			"amount": _resource_deposit_amount(ore_type),
+			"cluster_count": rng.randi_range(5, 8), "cluster_spread": rng.randf_range(4.6, 6.4),
+		})
+		deposits.append(point)
+	return result
+
+
+func _rocky_ore_footprint_is_dry(uv: Vector2, heights: PackedFloat32Array, row_length: int) -> bool:
+	if _nearby_river_value(uv.x, uv.y, 45.0) > 0.025: return false
+	var low := INF
+	var high := -INF
+	for z in range(-3, 4):
+		for x in range(-3, 4):
+			var offset := Vector2(x, z) * 15.0
+			if offset.length() > ROCKY_ORE_FOOTPRINT: continue
+			var probe := uv + offset / MAP_SIZE
+			var sample := _sample_cell_uv(probe.x, probe.y)
+			if TerrainDressing.habitat(sample) != "rock" or _is_beach_sample(sample): return false
+			if float(sample.get("river", 0.0)) > 0.025: return false
+			var height := _height_from_smoothed_terrain_at_uv(probe.x, probe.y, heights, row_length)
+			if height <= WATER_SURFACE_HEIGHT + 0.7: return false
+			low = minf(low, height)
+			high = maxf(high, height)
+	return high - low < 1.2
+
+
+func _generate_terrain_dressing(props: Array, heights: PackedFloat32Array, row_length: int) -> Array:
+	var exclusions: Array = []
+	var landmark_exclusions: Array = []
+	var spawn := _find_initial_dry_spawn_center()
+	exclusions.append({"position": Vector2(spawn.x, spawn.z), "radius": 72.0})
+	for prop in props:
+		if str(prop.get("type", "")) in ["tree", "tree_impostor", "forest_tree"]:
+			var tree_position: Vector3 = prop.position
+			landmark_exclusions.append({"position": Vector2(tree_position.x, tree_position.z), "radius": _tree_spacing_radius_for_asset(prop.asset, prop.scale)})
+		if str(prop.get("type", "")) == "resource_deposit":
+			var position: Vector3 = prop.position
+			var radius := ROCKY_ORE_FOOTPRINT if prop.get("rocky_bonus", false) else float(prop.get("cluster_spread", 6.0)) + 10.0
+			exclusions.append({"position": Vector2(position.x, position.z), "radius": radius})
+	var sample_at := func(u: float, v: float) -> Dictionary:
+		var sample := _sample_cell_uv(u, v)
+		sample["beach"] = 1.0 if _is_beach_sample(sample) else 0.0
+		return sample
+	var height_at := func(u: float, v: float) -> float:
+		return _height_from_smoothed_terrain_at_uv(u, v, heights, row_length)
+	var seed_value := int(Game.world_state.seed) + int(cell.x) * 99173 + int(cell.y) * 57121
+	return TerrainDressing.generate(MAP_SIZE, WATER_SURFACE_HEIGHT, seed_value, sample_at, height_at, exclusions, landmark_exclusions)
+
+
+func _generate_forest_infill(props: Array, heights: PackedFloat32Array, row_length: int) -> Array:
+	var result: Array = []
+	var centers: Array[Vector3] = []
+	var spacing: Dictionary = {}
+	var exclusions: Array = []
+	var spawn := _find_initial_dry_spawn_center()
+	for prop in props:
+		var p: Vector3 = prop.position
+		if prop.type in ["tree", "tree_impostor"]:
+			_remember_tree_position(spacing, p.x, p.z, _tree_spacing_radius_for_asset(prop.asset, prop.scale))
+			var sample := _sample_cell_uv(p.x / MAP_SIZE + 0.5, p.z / MAP_SIZE + 0.5)
+			if sample.terrain == "forest" or sample.biome == "forested_hills": centers.append(p)
+		elif prop.type == "resource_deposit":
+			exclusions.append({"position": Vector2(p.x, p.z), "radius": float(prop.get("cluster_spread", 6.0)) + 12.0})
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(Game.world_state.seed) + int(cell.x) * 7619 + int(cell.y) * 4937 + 85331
+	for attempt in range(12000):
+		if result.size() >= FOREST_INFILL_MAX: break
+		var extent := MAP_SIZE * 0.5 - 30.0
+		var point := Vector2(rng.randf_range(-extent, extent), rng.randf_range(-extent, extent))
+		if not centers.is_empty() and attempt % 3 != 0:
+			var center := centers[rng.randi_range(0, centers.size() - 1)]
+			var angle := rng.randf() * TAU
+			point = Vector2(center.x, center.z) + Vector2(cos(angle), sin(angle)) * rng.randf_range(11.0, 30.0)
+		if absf(point.x) > MAP_SIZE * 0.5 - 25.0 or absf(point.y) > MAP_SIZE * 0.5 - 25.0: continue
+		if point.distance_to(Vector2(spawn.x, spawn.z)) < 85.0: continue
+		var blocked := false
+		for exclusion in exclusions:
+			if point.distance_to(exclusion.position) < exclusion.radius:
+				blocked = true
+				break
+		if blocked: continue
+		var u := point.x / MAP_SIZE + 0.5
+		var v := point.y / MAP_SIZE + 0.5
+		var sample := _sample_cell_uv(u, v)
+		if sample.terrain != "forest" and sample.biome != "forested_hills": continue
+		if _blocks_tree_spawn(sample, u, v, FOREST_BANK_BUFFER): continue
+		var asset := _tree_asset_for_sample(sample, rng)
+		if asset.is_empty(): continue
+		var scale_value := _tree_runtime_scale_for_asset(asset, rng) * rng.randf_range(0.88, 1.08)
+		var radius := _tree_spacing_radius_for_asset(asset, scale_value)
+		if not _can_place_tree_at(spacing, point.x, point.y, radius): continue
+		var height := _height_from_smoothed_terrain_at_uv(u, v, heights, row_length)
+		var edge_height := _height_from_smoothed_terrain_at_uv(u + radius / MAP_SIZE, v, heights, row_length)
+		if absf(edge_height - height) > 3.0: continue
+		_remember_tree_position(spacing, point.x, point.y, radius)
+		result.append({"type": "forest_tree", "asset": asset, "position": Vector3(point.x, height, point.y), "scale": scale_value, "rotation": rng.randf() * TAU})
+	return result
 
 
 func _ore_deposit_type_for_sample(sample: Dictionary, rng: RandomNumberGenerator) -> String:
@@ -5483,7 +6076,7 @@ func _is_beach_sample(sample: Dictionary) -> bool:
 	return river < 0.10 and elevation >= WorldState.SEA_LEVEL and elevation <= WorldState.SEA_LEVEL + 0.055
 
 
-func _blocks_tree_spawn(sample: Dictionary, u: float, v: float) -> bool:
+func _blocks_tree_spawn(sample: Dictionary, u: float, v: float, bank_buffer: float = TREE_RIVER_BANK_BUFFER_METERS) -> bool:
 	var terrain: String = str(sample.get("terrain", "plains"))
 	if terrain == "water":
 		return true
@@ -5493,7 +6086,7 @@ func _blocks_tree_spawn(sample: Dictionary, u: float, v: float) -> bool:
 	var river: float = float(sample.get("river", 0.0))
 	if river > TREE_RIVER_NO_SPAWN_THRESHOLD:
 		return true
-	if _nearby_river_value(u, v, TREE_RIVER_BANK_BUFFER_METERS) > TREE_RIVER_NEARBY_THRESHOLD:
+	if _nearby_river_value(u, v, bank_buffer) > TREE_RIVER_NEARBY_THRESHOLD:
 		return true
 
 	var surface_height := _height_from_sample(sample)
@@ -5530,7 +6123,11 @@ func _river_bank_detail_score(sample: Dictionary, u: float, v: float) -> float:
 
 
 func _spawn_cached_props(props: Array) -> void:
+	props = ForestLayout.prepare(self, props)
+	gameplay_props = props
+	var rocky_deposits: Array = []
 	var tree_batches: Dictionary = {}
+	var infill_batches: Dictionary = {}
 	var tree_impostor_batches: Dictionary = {}
 	var scenery_batches: Dictionary = {}
 	var tree_shadows: Array = []
@@ -5538,36 +6135,50 @@ func _spawn_cached_props(props: Array) -> void:
 	full_model_entity_count = 0
 	impostor_entity_count = 0
 	for prop in props:
+		if prop.get("rocky_bonus", false):
+			rocky_deposits.append(prop)
+			continue
 		var prop_type := str(prop.get("type", ""))
+		var suppressed := bool(prop.get("forest_suppressed", false))
+		if suppressed and prop_type == "scenery": continue
 		var position := Vector3.ZERO
 		if prop.has("position") and prop["position"] is Vector3:
 			position = prop["position"]
 		var scale_value: float = float(prop.get("scale", 1.0))
 		var rotation_y: float = float(prop.get("rotation", 0.0))
 		match prop_type:
+			"forest_tree":
+				loaded_entity_count += 0 if suppressed else 1
+				full_model_entity_count += 0 if suppressed else 1
+				var asset := str(prop.asset)
+				if not suppressed: _append_tree_shadow_data(tree_shadows, asset, position, scale_value)
+				if not infill_batches.has(asset): infill_batches[asset] = []
+				infill_batches[asset].append(prop)
 			"tree":
-				loaded_entity_count += 1
-				full_model_entity_count += 1
+				loaded_entity_count += 0 if suppressed else 1
+				full_model_entity_count += 0 if suppressed else 1
 				var tree_asset_path := str(prop.get("asset", ""))
-				_append_tree_shadow_data(tree_shadows, tree_asset_path, position, scale_value)
+				if not suppressed: _append_tree_shadow_data(tree_shadows, tree_asset_path, position, scale_value)
 				if tree_asset_path.is_empty():
-					_spawn_tree(position, scale_value, rotation_y)
+					if suppressed: resource_node_sequence += 1
+					else: _spawn_tree(position, scale_value, rotation_y)
 				else:
 					if not tree_batches.has(tree_asset_path):
 						tree_batches[tree_asset_path] = []
 					tree_batches[tree_asset_path].append(prop)
 			"tree_impostor":
-				loaded_entity_count += 1
+				loaded_entity_count += 0 if suppressed else 1
 				var impostor_asset_path := str(prop.get("asset", ""))
 				if not impostor_asset_path.is_empty():
-					_append_tree_shadow_data(tree_shadows, impostor_asset_path, position, scale_value)
+					if not suppressed: _append_tree_shadow_data(tree_shadows, impostor_asset_path, position, scale_value)
 					if TREE_IMPOSTORS_ENABLED:
+						if suppressed: continue
 						impostor_entity_count += 1
 						if not tree_impostor_batches.has(impostor_asset_path):
 							tree_impostor_batches[impostor_asset_path] = []
 						tree_impostor_batches[impostor_asset_path].append(prop)
 					else:
-						full_model_entity_count += 1
+						full_model_entity_count += 0 if suppressed else 1
 						if not tree_batches.has(impostor_asset_path):
 							tree_batches[impostor_asset_path] = []
 						tree_batches[impostor_asset_path].append(prop)
@@ -5592,11 +6203,20 @@ func _spawn_cached_props(props: Array) -> void:
 
 	for asset_path in tree_batches.keys():
 		_spawn_tree_batch(str(asset_path), tree_batches[asset_path])
+	# Append new harvestable trees after legacy resources to preserve saved IDs.
+	for asset_path in infill_batches.keys():
+		_spawn_tree_batch(str(asset_path), infill_batches[asset_path])
 	for asset_path in scenery_batches.keys():
 		_spawn_scenery_batch(str(asset_path), scenery_batches[asset_path])
 	if TREE_IMPOSTORS_ENABLED:
 		for asset_path in tree_impostor_batches.keys():
 			_spawn_tree_impostor_batch(str(asset_path), tree_impostor_batches[asset_path])
+	# The new deposits must not shift any legacy or forest-infill resource IDs.
+	for prop in rocky_deposits:
+		loaded_entity_count += 1
+		full_model_entity_count += 1
+		_spawn_resource_deposit(prop)
+	if wetlands != null: wetlands.spawn()
 	_restore_resource_state()
 	_spawn_tree_shadow_batch(tree_shadows)
 	_spawn_resource_ring_batches()
@@ -5645,7 +6265,7 @@ func _spawn_tree_shadow_batch(tree_shadows: Array) -> void:
 
 
 func _tree_ground_shadow_direction() -> Vector3:
-	var sun_direction := Game.get_battle_sun_direction()
+	var sun_direction := cell_shadow_sun_direction
 	var shadow_direction := Vector3(-sun_direction.x, 0.0, -sun_direction.z)
 	if shadow_direction.length_squared() < 0.001:
 		shadow_direction = Vector3(0.45, 0.0, 0.82)
@@ -5683,7 +6303,7 @@ func _tree_ground_shadow_material() -> ShaderMaterial:
 	tree_shadow_material = ShaderMaterial.new()
 	tree_shadow_material.shader = load("res://shaders/tree_ground_shadow.gdshader")
 	tree_shadow_material.set_shader_parameter("shadow_color", Color(0.015, 0.018, 0.012))
-	tree_shadow_material.set_shader_parameter("shadow_alpha", TREE_GROUND_SHADOW_ALPHA)
+	_sync_tree_ground_shadow_lighting(smoothstep(-0.04, 0.45, cell_lighting_sun_amount))
 	return tree_shadow_material
 
 
@@ -5978,53 +6598,71 @@ func _spawn_tree_batch(asset_path: String, tree_props: Array) -> void:
 	var parts := _tree_mesh_parts_for_path(asset_path)
 	if parts.is_empty():
 		for prop in tree_props:
-			var position := Vector3.ZERO
-			if prop.has("position") and prop["position"] is Vector3:
-				position = prop["position"]
-			_spawn_tree(position, float(prop.get("scale", 1.0)), float(prop.get("rotation", 0.0)), asset_path)
+			if prop.get("forest_suppressed", false):
+				resource_node_sequence += 1
+				continue
+			_spawn_tree(prop.position, float(prop.get("scale", 1.0)), float(prop.get("rotation", 0.0)), asset_path)
 		return
 
+	var chunks: Dictionary = {}
+	for prop_index in range(tree_props.size()):
+		if tree_props[prop_index].get("forest_suppressed", false): continue
+		var position: Vector3 = tree_props[prop_index].position
+		var key := Vector2i(floori(position.x / TREE_BATCH_CHUNK_SIZE), floori(position.z / TREE_BATCH_CHUNK_SIZE))
+		if not chunks.has(key):
+			chunks[key] = []
+		chunks[key].append(prop_index)
+
+	var assignments: Array = []
+	assignments.resize(tree_props.size())
 	var asset_name := asset_path.get_file().get_basename()
-	var part_batches: Array = []
-	for part_index in range(parts.size()):
-		var part := parts[part_index] as Dictionary
-		var mesh := part.get("mesh") as Mesh
-		if mesh == null:
+	for key: Vector2i in chunks:
+		var indices: Array = chunks[key]
+		var origin := Vector3((key.x + 0.5) * TREE_BATCH_CHUNK_SIZE, 0.0, (key.y + 0.5) * TREE_BATCH_CHUNK_SIZE)
+		var part_batches: Array = []
+		for part_index in range(parts.size()):
+			var part := parts[part_index] as Dictionary
+			var mesh := part.get("mesh") as Mesh
+			if mesh == null:
+				continue
+			mesh = _battle_lit_mesh(mesh)
+			var multimesh := MultiMesh.new()
+			multimesh.transform_format = MultiMesh.TRANSFORM_3D
+			multimesh.mesh = mesh
+			multimesh.instance_count = indices.size()
+			var local_transform := part.get("transform", Transform3D.IDENTITY) as Transform3D
+			var bounds := AABB()
+			for instance_index in range(indices.size()):
+				var prop: Dictionary = tree_props[indices[instance_index]]
+				var basis := Basis(Vector3.UP, float(prop.rotation)).scaled(Vector3.ONE * float(prop.scale))
+				var transform := Transform3D(basis, prop.position - origin) * local_transform
+				multimesh.set_instance_transform(instance_index, transform)
+				var instance_bounds: AABB = transform * mesh.get_aabb()
+				bounds = instance_bounds if instance_index == 0 else bounds.merge(instance_bounds)
+			multimesh.custom_aabb = bounds.grow(1.0)
+			var batch := MultiMeshInstance3D.new()
+			batch.name = "TreeBatch_%s_%d_%d_%02d" % [asset_name, key.x, key.y, part_index + 1]
+			batch.position = origin
+			batch.multimesh = multimesh
+			batch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+			terrain_root.add_child(batch)
+			part_batches.append(batch)
+		for instance_index in range(indices.size()):
+			assignments[indices[instance_index]] = {"batches": part_batches, "index": instance_index}
+
+	# Save-game resource IDs depend on the original prop order, not chunk order.
+	for prop_index in range(tree_props.size()):
+		if tree_props[prop_index].get("forest_suppressed", false):
+			resource_node_sequence += 1
 			continue
-		mesh = _battle_lit_mesh(mesh)
-
-		var multimesh := MultiMesh.new()
-		multimesh.transform_format = MultiMesh.TRANSFORM_3D
-		multimesh.mesh = mesh
-		multimesh.custom_aabb = _full_map_prop_aabb()
-		multimesh.instance_count = tree_props.size()
-
-		var local_transform := part.get("transform", Transform3D.IDENTITY) as Transform3D
-		for instance_index in range(tree_props.size()):
-			var prop := tree_props[instance_index] as Dictionary
-			var position := Vector3.ZERO
-			if prop.has("position") and prop["position"] is Vector3:
-				position = prop["position"]
-			var scale_value := float(prop.get("scale", 1.0))
-			var rotation_y := float(prop.get("rotation", 0.0))
-			var basis := Basis(Vector3.UP, rotation_y).scaled(Vector3.ONE * scale_value)
-			var instance_transform := Transform3D(basis, position) * local_transform
-			multimesh.set_instance_transform(instance_index, instance_transform)
-
-		var batch := MultiMeshInstance3D.new()
-		batch.name = "TreeBatch_%s_%02d" % [asset_name, part_index + 1]
-		batch.multimesh = multimesh
-		batch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-		batch.extra_cull_margin = 128.0
-		terrain_root.add_child(batch)
-		part_batches.append(batch)
-
-	for instance_index in range(tree_props.size()):
-		var prop := tree_props[instance_index] as Dictionary
-		_register_tree_resource_node(prop, asset_path, part_batches, instance_index)
+		var assignment: Dictionary = assignments[prop_index]
+		_register_tree_resource_node(tree_props[prop_index], asset_path, assignment.batches, assignment.index)
 
 
 func _spawn_scenery_batch(asset_path: String, scenery_props: Array) -> void:
+	if TerrainDressing.is_asset(asset_path):
+		_spawn_dressing_chunks(asset_path, scenery_props)
+		return
 	var parts := _tree_mesh_parts_for_path(asset_path)
 	if parts.is_empty() or scenery_props.is_empty():
 		return
@@ -6060,11 +6698,49 @@ func _spawn_scenery_batch(asset_path: String, scenery_props: Array) -> void:
 		terrain_root.add_child(batch)
 
 
+func _spawn_dressing_chunks(asset_path: String, props: Array) -> void:
+	var chunks: Dictionary = {}
+	for prop in props:
+		var p: Vector3 = prop.position
+		var key := Vector3i(floor(p.x / TerrainDressing.CHUNK_SIZE), floor(p.z / TerrainDressing.CHUNK_SIZE), int(prop.get("neutral_rock", false)))
+		if not chunks.has(key): chunks[key] = []
+		chunks[key].append(prop)
+	var parts := TerrainDressing.mesh_parts(asset_path)
+	var profile := TerrainDressing.profile(asset_path)
+	for key in chunks:
+		var origin := Vector3((key.x + 0.5) * TerrainDressing.CHUNK_SIZE, 0.0, (key.y + 0.5) * TerrainDressing.CHUNK_SIZE)
+		for part in parts:
+			var instances := MultiMesh.new()
+			instances.transform_format = MultiMesh.TRANSFORM_3D
+			instances.use_custom_data = true
+			instances.mesh = part.mesh
+			instances.instance_count = chunks[key].size()
+			for index in range(chunks[key].size()):
+				var prop: Dictionary = chunks[key][index]
+				var basis := Basis(Vector3.UP, float(prop.rotation)).scaled(Vector3.ONE * float(prop.scale))
+				instances.set_instance_transform(index, Transform3D(basis, prop.position - origin) * part.transform)
+				instances.set_instance_custom_data(index, Color(prop.position.y, prop.scale, fposmod(prop.position.x * 0.17 + prop.position.z * 0.11, TAU), 0.0))
+			var batch := MultiMeshInstance3D.new()
+			batch.name = "Dressing_%s_%s_%s" % [asset_path.get_file().get_basename(), key.x, key.y]
+			batch.position = origin
+			batch.multimesh = instances
+			if key.z == 1:
+				var rock_material := StandardMaterial3D.new()
+				rock_material.albedo_color = Color(0.32, 0.35, 0.33)
+				rock_material.roughness = 0.94
+				batch.material_override = rock_material
+			batch.extra_cull_margin = 1.0
+			batch.visibility_range_end = float(profile.distance)
+			batch.visibility_range_end_margin = 80.0 if profile.distance > 0.0 else 0.0
+			batch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if str(profile.group).ends_with("_rocks") else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			terrain_root.add_child(batch)
+
+
 func _full_map_prop_aabb() -> AABB:
 	var margin := 128.0
 	return AABB(
 		Vector3(-MAP_SIZE * 0.5 - margin, TERRAIN_BASE_HEIGHT - margin, -MAP_SIZE * 0.5 - margin),
-		Vector3(MAP_SIZE + margin * 2.0, TERRAIN_HEIGHT_SCALE + margin * 2.0, MAP_SIZE + margin * 2.0)
+		Vector3(MAP_SIZE + margin * 2.0, TERRAIN_MAX_RELIEF + margin * 2.0, MAP_SIZE + margin * 2.0)
 	)
 
 
@@ -6211,7 +6887,7 @@ func _register_resource_node(data: Dictionary):
 	if data.has("position") and data["position"] is Vector3:
 		position = data["position"]
 	resource.configure({
-		"id": "res_%05d" % resource_node_sequence,
+		"id": str(data.get("id", "res_%05d" % resource_node_sequence)),
 		"resource_type": str(data.get("resource_type", "wood")),
 		"deposit_size": str(data.get("deposit_size", "medium")),
 		"stage": str(data.get("stage", RTSResourceNodeScript.STAGE_RAW)),
@@ -6256,6 +6932,12 @@ func _restore_resource_state() -> void:
 		resource.depleted = bool(saved.get("depleted", resource.amount_remaining <= 0))
 		if resource.depleted:
 			resource.hide_visual()
+		elif resource.stage in [RTSResourceNodeScript.STAGE_FALLING_TREE, RTSResourceNodeScript.STAGE_FALLEN_TREE]:
+			resource.hide_visual(false)
+			resource.set_visual_batches([], -1)
+			var saved_progress: float = resource.work_progress
+			_complete_tree_fall(resource)
+			resource.work_progress = saved_progress
 		elif resource.stage == RTSResourceNodeScript.STAGE_FELLED_LOG:
 			resource.hide_visual(false)
 			resource.set_visual_batches([], -1)
@@ -6365,7 +7047,7 @@ func _spawn_felled_resource_visual(resource) -> Node3D:
 	var tree_length := maxf(4.0, _tree_base_height_for_asset(str(resource.asset_path)) * float(resource.scale_value))
 	var piece_length := maxf(1.8, tree_length / float(SPLIT_WOOD_PIECE_COUNT) * 1.08)
 	var fall_yaw := float(resource.rotation_y)
-	var fall_sign := float(resource.get_meta("tree_fall_sign", 1.0))
+	var fall_sign := _tree_fall_sign(resource)
 	var fall_direction := Vector3(-cos(fall_yaw), 0.0, sin(fall_yaw)) * fall_sign
 	var side_direction := Vector3(-fall_direction.z, 0.0, fall_direction.x)
 	for piece_index in range(SPLIT_WOOD_PIECE_COUNT):
@@ -6481,6 +7163,7 @@ func _tree_scene_for_path(asset_path: String) -> PackedScene:
 
 
 func _tree_mesh_parts_for_path(asset_path: String) -> Array:
+	if TerrainDressing.is_asset(asset_path): return TerrainDressing.mesh_parts(asset_path)
 	if tree_mesh_part_cache.has(asset_path):
 		return tree_mesh_part_cache[asset_path]
 
@@ -6667,11 +7350,48 @@ func _resource_member_bottom_y(member: Node3D) -> float:
 	return float((bounds["min"] as Vector3).y)
 
 
+func _ore_deposit_footprint_is_dry(position: Vector3, radius: float, heights: PackedFloat32Array = PackedFloat32Array(), row_length: int = 0) -> bool:
+	if heights.is_empty():
+		heights = terrain_surface_heights
+		row_length = terrain_surface_row_length
+	var half_size := MAP_SIZE * 0.5
+	var center := Vector2(position.x, position.z)
+	var extent := Vector2.ONE * (radius + ORE_BANK_CLEARANCE)
+	var minimum := center - extent
+	var maximum := center + extent
+	if minimum.x <= -half_size or minimum.y <= -half_size or maximum.x >= half_size or maximum.y >= half_size:
+		return false
+	# Inspect the vertices of every intersected river/ocean mesh cell. Their grids
+	# differ, and a few radial probes can miss water crossing the cluster interior.
+	for steps in [RIVER_SURFACE_STEPS, WATER_PLANE_STEPS]:
+		var step := MAP_SIZE / float(steps)
+		var first := Vector2i((minimum + Vector2.ONE * half_size) / step)
+		var last := Vector2i(((maximum + Vector2.ONE * half_size) / step).ceil())
+		for z in range(first.y, last.y + 1):
+			for x in range(first.x, last.x + 1):
+				var uv := Vector2(x, z) / float(steps)
+				var sample := _sample_cell_uv(uv.x, uv.y)
+				if str(sample.get("terrain", "water")) == "water" or float(sample.get("river", 0.0)) > TREE_RIVER_NEARBY_THRESHOLD:
+					return false
+				if float(sample.get("elevation", WorldState.SEA_LEVEL + 1.0)) <= WorldState.SEA_LEVEL + 0.006:
+					return false
+				var height := _height_from_smoothed_terrain_at_uv(uv.x, uv.y, heights, row_length)
+				if height <= WATER_SURFACE_HEIGHT + 0.3:
+					return false
+	return true
+
+
 func _spawn_resource_deposit(prop: Dictionary) -> void:
 	var resource_type := str(prop.get("resource_type", "resource"))
+	# Resolve by resource type so existing cached cells/saves receive the new art.
+	var ore_kind := "gold" if resource_type == "gold_ore" else resource_type
+	var redesigned_ore := ore_kind in OreVisual.KINDS
 	var position: Vector3 = prop.get("position", Vector3.ZERO)
 	var rotation_y := float(prop.get("rotation", 0.0))
 	var asset_path := str(prop.get("asset", ""))
+	if redesigned_ore:
+		# Saved/cached deposits may still name deleted GLBs. Never propagate those paths.
+		asset_path = ORE_DEPOSIT_ASSETS["gold_ore" if ore_kind == "gold" else ore_kind]
 	var asset_paths: Array = prop.get("assets", [asset_path])
 	if asset_paths.is_empty():
 		asset_paths = [asset_path]
@@ -6686,6 +7406,15 @@ func _spawn_resource_deposit(prop: Dictionary) -> void:
 	var visual_y_offset := float(prop.get("visual_y_offset", 0.0))
 	var aquatic_resource := _is_aquatic_resource_type(resource_type)
 	var member_scale_multipliers: Dictionary = prop.get("member_scale_multipliers", {})
+	if redesigned_ore:
+		var maximum_member_multiplier := 1.0
+		for multiplier in member_scale_multipliers.values():
+			maximum_member_multiplier = maxf(maximum_member_multiplier, float(multiplier))
+		var footprint := scale_value * (cluster_spread + ORE_MODEL_FOOTPRINT_RADIUS * 1.22 * maximum_member_multiplier)
+		if not _ore_deposit_footprint_is_dry(position, footprint):
+			# Keep later resource IDs stable when rejecting an old cached wet deposit.
+			resource_node_sequence += 1
+			return
 	var swim_speed_range: Vector2 = prop.get("swim_speed_range", Vector2(0.48, 0.92))
 	var animation_speed := float(prop.get("animation_speed", 1.35 if aquatic_resource else 1.0))
 	var root := Node3D.new()
@@ -6701,10 +7430,20 @@ func _spawn_resource_deposit(prop: Dictionary) -> void:
 		fish_seabed_local_y = _height_from_sample(_sample_cell_uv(fish_u, fish_v)) - position.y
 	for index in range(cluster_count):
 		var member_path := str(asset_paths[index % asset_paths.size()])
-		var scene := _tree_scene_for_path(member_path)
-		if scene == null:
-			continue
-		var member := scene.instantiate()
+		var member: Node
+		if redesigned_ore:
+			var ore := OreVisual.new()
+			ore.ore_kind = ore_kind
+			# Do not consume the placement RNG: sizes, offsets and yields stay stable.
+			ore.variant = 1 + posmod(int(rng.seed) + index, 3)
+			ore.battle_view = true
+			ore.set_detail(1)
+			member = ore
+		else:
+			var scene := _tree_scene_for_path(member_path)
+			if scene == null:
+				continue
+			member = scene.instantiate()
 		if not member is Node3D:
 			member.queue_free()
 			continue
@@ -6758,13 +7497,19 @@ func _spawn_resource_deposit(prop: Dictionary) -> void:
 				"speed": orbit_speed,
 				"depth_amplitude": depth_amplitude,
 				"depth_phase": depth_phase,
+				"pond_school": bool(prop.get("pond_school", false)),
 			})
 		member_3d.position = offset
 		member_3d.rotation.y = angle + rng.randf_range(-0.35, 0.35) if not aquatic_resource else angle
 		member_3d.scale = Vector3.ONE * member_scale
-		_apply_battle_lit_materials(member_3d)
+		if redesigned_ore:
+			ore_lod_members.append(member_3d)
+			if camera != null and member_3d.is_inside_tree():
+				member_3d.update_camera_detail(camera.global_position, true)
+		else:
+			_apply_battle_lit_materials(member_3d)
 		_set_shadow_casting(member_3d, not aquatic_resource)
-		_play_deposit_animation(member_3d, animation_speed)
+		if not redesigned_ore: _play_deposit_animation(member_3d, animation_speed)
 
 	if root.get_child_count() == 0:
 		root.queue_free()
@@ -6774,6 +7519,7 @@ func _spawn_resource_deposit(prop: Dictionary) -> void:
 	var base_amount := int(prop.get("amount", _resource_deposit_amount(resource_type)))
 	var sized_amount := maxi(1, roundi(float(base_amount) * _resource_deposit_amount_multiplier(deposit_size)))
 	var registered_resource = _register_resource_node({
+		"id": str(prop.get("resource_id", "res_%05d" % (resource_node_sequence + 1))),
 		"resource_type": resource_type,
 		"deposit_size": deposit_size,
 		"position": position,
@@ -6789,6 +7535,19 @@ func _spawn_resource_deposit(prop: Dictionary) -> void:
 		"show_ring": bool(prop.get("show_ring", true)),
 		"visual_node": root,
 	})
+
+
+func _update_ore_lod(delta: float) -> void:
+	if camera == null or ore_lod_members.is_empty(): return
+	ore_lod_elapsed += delta
+	if ore_lod_elapsed < 0.28: return
+	ore_lod_elapsed = 0.0
+	for index in range(ore_lod_members.size() - 1, -1, -1):
+		var ore := ore_lod_members[index]
+		if not is_instance_valid(ore):
+			ore_lod_members.remove_at(index)
+		elif ore.is_visible_in_tree():
+			ore.update_camera_detail(camera.global_position)
 
 
 func _is_aquatic_resource_type(resource_type: String) -> bool:
@@ -6837,11 +7596,18 @@ func _update_fish_school_motion(delta: float) -> void:
 		var phase := float(motion.get("phase", 0.0)) + fish_school_elapsed * speed
 		var depth_amplitude := float(motion.get("depth_amplitude", 0.15))
 		var depth_phase := float(motion.get("depth_phase", 0.0))
-		fish.position = center + Vector3(
+		var next_position := center + Vector3(
 			cos(phase) * radius_x,
 			sin(depth_phase + fish_school_elapsed * absf(speed) * 1.65) * depth_amplitude,
 			sin(phase) * radius_z
 		)
+		if bool(motion.get("pond_school", false)):
+			var world_point: Vector3 = fish.get_parent().to_global(next_position)
+			if not _is_unit_swimming_at(world_point.x, world_point.z): continue
+			var bed := _height_from_smoothed_terrain_at_uv(world_point.x / MAP_SIZE + 0.5, world_point.z / MAP_SIZE + 0.5, terrain_surface_heights, terrain_surface_row_length)
+			if WATER_SURFACE_HEIGHT - bed < 0.28: continue
+			next_position.y = clampf(next_position.y, bed - fish.get_parent().global_position.y + 0.12, WATER_SURFACE_HEIGHT - fish.get_parent().global_position.y - 0.16)
+		fish.position = next_position
 		var direction := Vector3(-sin(phase) * radius_x * speed, 0.0, cos(phase) * radius_z * speed)
 		if direction.length_squared() > 0.0001:
 			direction = direction.normalized()
@@ -6850,6 +7616,9 @@ func _update_fish_school_motion(delta: float) -> void:
 
 
 func _refresh_overlay() -> void:
+	if hud != null:
+		hud.refresh()
+		return
 	var cell_id := "none"
 	var terrain_name := "Unknown"
 	var biome_name := "Unknown"
@@ -6886,6 +7655,9 @@ func _refresh_overlay() -> void:
 
 
 func _refresh_context_panel() -> void:
+	if hud != null:
+		hud.refresh_selection()
+		return
 	if context_title_label == null or context_stats_label == null:
 		return
 
@@ -6954,15 +7726,13 @@ func _refresh_context_panel() -> void:
 			_hud_stat_icon("armor"),
 			int(selected_unit_data.armor),
 		],
-		"%s %d   %s %.1f   %s %s   %s %s" % [
+		"%s %d   %s %.1f   %s %s" % [
 			_hud_stat_icon("damage"),
 			int(selected_unit_data.damage),
 			_hud_stat_icon("speed"),
 			float(selected_unit_data.movement_speed),
 			_hud_stat_icon("equipment"),
 			str(selected_unit_data.equipment_id),
-			_hud_stat_icon("profession"),
-			str(selected_unit_data.profession).capitalize(),
 		],
 		"RMB %s   2xRMB %s   Shift %s" % [_hud_icon("move"), _hud_icon("jog"), _hud_icon("add_selection")],
 	])
@@ -7138,8 +7908,11 @@ func _hud_icon_texture(icon_name: String) -> Texture2D:
 	return texture
 
 
-func _settlement_population_estimate(resources: Dictionary) -> int:
-	return max(0, int(resources.get("supply", 0)) * 12)
+func _settlement_population_estimate(_resources: Dictionary) -> int:
+	var count := 0
+	for person in battle_units:
+		if person.is_alive() and person.faction_id == "player": count += 1
+	return count
 
 
 func _tech_level_label() -> String:
@@ -7196,14 +7969,21 @@ func _sun_label(sun_amount: float) -> String:
 	return "Day"
 
 
-func _terrain_material() -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	material.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.metallic = 0.0
-	material.metallic_specular = 0.0
-	material.roughness = 0.94
+func _terrain_material() -> ShaderMaterial:
+	if terrain_detail_texture == null:
+		var noise := FastNoiseLite.new()
+		noise.seed = 5417
+		noise.frequency = 0.035
+		noise.fractal_octaves = 3
+		terrain_detail_texture = NoiseTexture2D.new()
+		terrain_detail_texture.width = 256
+		terrain_detail_texture.height = 256
+		terrain_detail_texture.seamless = true
+		terrain_detail_texture.generate_mipmaps = true
+		terrain_detail_texture.noise = noise
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://shaders/battle_terrain.gdshader")
+	material.set_shader_parameter("ground_detail", terrain_detail_texture)
 	return material
 
 
@@ -7224,8 +8004,8 @@ func _water_material(use_river_flow: bool) -> ShaderMaterial:
 	material.set_shader_parameter("alpha", 0.84 if use_river_flow else 0.86)
 	material.set_shader_parameter("facet_contrast", 0.26 if use_river_flow else 0.32)
 	material.set_shader_parameter("low_poly_strength", 0.62 if use_river_flow else 0.88)
-	material.set_shader_parameter("day_factor", _rts_visibility_factor(Game.get_battle_sun_amount()))
-	material.set_shader_parameter("sun_direction", Game.get_battle_sun_direction())
+	material.set_shader_parameter("day_factor", _rts_visibility_factor(cell_lighting_sun_amount))
+	material.set_shader_parameter("sun_direction", cell_lighting_sun_direction)
 	return material
 
 
@@ -7248,19 +8028,44 @@ func _water_noise_texture(noise_seed: int, frequency: float, bump_strength: floa
 	return texture
 
 
+func _update_sun_lighting(delta: float) -> void:
+	_sync_sun_lighting()
+	sun_shadow_elapsed += maxf(delta, 0.0)
+	if sun_shadow_elapsed < SUN_SHADOW_UPDATE_INTERVAL:
+		return
+	sun_shadow_elapsed = fmod(sun_shadow_elapsed, SUN_SHADOW_UPDATE_INTERVAL)
+	_sync_sun_shadow_direction()
+
+
+func _sync_sun_shadow_direction() -> void:
+	if sun_shadow_light == null or sun_shadow_cancel_light == null:
+		return
+	cell_shadow_sun_direction = Game.get_battle_sun_direction()
+	sun_shadow_light.look_at_from_position(cell_shadow_sun_direction * 100.0, Vector3.ZERO, Vector3.UP)
+	sun_shadow_cancel_light.transform = sun_shadow_light.transform
+
+
 func _sync_sun_lighting() -> void:
 	if sun_light == null or sky_material == null or battle_environment == null:
 		return
 
 	var sun_amount := Game.get_battle_sun_amount()
+	cell_lighting_sun_amount = sun_amount
 	var visibility_factor := _rts_visibility_factor(sun_amount)
 	var direct_sun_factor := smoothstep(-0.04, 0.45, sun_amount)
 	var night_fill_factor := 1.0 - smoothstep(-0.08, 0.38, sun_amount)
 	var sun_direction := Game.get_battle_sun_direction()
-	sun_light.light_energy = lerpf(0.0, 1.85, direct_sun_factor)
-	sun_light.shadow_enabled = direct_sun_factor > 0.08
+	cell_lighting_sun_direction = sun_direction
+	sun_light.light_energy = lerpf(0.0, 1.65, direct_sun_factor)
 	sun_light.light_color = Color(1.0, 0.78, 0.54).lerp(Color(1.0, 0.96, 0.86), direct_sun_factor)
 	sun_light.look_at_from_position(sun_direction * 100.0, Vector3.ZERO, Vector3.UP)
+	if sun_shadow_light != null and sun_shadow_cancel_light != null:
+		var shadows_enabled := direct_sun_factor > 0.08
+		sun_shadow_light.shadow_enabled = shadows_enabled
+		for light in [sun_shadow_light, sun_shadow_cancel_light]:
+			light.visible = shadows_enabled
+			light.light_energy = sun_light.light_energy
+			light.light_color = sun_light.light_color
 	if night_fill_light != null:
 		night_fill_light.light_energy = MOON_LIGHT_MAX_ENERGY * night_fill_factor
 		var moon_direction := -sun_direction
@@ -7270,8 +8075,9 @@ func _sync_sun_lighting() -> void:
 	sky_material.set_shader_parameter("sun_direction", sun_direction)
 	sky_material.set_shader_parameter("sun_amount", sun_amount)
 	sky_material.set_shader_parameter("day_factor", visibility_factor)
-	battle_environment.ambient_light_color = Color(0.13, 0.16, 0.24).lerp(Color(0.62, 0.60, 0.52), visibility_factor)
-	battle_environment.ambient_light_energy = lerpf(0.40, 0.72, visibility_factor)
+	battle_environment.ambient_light_color = Color(0.13, 0.16, 0.24).lerp(Color(0.59, 0.68, 0.80), visibility_factor)
+	battle_environment.ambient_light_energy = lerpf(0.40, 0.44, visibility_factor)
+	battle_environment.fog_light_color = Color(0.07, 0.09, 0.15).lerp(Color(0.62, 0.72, 0.81), visibility_factor)
 	_sync_water_lighting(visibility_factor, sun_direction)
 	_sync_tree_ground_shadow_lighting(direct_sun_factor)
 	var next_sun_label := _sun_label(sun_amount)
@@ -7347,13 +8153,16 @@ func _snapshot_current_cell_state() -> void:
 		if building != null:
 			serialized_buildings.append(building.to_dict())
 
-	cell.rts_state = {
-		"version": 2,
+	cell.rts_state.merge({
+		"version": 3,
 		"units": serialized_units,
 		"unit_runtime": runtime_by_id,
 		"buildings": serialized_buildings,
 		"resources": serialized_resources,
-	}
+	}, true)
+	if tool_pickups != null: tool_pickups.snapshot()
+	if construction != null: construction.snapshot()
+	if wildlife != null: wildlife.snapshot()
 
 
 func _hud_stat_icon(icon_name: String) -> String:
@@ -7370,6 +8179,7 @@ func _join_lines(lines: Array) -> String:
 
 
 func _update_rts_camera(delta: float) -> void:
+	if hud != null and hud.menu.visible: return
 	if camera == null:
 		return
 
@@ -7407,6 +8217,9 @@ func _update_rts_camera(delta: float) -> void:
 	var limit := MAP_SIZE * 0.5
 	next_position.x = clamp(next_position.x, -limit, limit)
 	next_position.z = clamp(next_position.z, -limit + CAMERA_MIN_Z, limit + CAMERA_MAX_Z * 0.25)
+	var current_ground := _terrain_surface_height_for_local(camera.position.x, camera.position.z)
+	var next_ground := _terrain_surface_height_for_local(next_position.x, next_position.z)
+	next_position.y = next_ground + maxf(CAMERA_MIN_HEIGHT, camera.position.y - current_ground)
 	camera.position = next_position
 
 
@@ -7414,11 +8227,12 @@ func _zoom_camera(amount: float) -> void:
 	if free_roam_enabled:
 		return
 
-	var next_y: float = clamp(camera.position.y + amount, CAMERA_MIN_HEIGHT, CAMERA_MAX_HEIGHT)
-	var zoom_ratio: float = inverse_lerp(CAMERA_MIN_HEIGHT, CAMERA_MAX_HEIGHT, next_y)
+	var ground := _terrain_surface_height_for_local(camera.position.x, camera.position.z)
+	var next_height: float = clamp(camera.position.y - ground + amount, CAMERA_MIN_HEIGHT, CAMERA_MAX_HEIGHT)
+	var zoom_ratio: float = inverse_lerp(CAMERA_MIN_HEIGHT, CAMERA_MAX_HEIGHT, next_height)
 	var next_z: float = lerpf(CAMERA_MIN_Z, CAMERA_MAX_Z, zoom_ratio)
-	camera.position.y = next_y
 	camera.position.z = clamp(camera.position.z, -MAP_SIZE * 0.5 + next_z, MAP_SIZE * 0.5 + next_z * 0.25)
+	camera.position.y = _terrain_surface_height_for_local(camera.position.x, camera.position.z) + next_height
 	camera.rotation_degrees.x = lerpf(-58.0, -46.0, zoom_ratio)
 
 
@@ -7467,3 +8281,46 @@ func _update_free_roam_camera(delta: float) -> void:
 	if Input.is_key_pressed(KEY_SHIFT):
 		speed *= FREE_ROAM_FAST_MULTIPLIER
 	camera.global_position += direction * speed * delta
+
+
+func _initialize_settlement_gameplay() -> void:
+	for resource in resource_nodes_by_id.values():
+		if resource.depleted or _is_aquatic_resource_type(resource.resource_type): continue
+		var radius: float = minf(resource.visual_radius, resource.gather_range - 3.0)
+		if resource.stage == RTSResourceNodeScript.STAGE_STANDING_TREE: radius = ForestLayout.TRUNK_RADIUS
+		navigation.add_circle(resource.id, resource.world_position, maxf(1.0, radius))
+	for index in range(gameplay_props.size()):
+		var prop: Dictionary = gameplay_props[index]
+		if prop.get("forest_suppressed", false): continue
+		var kind := str(prop.get("type", ""))
+		if kind == "scenery" and str(TerrainDressing.profile(str(prop.get("asset", ""))).get("group", "")) in ["grass", "flower", "mushroom", "bush", "winter", "desert"]: continue
+		if kind in ["scenery", "rock"]:
+			var radius := float(prop.get("footprint", 0.0))
+			if str(prop.get("asset", "")) in SMALL_TREE_ASSETS or str(prop.get("asset", "")) in SMALL_SNOW_TREE_ASSETS:
+				radius = ForestLayout.TRUNK_RADIUS
+			if radius <= 0.0:
+				for part in _tree_mesh_parts_for_path(str(prop.get("asset", ""))):
+					var bounds: AABB = part.transform * part.mesh.get_aabb()
+					var far_x := maxf(absf(bounds.position.x), absf(bounds.end.x))
+					var far_z := maxf(absf(bounds.position.z), absf(bounds.end.z))
+					radius = maxf(radius, Vector2(far_x, far_z).length() * float(prop.get("scale", 1.0)))
+			if radius > 1.0: navigation.add_circle("scenery_%d" % index, prop.position, radius)
+	for actor in unit_actors_by_id.values(): actor.navigation = navigation
+	if fog_of_war != null and is_instance_valid(fog_of_war.overlay): fog_of_war.overlay.queue_free()
+	fog_of_war = preload("res://scripts/battle/rts_fog_of_war.gd").new()
+	fog_of_war.configure(self)
+	construction = preload("res://scripts/battle/rts_construction.gd").new()
+	construction.configure(self, navigation)
+	if str(cell.id) != "CONTROL_TEST":
+		navigation.prepare_routes()
+		wildlife = preload("res://scripts/battle/rts_wildlife.gd").new()
+		wildlife.configure(self, navigation)
+	if tool_pickups != null: tool_pickups.restore_jobs()
+
+
+func _actor_has_gameplay_task(actor) -> bool:
+	if tool_pickups != null and tool_pickups.jobs.has(actor.unit_id):
+		if tool_pickups.jobs[actor.unit_id].revision == actor.action_revision: return true
+	if construction != null and construction.jobs.has(actor.unit_id):
+		if construction.jobs[actor.unit_id].revision == actor.action_revision: return true
+	return false

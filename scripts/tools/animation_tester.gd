@@ -4,6 +4,7 @@ const MENU_SCENE := "res://scenes/menu/main_menu.tscn"
 const MODEL_HEIGHT := 2.8
 const DEFAULT_CAMERA_DISTANCE := 7.0
 const AnimationCatalog = preload("res://scripts/tools/unit_animation_catalog.gd")
+const PreviewSceneSelector = preload("res://scripts/tools/preview_scene_selector.gd")
 
 var models: Array[Dictionary] = []
 var animation_names: Array[String] = []
@@ -162,6 +163,7 @@ func _build_interface() -> void:
 	var stack := VBoxContainer.new()
 	stack.add_theme_constant_override("separation", 8)
 	animation_panel.add_child(stack)
+	stack.add_child(PreviewSceneSelector.new())
 
 	var heading := Label.new()
 	heading.text = "Animation Library"
@@ -176,7 +178,7 @@ func _build_interface() -> void:
 
 	animation_list = ItemList.new()
 	animation_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	animation_list.custom_minimum_size = Vector2(334.0, 360.0)
+	animation_list.custom_minimum_size = Vector2(334.0, 120.0)
 	animation_list.select_mode = ItemList.SELECT_SINGLE
 	animation_list.item_selected.connect(_on_animation_selected)
 	animation_list.item_activated.connect(_on_animation_selected)
@@ -368,11 +370,14 @@ func _on_animation_selected(index: int) -> void:
 func _play_animation(animation_name: String) -> void:
 	if animation_players.is_empty():
 		return
+	if animation_player.has_animation(animation_name):
+		loop_check.set_pressed_no_signal(animation_player.get_animation(animation_name).loop_mode != Animation.LOOP_NONE)
 	for player in animation_players:
 		if not player.has_animation(animation_name):
 			continue
-		var animation := player.get_animation(animation_name)
-		animation.loop_mode = Animation.LOOP_LINEAR if loop_check.button_pressed else Animation.LOOP_NONE
+		player.stop()
+		var skeleton := AnimationCatalog.find_first_skeleton(player.get_parent())
+		if skeleton != null: skeleton.reset_bone_poses()
 		player.speed_scale = speed_slider.value
 		player.play(animation_name, 0.15)
 	pause_button.text = "Pause"

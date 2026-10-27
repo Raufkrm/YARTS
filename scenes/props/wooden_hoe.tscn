@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/tools/hoes/wooden_hoe_lod0.glb" id="1"]
+
+[node name="WoodenHoe" type="Node3D"]
+
+[node name="Model" parent="." instance=ExtResource("1")]
+
+[node name="Grip" type="Marker3D" parent="."]
+position = Vector3(0, 0.30, 0)
+
+[node name="SupportGrip" type="Marker3D" parent="."]
+position = Vector3(0, 0.72, 0)

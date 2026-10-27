@@ -1,0 +1,2192 @@
+{
+  "schema": 1,
+  "status": "approved_style_cell_assets",
+  "units": "meters",
+  "rules": "docs/rts_asset_lod_plan.md",
+  "assets": {
+    "coal_v01": {
+      "ore": "coal",
+      "variant": 1,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_coal",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 134,
+        "triangles": 256,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.392378807067871,
+            1.691270112991333
+          ],
+          [
+            -0.9313517212867737,
+            0.9233905673027039
+          ],
+          [
+            0.0,
+            0.687283456325531
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v01_lod0.glb",
+        "exported_vertices": 596,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 53,
+        "triangles": 98,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.489685297012329,
+            1.5437883138656616
+          ],
+          [
+            -0.8002530932426453,
+            0.9894318580627441
+          ],
+          [
+            0.0,
+            0.6794213056564331
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v01_lod1.glb",
+        "exported_vertices": 230,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -1.003522515296936,
+            1.5437883138656616
+          ],
+          [
+            -0.8002530932426453,
+            0.8650380373001099
+          ],
+          [
+            0.0,
+            0.6794213056564331
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v01_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.541824460029602,
+      "footprint_size_m": [
+        3.083648920059204,
+        1.8547422885894775
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          3.083648920059204,
+          0.687283456325531,
+          1.8547422885894775
+        ]
+      }
+    },
+    "coal_v02": {
+      "ore": "coal",
+      "variant": 2,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_coal",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 157,
+        "triangles": 302,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.5877629518508911,
+            1.6165052652359009
+          ],
+          [
+            -0.8606733083724976,
+            0.8074741363525391
+          ],
+          [
+            0.0,
+            0.5600615739822388
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v02_lod0.glb",
+        "exported_vertices": 688,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 60,
+        "triangles": 112,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.4847825765609741,
+            1.6495361328125
+          ],
+          [
+            -0.7180854082107544,
+            0.9030693769454956
+          ],
+          [
+            0.0,
+            0.5473669767379761
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v02_lod1.glb",
+        "exported_vertices": 258,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.9869867563247681,
+            1.6495361328125
+          ],
+          [
+            -0.6870249509811401,
+            0.7362673282623291
+          ],
+          [
+            0.0,
+            0.5477352142333984
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v02_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.602134108543396,
+      "footprint_size_m": [
+        3.204268217086792,
+        1.6681474447250366
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          3.204268217086792,
+          0.5600615739822388,
+          1.6681474447250366
+        ]
+      }
+    },
+    "coal_v03": {
+      "ore": "coal",
+      "variant": 3,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_coal",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 154,
+        "triangles": 296,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.2479336261749268,
+            1.4324432611465454
+          ],
+          [
+            -0.8880220055580139,
+            0.9375889301300049
+          ],
+          [
+            0.0,
+            0.7302024364471436
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v03_lod0.glb",
+        "exported_vertices": 676,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 64,
+        "triangles": 120,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.3468278646469116,
+            1.4361286163330078
+          ],
+          [
+            -0.7772332429885864,
+            0.9798911213874817
+          ],
+          [
+            0.0,
+            0.7512422204017639
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v03_lod1.glb",
+        "exported_vertices": 274,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.8764771819114685,
+            1.4361286163330078
+          ],
+          [
+            -0.7772332429885864,
+            0.7552847862243652
+          ],
+          [
+            0.0,
+            0.7276197075843811
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_coal_v03_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.340188443660736,
+      "footprint_size_m": [
+        2.680376887321472,
+        1.8256109356880188
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.680376887321472,
+          0.7302024364471436,
+          1.8256109356880188
+        ]
+      }
+    },
+    "iron_v01": {
+      "ore": "iron",
+      "variant": 1,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_iron",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 141,
+        "triangles": 270,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.4181636571884155,
+            1.7225898504257202
+          ],
+          [
+            -0.9313517212867737,
+            0.9233905673027039
+          ],
+          [
+            0.0,
+            0.9059645533561707
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v01_lod0.glb",
+        "exported_vertices": 624,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 53,
+        "triangles": 98,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.5172721147537231,
+            1.5723769664764404
+          ],
+          [
+            -0.8002530932426453,
+            0.9894318580627441
+          ],
+          [
+            0.0,
+            0.8956007957458496
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v01_lod1.glb",
+        "exported_vertices": 230,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -1.0221061706542969,
+            1.5723769664764404
+          ],
+          [
+            -0.8002530932426453,
+            0.8650380373001099
+          ],
+          [
+            0.0,
+            0.8956007957458496
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v01_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.5703767538070679,
+      "footprint_size_m": [
+        3.1407535076141357,
+        1.8547422885894775
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          3.1407535076141357,
+          0.9059645533561707,
+          1.8547422885894775
+        ]
+      }
+    },
+    "iron_v02": {
+      "ore": "iron",
+      "variant": 2,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_iron",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 156,
+        "triangles": 300,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.6171659231185913,
+            1.6464406251907349
+          ],
+          [
+            -0.8606733083724976,
+            0.8074741363525391
+          ],
+          [
+            0.0,
+            0.7382630109786987
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v02_lod0.glb",
+        "exported_vertices": 684,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 60,
+        "triangles": 112,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.5122785568237305,
+            1.680083155632019
+          ],
+          [
+            -0.7180854082107544,
+            0.9030693769454956
+          ],
+          [
+            0.0,
+            0.7215291857719421
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v02_lod1.glb",
+        "exported_vertices": 258,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -1.0052642822265625,
+            1.680083155632019
+          ],
+          [
+            -0.6870249509811401,
+            0.7362673282623291
+          ],
+          [
+            0.0,
+            0.7220146059989929
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v02_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.631803274154663,
+      "footprint_size_m": [
+        3.263606548309326,
+        1.6681474447250366
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          3.263606548309326,
+          0.7382630109786987,
+          1.6681474447250366
+        ]
+      }
+    },
+    "iron_v03": {
+      "ore": "iron",
+      "variant": 3,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_iron",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 161,
+        "triangles": 310,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.2710435390472412,
+            1.458970069885254
+          ],
+          [
+            -0.8880220055580139,
+            0.9375889301300049
+          ],
+          [
+            0.0,
+            0.9625396132469177
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v03_lod0.glb",
+        "exported_vertices": 704,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 65,
+        "triangles": 122,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.3717690706253052,
+            1.4627236127853394
+          ],
+          [
+            -0.7772332429885864,
+            0.9798911213874817
+          ],
+          [
+            0.0,
+            0.9902738928794861
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v03_lod1.glb",
+        "exported_vertices": 278,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.8927082419395447,
+            1.4627236127853394
+          ],
+          [
+            -0.7772332429885864,
+            0.7552847862243652
+          ],
+          [
+            0.0,
+            0.9591350555419922
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_iron_v03_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.3650068044662476,
+      "footprint_size_m": [
+        2.730013608932495,
+        1.8256109356880188
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.730013608932495,
+          0.9625396132469177,
+          1.8256109356880188
+        ]
+      }
+    },
+    "copper_v01": {
+      "ore": "copper",
+      "variant": 1,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_copper",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 141,
+        "triangles": 270,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.2892396450042725,
+            1.5659908056259155
+          ],
+          [
+            -0.9313517212867737,
+            0.9233905673027039
+          ],
+          [
+            0.0,
+            1.041338562965393
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v01_lod0.glb",
+        "exported_vertices": 624,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 53,
+        "triangles": 98,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.379338264465332,
+            1.4294335842132568
+          ],
+          [
+            -0.8002530932426453,
+            0.9894318580627441
+          ],
+          [
+            0.0,
+            1.0294262170791626
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v01_lod1.glb",
+        "exported_vertices": 230,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.9291874766349792,
+            1.4294335842132568
+          ],
+          [
+            -0.8002530932426453,
+            0.8650380373001099
+          ],
+          [
+            0.0,
+            1.0294262170791626
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v01_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.427615225315094,
+      "footprint_size_m": [
+        2.855230450630188,
+        1.8547422885894775
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.855230450630188,
+          1.041338562965393,
+          1.8547422885894775
+        ]
+      }
+    },
+    "copper_v02": {
+      "ore": "copper",
+      "variant": 2,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_copper",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 156,
+        "triangles": 300,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.4701508283615112,
+            1.4967641830444336
+          ],
+          [
+            -0.8606733083724976,
+            0.8074741363525391
+          ],
+          [
+            0.0,
+            0.848578155040741
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v02_lod0.glb",
+        "exported_vertices": 684,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 60,
+        "triangles": 112,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.3747986555099487,
+            1.527348279953003
+          ],
+          [
+            -0.7180854082107544,
+            0.9030693769454956
+          ],
+          [
+            0.0,
+            0.8293439149856567
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v02_lod1.glb",
+        "exported_vertices": 258,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.9138766527175903,
+            1.527348279953003
+          ],
+          [
+            -0.6870249509811401,
+            0.7362673282623291
+          ],
+          [
+            0.0,
+            0.8299018144607544
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v02_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.4834575057029724,
+      "footprint_size_m": [
+        2.966915011405945,
+        1.6681474447250366
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.966915011405945,
+          0.848578155040741,
+          1.6681474447250366
+        ]
+      }
+    },
+    "copper_v03": {
+      "ore": "copper",
+      "variant": 3,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_copper",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 161,
+        "triangles": 310,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.1554940938949585,
+            1.32633638381958
+          ],
+          [
+            -0.8880220055580139,
+            0.9375889301300049
+          ],
+          [
+            0.0,
+            1.1063673496246338
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v03_lod0.glb",
+        "exported_vertices": 704,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 65,
+        "triangles": 122,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.2470628023147583,
+            1.3297487497329712
+          ],
+          [
+            -0.7772332429885864,
+            0.9798911213874817
+          ],
+          [
+            0.0,
+            1.1382458209991455
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v03_lod1.glb",
+        "exported_vertices": 278,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.8115529417991638,
+            1.3297487497329712
+          ],
+          [
+            -0.7772332429885864,
+            0.7552847862243652
+          ],
+          [
+            0.0,
+            1.1024540662765503
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_copper_v03_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.2409152388572693,
+      "footprint_size_m": [
+        2.4818304777145386,
+        1.8256109356880188
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.4818304777145386,
+          1.1063673496246338,
+          1.8256109356880188
+        ]
+      }
+    },
+    "tin_v01": {
+      "ore": "tin",
+      "variant": 1,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_tin",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 141,
+        "triangles": 270,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.2892396450042725,
+            1.5659908056259155
+          ],
+          [
+            -1.0244868993759155,
+            1.0157296657562256
+          ],
+          [
+            0.0,
+            0.8122440576553345
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v01_lod0.glb",
+        "exported_vertices": 624,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 53,
+        "triangles": 98,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.379338264465332,
+            1.4294335842132568
+          ],
+          [
+            -0.8802784085273743,
+            1.0883750915527344
+          ],
+          [
+            0.0,
+            0.8029524683952332
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v01_lod1.glb",
+        "exported_vertices": 230,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.9291874766349792,
+            1.4294335842132568
+          ],
+          [
+            -0.8802784085273743,
+            0.9515418410301208
+          ],
+          [
+            0.0,
+            0.8029524683952332
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v01_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.427615225315094,
+      "footprint_size_m": [
+        2.855230450630188,
+        2.040216565132141
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.855230450630188,
+          0.8122440576553345,
+          2.040216565132141
+        ]
+      }
+    },
+    "tin_v02": {
+      "ore": "tin",
+      "variant": 2,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_tin",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 156,
+        "triangles": 300,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.4701508283615112,
+            1.4967641830444336
+          ],
+          [
+            -0.9467406272888184,
+            0.8882215619087219
+          ],
+          [
+            0.0,
+            0.661890983581543
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v02_lod0.glb",
+        "exported_vertices": 684,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 60,
+        "triangles": 112,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.3747986555099487,
+            1.527348279953003
+          ],
+          [
+            -0.7898939251899719,
+            0.9933763146400452
+          ],
+          [
+            0.0,
+            0.646888256072998
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v02_lod1.glb",
+        "exported_vertices": 258,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.9138766527175903,
+            1.527348279953003
+          ],
+          [
+            -0.7557274699211121,
+            0.8098940849304199
+          ],
+          [
+            0.0,
+            0.6473234295845032
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v02_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.4834575057029724,
+      "footprint_size_m": [
+        2.966915011405945,
+        1.8349621891975403
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.966915011405945,
+          0.661890983581543,
+          1.8349621891975403
+        ]
+      }
+    },
+    "tin_v03": {
+      "ore": "tin",
+      "variant": 3,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_tin",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 161,
+        "triangles": 310,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.1554940938949585,
+            1.32633638381958
+          ],
+          [
+            -0.9768242239952087,
+            1.0313478708267212
+          ],
+          [
+            0.0,
+            0.8629665374755859
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v03_lod0.glb",
+        "exported_vertices": 704,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 65,
+        "triangles": 122,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.2470628023147583,
+            1.3297487497329712
+          ],
+          [
+            -0.8549565672874451,
+            1.0778802633285522
+          ],
+          [
+            0.0,
+            0.8878317475318909
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v03_lod1.glb",
+        "exported_vertices": 278,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.8115529417991638,
+            1.3297487497329712
+          ],
+          [
+            -0.8549565672874451,
+            0.8308132886886597
+          ],
+          [
+            0.0,
+            0.8599141836166382
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_tin_v03_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.2409152388572693,
+      "footprint_size_m": [
+        2.4818304777145386,
+        2.00817209482193
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.4818304777145386,
+          0.8629665374755859,
+          2.00817209482193
+        ]
+      }
+    },
+    "silver_v01": {
+      "ore": "silver",
+      "variant": 1,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_silver",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 141,
+        "triangles": 270,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.2376700639724731,
+            1.5033512115478516
+          ],
+          [
+            -0.9127246737480164,
+            0.9049227833747864
+          ],
+          [
+            0.0,
+            1.1662992238998413
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v01_lod0.glb",
+        "exported_vertices": 624,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 53,
+        "triangles": 98,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.3241647481918335,
+            1.3722562789916992
+          ],
+          [
+            -0.7842480540275574,
+            0.969643235206604
+          ],
+          [
+            0.0,
+            1.1529573202133179
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v01_lod1.glb",
+        "exported_vertices": 230,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.8920199871063232,
+            1.3722562789916992
+          ],
+          [
+            -0.7842480540275574,
+            0.8477372527122498
+          ],
+          [
+            0.0,
+            1.1529573202133179
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v01_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.3705106377601624,
+      "footprint_size_m": [
+        2.7410212755203247,
+        1.8176474571228027
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.7410212755203247,
+          1.1662992238998413,
+          1.8176474571228027
+        ]
+      }
+    },
+    "silver_v02": {
+      "ore": "silver",
+      "variant": 2,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_silver",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 156,
+        "triangles": 300,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.4113447666168213,
+            1.4368935823440552
+          ],
+          [
+            -0.8434598445892334,
+            0.7913246750831604
+          ],
+          [
+            0.0,
+            0.9504075050354004
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v02_lod0.glb",
+        "exported_vertices": 684,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 60,
+        "triangles": 112,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.319806694984436,
+            1.4662543535232544
+          ],
+          [
+            -0.7037237286567688,
+            0.8850079774856567
+          ],
+          [
+            0.0,
+            0.9288651943206787
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v02_lod1.glb",
+        "exported_vertices": 258,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.8773216009140015,
+            1.4662543535232544
+          ],
+          [
+            -0.6732844710350037,
+            0.7215420007705688
+          ],
+          [
+            0.0,
+            0.9294900298118591
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v02_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.4241191744804382,
+      "footprint_size_m": [
+        2.8482383489608765,
+        1.6347845196723938
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.8482383489608765,
+          0.9504075050354004,
+          1.6347845196723938
+        ]
+      }
+    },
+    "silver_v03": {
+      "ore": "silver",
+      "variant": 3,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_silver",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 161,
+        "triangles": 310,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.1092743873596191,
+            1.2732828855514526
+          ],
+          [
+            -0.870261549949646,
+            0.9188371300697327
+          ],
+          [
+            0.0,
+            1.2391314506530762
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v03_lod0.glb",
+        "exported_vertices": 704,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 65,
+        "triangles": 122,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.1971802711486816,
+            1.276558756828308
+          ],
+          [
+            -0.7616885900497437,
+            0.9602932929992676
+          ],
+          [
+            0.0,
+            1.2748353481292725
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v03_lod1.glb",
+        "exported_vertices": 278,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.7790908217430115,
+            1.276558756828308
+          ],
+          [
+            -0.7616885900497437,
+            0.7401790618896484
+          ],
+          [
+            0.0,
+            1.2347486019134521
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_silver_v03_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.1912786364555359,
+      "footprint_size_m": [
+        2.3825572729110718,
+        1.7890986800193787
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.3825572729110718,
+          1.2391314506530762,
+          1.7890986800193787
+        ]
+      }
+    },
+    "gold_v01": {
+      "ore": "gold",
+      "variant": 1,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_gold",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 141,
+        "triangles": 270,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.4568407535552979,
+            1.7695696353912354
+          ],
+          [
+            -0.8754706382751465,
+            0.8679871559143066
+          ],
+          [
+            0.0,
+            0.8851377964019775
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v01_lod0.glb",
+        "exported_vertices": 624,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 53,
+        "triangles": 98,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.5586522817611694,
+            1.6152600049972534
+          ],
+          [
+            -0.7522379159927368,
+            0.930065929889679
+          ],
+          [
+            0.0,
+            0.8750122785568237
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v01_lod1.glb",
+        "exported_vertices": 230,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -1.0499818325042725,
+            1.6152600049972534
+          ],
+          [
+            -0.7522379159927368,
+            0.8131357431411743
+          ],
+          [
+            0.0,
+            0.8750122785568237
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v01_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.6132051944732666,
+      "footprint_size_m": [
+        3.226410388946533,
+        1.7434577941894531
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          3.226410388946533,
+          0.8851377964019775,
+          1.7434577941894531
+        ]
+      }
+    },
+    "gold_v02": {
+      "ore": "gold",
+      "variant": 2,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_gold",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 156,
+        "triangles": 300,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.6612703800201416,
+            1.6913435459136963
+          ],
+          [
+            -0.8090329170227051,
+            0.7590256929397583
+          ],
+          [
+            0.0,
+            0.7212914228439331
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v02_lod0.glb",
+        "exported_vertices": 684,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 60,
+        "triangles": 112,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.5535224676132202,
+            1.7259035110473633
+          ],
+          [
+            -0.6750003099441528,
+            0.8488852381706238
+          ],
+          [
+            0.0,
+            0.7049423456192017
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v02_lod1.glb",
+        "exported_vertices": 258,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -1.032680630683899,
+            1.7259035110473633
+          ],
+          [
+            -0.6458034515380859,
+            0.6920912861824036
+          ],
+          [
+            0.0,
+            0.7054165601730347
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v02_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.676306962966919,
+      "footprint_size_m": [
+        3.352613925933838,
+        1.5680586099624634
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          3.352613925933838,
+          0.7212914228439331,
+          1.5680586099624634
+        ]
+      }
+    },
+    "gold_v03": {
+      "ore": "gold",
+      "variant": 3,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_gold",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 161,
+        "triangles": 310,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.3057082891464233,
+            1.4987601041793823
+          ],
+          [
+            -0.8347406983375549,
+            0.881333589553833
+          ],
+          [
+            0.0,
+            0.9404122233390808
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v03_lod0.glb",
+        "exported_vertices": 704,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 65,
+        "triangles": 122,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.409180998802185,
+            1.502616047859192
+          ],
+          [
+            -0.7305992245674133,
+            0.9210976362228394
+          ],
+          [
+            0.0,
+            0.9675089716911316
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v03_lod1.glb",
+        "exported_vertices": 278,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.9170548319816589,
+            1.502616047859192
+          ],
+          [
+            -0.7305992245674133,
+            0.7099676728248596
+          ],
+          [
+            0.0,
+            0.9370859861373901
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_gold_v03_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.4022341966629028,
+      "footprint_size_m": [
+        2.8044683933258057,
+        1.716074287891388
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.8044683933258057,
+          0.9404122233390808,
+          1.716074287891388
+        ]
+      }
+    },
+    "uranium_v01": {
+      "ore": "uranium",
+      "variant": 1,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_uranium",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 141,
+        "triangles": 270,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.2505624294281006,
+            1.51901113986969
+          ],
+          [
+            -1.0431139469146729,
+            1.034197449684143
+          ],
+          [
+            0.0,
+            0.978858232498169
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v01_lod0.glb",
+        "exported_vertices": 624,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 53,
+        "triangles": 98,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.3379580974578857,
+            1.3865505456924438
+          ],
+          [
+            -0.8962834477424622,
+            1.1081637144088745
+          ],
+          [
+            0.0,
+            0.967660665512085
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v01_lod1.glb",
+        "exported_vertices": 230,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.9013118743896484,
+            1.3865505456924438
+          ],
+          [
+            -0.8962834477424622,
+            0.968842625617981
+          ],
+          [
+            0.0,
+            0.967660665512085
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v01_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.3847867846488953,
+      "footprint_size_m": [
+        2.7695735692977905,
+        2.077311396598816
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.7695735692977905,
+          0.978858232498169,
+          2.077311396598816
+        ]
+      }
+    },
+    "uranium_v02": {
+      "ore": "uranium",
+      "variant": 2,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_uranium",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 156,
+        "triangles": 300,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.4260462522506714,
+            1.4518612623214722
+          ],
+          [
+            -0.9639540910720825,
+            0.9043710231781006
+          ],
+          [
+            0.0,
+            0.7976634502410889
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v02_lod0.glb",
+        "exported_vertices": 684,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 60,
+        "triangles": 112,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.333554744720459,
+            1.4815278053283691
+          ],
+          [
+            -0.8042556643486023,
+            1.0114376544952393
+          ],
+          [
+            0.0,
+            0.7795832753181458
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v02_lod1.glb",
+        "exported_vertices": 258,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.8864603638648987,
+            1.4815278053283691
+          ],
+          [
+            -0.7694679498672485,
+            0.8246194124221802
+          ],
+          [
+            0.0,
+            0.7801076769828796
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v02_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.4389537572860718,
+      "footprint_size_m": [
+        2.8779075145721436,
+        1.868325114250183
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.8779075145721436,
+          0.7976634502410889,
+          1.868325114250183
+        ]
+      }
+    },
+    "uranium_v03": {
+      "ore": "uranium",
+      "variant": 3,
+      "symmetry": "intentional natural asymmetry",
+      "material_id": "YARTS_Ore_Prototype_uranium",
+      "ground_embed_m": 0.04,
+      "lod0": {
+        "source_vertices": 161,
+        "triangles": 310,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -1.1208292245864868,
+            1.2865463495254517
+          ],
+          [
+            -0.9945846199989319,
+            1.0500996112823486
+          ],
+          [
+            0.0,
+            1.0399852991104126
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v03_lod0.glb",
+        "exported_vertices": 704,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 65,
+        "triangles": 122,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 2,
+        "bounds_m_blender": [
+          [
+            -1.2096508741378784,
+            1.2898563146591187
+          ],
+          [
+            -0.8705012202262878,
+            1.0974780321121216
+          ],
+          [
+            0.0,
+            1.069951057434082
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v03_lod1.glb",
+        "exported_vertices": 278,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 15,
+        "triangles": 26,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.7872063517570496,
+            1.2898563146591187
+          ],
+          [
+            -0.8705012202262878,
+            0.8459189534187317
+          ],
+          [
+            0.0,
+            1.0363068580627441
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/resources/ore_prototypes/ore_uranium_v03_lod2.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "selection_radius_m": 1.2036877870559692,
+      "footprint_size_m": [
+        2.4073755741119385,
+        2.0446842312812805
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.4073755741119385,
+          1.0399852991104126,
+          2.0446842312812805
+        ]
+      }
+    }
+  }
+}

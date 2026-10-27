@@ -1,6 +1,8 @@
 class_name RTSBuildingData
 extends Resource
 
+const Catalog = preload("res://scripts/data/building_catalog.gd")
+
 const TYPE_TOWN_CENTER := "town_center"
 const TYPE_SUPPLY_DEPOT := "supply_depot"
 const TYPE_WORKSHOP := "workshop"
@@ -104,6 +106,10 @@ const BUILDING_DEFINITIONS := {
 @export var can_train_population := false
 @export var can_produce_equipment := false
 @export var production_queue: Array[String] = []
+@export var work_required := 120.0
+@export var housing := 0
+@export var reserved_cost: Dictionary = {}
+@export var founding_site := false
 
 
 static func definition_for_type(building_type: String) -> Dictionary:
@@ -122,6 +128,16 @@ func apply_definition(building_type: String) -> void:
 	storage_capacity = int(definition.get("storage_capacity", storage_capacity))
 	can_train_population = bool(definition.get("can_train_population", can_train_population))
 	can_produce_equipment = bool(definition.get("can_produce_equipment", can_produce_equipment))
+	if Catalog.DEFINITIONS.has(type_id):
+		var entry: Dictionary = Catalog.DEFINITIONS[type_id]
+		display_name = entry.name
+		size = entry.size
+		max_health = entry.health
+		health = max_health
+		storage_capacity = entry.storage
+		supply_radius = entry.supply
+		work_required = entry.work
+		housing = entry.housing
 
 
 func is_supply_source() -> bool:
@@ -129,11 +145,11 @@ func is_supply_source() -> bool:
 
 
 func can_store_resources() -> bool:
-	return storage_capacity > 0
+	return completed and storage_capacity > 0
 
 
 func can_accept_resource(resource_name: String, amount: int) -> bool:
-	if amount <= 0:
+	if amount <= 0 or not can_store_resources():
 		return false
 	var stored_total := 0
 	for value in stored_resources.values():
@@ -150,6 +166,10 @@ func store_resource(resource_name: String, amount: int) -> bool:
 
 func to_dict() -> Dictionary:
 	return {
+		"work_required": work_required,
+		"housing": housing,
+		"reserved_cost": reserved_cost.duplicate(true),
+		"founding_site": founding_site,
 		"id": id,
 		"type_id": type_id,
 		"display_name": display_name,
@@ -182,6 +202,11 @@ func to_dict() -> Dictionary:
 func load_from_dict(data: Dictionary) -> void:
 	id = str(data.get("id", ""))
 	type_id = str(data.get("type_id", TYPE_TENT))
+	apply_definition(type_id)
+	work_required = float(data.get("work_required", work_required))
+	housing = int(data.get("housing", housing))
+	reserved_cost = data.get("reserved_cost", {}).duplicate(true)
+	founding_site = bool(data.get("founding_site", false))
 	display_name = str(data.get("display_name", "Tent"))
 	faction_id = str(data.get("faction_id", "player"))
 	var position_data: Dictionary = data.get("position", {})
@@ -197,6 +222,8 @@ func load_from_dict(data: Dictionary) -> void:
 		float(size_data.get("y", 5.5)),
 		float(size_data.get("z", 8.0))
 	)
+	# Older saves store the Hall's previous bounds; match its current model scale.
+	if type_id == TYPE_TOWN_CENTER: size = Catalog.DEFINITIONS.town_center.size
 	shape = str(data.get("shape", SHAPE_TENT))
 	health = int(data.get("health", 180))
 	max_health = int(data.get("max_health", 180))
@@ -207,4 +234,33 @@ func load_from_dict(data: Dictionary) -> void:
 	stored_resources = data.get("stored_resources", {}).duplicate(true)
 	can_train_population = bool(data.get("can_train_population", false))
 	can_produce_equipment = bool(data.get("can_produce_equipment", false))
-	production_queue = data.get("production_queue", []).duplicate()
+	production_queue.assign(data.get("production_queue", []))
+
+
+func entrance_position() -> Vector3:
+	return position + Vector3(0, 0, size.z * 0.5 + 6.0).rotated(Vector3.UP, rotation_y)
+
+
+# Distances are measured from the rotated footprint, so a larger building has
+# a larger interaction perimeter without allowing work farther from its walls.
+func edge_distance(point: Vector3) -> float:
+	var local := (point - position).rotated(Vector3.UP, -rotation_y)
+	return Vector2(maxf(0.0, absf(local.x) - size.x * 0.5), maxf(0.0, absf(local.z) - size.z * 0.5)).length()
+
+func perimeter_positions(near: Vector3, offset: float = 6.0, spacing: float = 5.0) -> Array[Vector3]:
+	var points: Array[Vector3] = []
+	var local := (near - position).rotated(Vector3.UP, -rotation_y)
+	var half := size * 0.5
+	for axis in [0, 2]:
+		var along := 2 if axis == 0 else 0
+		for side in [-1.0, 1.0]:
+			var point := Vector3.ZERO
+			point[axis] = side * (half[axis] + offset)
+			point[along] = clampf(local[along], -half[along], half[along])
+			points.append(position + point.rotated(Vector3.UP, rotation_y))
+			var steps := maxi(1, ceili(half[along] * 2.0 / spacing))
+			for step in range(steps + 1):
+				point[along] = lerpf(-half[along], half[along], float(step) / steps)
+				points.append(position + point.rotated(Vector3.UP, rotation_y))
+	points.sort_custom(func(a: Vector3, b: Vector3): return a.distance_squared_to(near) < b.distance_squared_to(near))
+	return points

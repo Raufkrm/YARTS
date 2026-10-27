@@ -1,0 +1,203 @@
+{
+  "source": "https://quaternius.com/packs/ultimateanimatedanimals.html",
+  "author": "Quaternius",
+  "license": "CC0-1.0",
+  "units": "meters",
+  "scale_from_source": 0.45,
+  "coats": {
+    "brown": {
+      "lod0": {
+        "path": "assets/models/camp_transport/horses/horse_brown_lod0.glb",
+        "exported_vertices": 2886,
+        "triangles": 962,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 50,
+        "vertex_budget_max": 3000
+      },
+      "lod1": {
+        "path": "assets/models/camp_transport/horses/horse_brown_lod1.glb",
+        "exported_vertices": 1044,
+        "triangles": 348,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 50,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "path": "assets/models/camp_transport/horses/horse_brown_lod2.glb",
+        "exported_vertices": 372,
+        "triangles": 124,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 50,
+        "vertex_budget_max": 400
+      },
+      "attachment_points_godot": {
+        "saddle": [
+          0,
+          1.4,
+          -0.1
+        ],
+        "harness": [
+          0,
+          1.08,
+          0.45
+        ]
+      },
+      "collision_proxy": {
+        "type": "box",
+        "size": [
+          0.68,
+          1.55,
+          2.35
+        ],
+        "center": [
+          0,
+          0.8,
+          0.2
+        ]
+      },
+      "impostor_2d": "assets/models/camp_transport/horses/horse_brown_impostor.png"
+    },
+    "white": {
+      "lod0": {
+        "path": "assets/models/camp_transport/horses/horse_white_lod0.glb",
+        "exported_vertices": 2886,
+        "triangles": 962,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 50,
+        "vertex_budget_max": 3000
+      },
+      "lod1": {
+        "path": "assets/models/camp_transport/horses/horse_white_lod1.glb",
+        "exported_vertices": 1044,
+        "triangles": 348,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 50,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "path": "assets/models/camp_transport/horses/horse_white_lod2.glb",
+        "exported_vertices": 372,
+        "triangles": 124,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 50,
+        "vertex_budget_max": 400
+      },
+      "attachment_points_godot": {
+        "saddle": [
+          0,
+          1.4,
+          -0.1
+        ],
+        "harness": [
+          0,
+          1.08,
+          0.45
+        ]
+      },
+      "collision_proxy": {
+        "type": "box",
+        "size": [
+          0.68,
+          1.55,
+          2.35
+        ],
+        "center": [
+          0,
+          0.8,
+          0.2
+        ]
+      },
+      "impostor_2d": "assets/models/camp_transport/horses/horse_white_impostor.png"
+    }
+  }
+}

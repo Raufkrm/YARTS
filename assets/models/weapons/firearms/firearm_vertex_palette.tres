@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ddhwq3nxjhn7o"]
+
+[resource]
+resource_name = "FirearmVertexPalette"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+metallic = 0.1
+roughness = 0.62

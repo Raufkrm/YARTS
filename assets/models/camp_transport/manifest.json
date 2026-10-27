@@ -1,0 +1,717 @@
+{
+  "schema": 1,
+  "units": "meters",
+  "authoring_axes": {
+    "up": "+Z",
+    "front": "-Y"
+  },
+  "rules": "docs/rts_asset_lod_plan.md",
+  "generator": "tools/create_camp_transport_assets.py",
+  "assets": {
+    "swept_thatch_roundhouse": {
+      "category": "building",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "lod0": {
+        "source_vertices": 1924,
+        "triangles": 3752,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 27,
+        "bounds_m_blender": [
+          [
+            -2.7200000286102295,
+            2.7200000286102295
+          ],
+          [
+            -2.7200000286102295,
+            2.7200000286102295
+          ],
+          [
+            -0.019999999552965164,
+            3.690000057220459
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/swept_thatch_roundhouse_lod0.glb",
+        "exported_vertices": 3143,
+        "surfaces": 1,
+        "vertex_budget_max": 3500
+      },
+      "lod1": {
+        "source_vertices": 548,
+        "triangles": 1040,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 15,
+        "bounds_m_blender": [
+          [
+            -2.7200000286102295,
+            2.7200000286102295
+          ],
+          [
+            -2.7200000286102295,
+            2.7200000286102295
+          ],
+          [
+            -0.019999999552965164,
+            3.690000057220459
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/swept_thatch_roundhouse_lod1.glb",
+        "exported_vertices": 993,
+        "surfaces": 1,
+        "vertex_budget_max": 1200
+      },
+      "lod2": {
+        "source_vertices": 120,
+        "triangles": 220,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 5,
+        "bounds_m_blender": [
+          [
+            -2.7200000286102295,
+            2.7200000286102295
+          ],
+          [
+            -2.7200000286102295,
+            2.7200000286102295
+          ],
+          [
+            -0.019999999552965164,
+            3.690000057220459
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/swept_thatch_roundhouse_lod2.glb",
+        "exported_vertices": 299,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "footprint_size_m": [
+        5.440000057220459,
+        5.440000057220459
+      ],
+      "selection_radius_m": 2.7200000286102295,
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          5.440000057220459,
+          3.710000056773424,
+          5.440000057220459
+        ],
+        "center_godot": [
+          0.0,
+          1.835000028833747,
+          -0.0
+        ]
+      },
+      "impostor_2d": "assets/models/camp_transport/impostors/swept_thatch_roundhouse.png"
+    },
+    "hemp_ridge_tent": {
+      "category": "building",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "lod0": {
+        "source_vertices": 414,
+        "triangles": 756,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 18,
+        "bounds_m_blender": [
+          [
+            -1.4719654321670532,
+            1.4719654321670532
+          ],
+          [
+            -2.684215545654297,
+            2.7099320888519287
+          ],
+          [
+            -0.039676032960414886,
+            1.968999981880188
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/hemp_ridge_tent_lod0.glb",
+        "exported_vertices": 742,
+        "surfaces": 1,
+        "vertex_budget_max": 3500
+      },
+      "lod1": {
+        "source_vertices": 230,
+        "triangles": 388,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 18,
+        "bounds_m_blender": [
+          [
+            -1.4719654321670532,
+            1.4719654321670532
+          ],
+          [
+            -2.689932107925415,
+            2.7099320888519287
+          ],
+          [
+            -0.04314057528972626,
+            1.968999981880188
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/hemp_ridge_tent_lod1.glb",
+        "exported_vertices": 324,
+        "surfaces": 1,
+        "vertex_budget_max": 1200
+      },
+      "lod2": {
+        "source_vertices": 86,
+        "triangles": 140,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 8,
+        "bounds_m_blender": [
+          [
+            -1.2799999713897705,
+            1.2799999713897705
+          ],
+          [
+            -2.689932107925415,
+            2.7099320888519287
+          ],
+          [
+            -0.04314057528972626,
+            1.968999981880188
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/hemp_ridge_tent_lod2.glb",
+        "exported_vertices": 117,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      },
+      "footprint_size_m": [
+        2.9439308643341064,
+        5.394147634506226
+      ],
+      "selection_radius_m": 2.697073817253113,
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.9439308643341064,
+          2.008676014840603,
+          5.394147634506226
+        ],
+        "center_godot": [
+          0.0,
+          0.9646619744598866,
+          -0.012858271598815918
+        ]
+      },
+      "impostor_2d": "assets/models/camp_transport/impostors/hemp_ridge_tent.png"
+    },
+    "hand_cart": {
+      "category": "vehicle",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "wheel_radius_m": 0.44,
+      "attachment_points_blender": {
+        "hitch": [
+          0,
+          -2.1,
+          0.91
+        ],
+        "left_grip": [
+          -0.31,
+          -2.1,
+          0.91
+        ],
+        "right_grip": [
+          0.31,
+          -2.1,
+          0.91
+        ]
+      },
+      "lod0": {
+        "source_vertices": 460,
+        "triangles": 752,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 42,
+        "bounds_m_blender": [
+          [
+            -0.8100000023841858,
+            0.8100000023841858
+          ],
+          [
+            -2.1071627140045166,
+            0.6375000476837158
+          ],
+          [
+            0.0,
+            1.162500023841858
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/hand_cart_lod0.glb",
+        "exported_vertices": 1240,
+        "surfaces": 3,
+        "vertex_budget_max": 3500
+      },
+      "lod1": {
+        "source_vertices": 268,
+        "triangles": 436,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 25,
+        "bounds_m_blender": [
+          [
+            -0.8100000023841858,
+            0.8100000023841858
+          ],
+          [
+            -2.1071627140045166,
+            0.6375000476837158
+          ],
+          [
+            0.0,
+            1.162500023841858
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/hand_cart_lod1.glb",
+        "exported_vertices": 700,
+        "surfaces": 3,
+        "vertex_budget_max": 1200
+      },
+      "lod2": {
+        "source_vertices": 144,
+        "triangles": 232,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 14,
+        "bounds_m_blender": [
+          [
+            -0.8100000023841858,
+            0.8100000023841858
+          ],
+          [
+            -2.1071627140045166,
+            0.6375000476837158
+          ],
+          [
+            0.0,
+            1.0460000038146973
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/hand_cart_lod2.glb",
+        "exported_vertices": 364,
+        "surfaces": 3,
+        "vertex_budget_max": 400
+      },
+      "footprint_size_m": [
+        1.6200000047683716,
+        2.7446627616882324
+      ],
+      "selection_radius_m": 1.3723313808441162,
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          1.6200000047683716,
+          1.162500023841858,
+          2.7446627616882324
+        ],
+        "center_godot": [
+          0.0,
+          0.581250011920929,
+          0.7348313331604004
+        ]
+      },
+      "impostor_2d": "assets/models/camp_transport/impostors/hand_cart.png"
+    },
+    "horse_cart": {
+      "category": "vehicle",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "wheel_radius_m": 0.66,
+      "attachment_points_blender": {
+        "hitch": [
+          0,
+          -3.25,
+          1.04
+        ],
+        "left_grip": [
+          -0.55,
+          -3.25,
+          1.04
+        ],
+        "right_grip": [
+          0.55,
+          -3.25,
+          1.04
+        ]
+      },
+      "lod0": {
+        "source_vertices": 604,
+        "triangles": 1016,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 50,
+        "bounds_m_blender": [
+          [
+            -1.100000023841858,
+            1.100000023841858
+          ],
+          [
+            -3.2553651332855225,
+            0.9625000357627869
+          ],
+          [
+            0.0,
+            1.5525000095367432
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/horse_cart_lod0.glb",
+        "exported_vertices": 1352,
+        "surfaces": 3,
+        "vertex_budget_max": 3500
+      },
+      "lod1": {
+        "source_vertices": 412,
+        "triangles": 684,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 37,
+        "bounds_m_blender": [
+          [
+            -1.100000023841858,
+            1.100000023841858
+          ],
+          [
+            -3.2553651332855225,
+            0.9625000357627869
+          ],
+          [
+            0.0,
+            1.5525000095367432
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/horse_cart_lod1.glb",
+        "exported_vertices": 940,
+        "surfaces": 3,
+        "vertex_budget_max": 1200
+      },
+      "lod2": {
+        "source_vertices": 240,
+        "triangles": 400,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 6.123234262925839e-18
+        },
+        "connected_assembly": true,
+        "closed_components": 22,
+        "bounds_m_blender": [
+          [
+            -1.100000023841858,
+            1.100000023841858
+          ],
+          [
+            -3.2553651332855225,
+            0.9625000357627869
+          ],
+          [
+            0.0,
+            1.4359999895095825
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/horse_cart_lod2.glb",
+        "exported_vertices": 396,
+        "surfaces": 3,
+        "vertex_budget_max": 400
+      },
+      "footprint_size_m": [
+        2.200000047683716,
+        4.217865169048309
+      ],
+      "selection_radius_m": 2.1089325845241547,
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          2.200000047683716,
+          1.5525000095367432,
+          4.217865169048309
+        ],
+        "center_godot": [
+          0.0,
+          0.7762500047683716,
+          1.1464325487613678
+        ]
+      },
+      "impostor_2d": "assets/models/camp_transport/impostors/horse_cart.png"
+    },
+    "campfire_base": {
+      "category": "prop",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "lod0": {
+        "source_vertices": 283,
+        "triangles": 502,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 16,
+        "bounds_m_blender": [
+          [
+            -0.7696815133094788,
+            0.7722920775413513
+          ],
+          [
+            -0.7881084084510803,
+            0.764522135257721
+          ],
+          [
+            -0.009999999776482582,
+            0.38827186822891235
+          ]
+        ],
+        "material_count": 1,
+        "shape_variation": {
+          "stone_count": 10,
+          "stone_height_range_m": [
+            0.1756404500700047,
+            0.27652124236873343
+          ],
+          "log_count": 5,
+          "log_length_range_m": [
+            0.72,
+            1.08
+          ]
+        },
+        "path": "assets/models/camp_transport/campfire_base_lod0.glb",
+        "exported_vertices": 878,
+        "surfaces": 1,
+        "vertex_budget_max": 1000
+      },
+      "lod1": {
+        "source_vertices": 185,
+        "triangles": 322,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 12,
+        "bounds_m_blender": [
+          [
+            -0.792683482170105,
+            0.8021946549415588
+          ],
+          [
+            -0.7502467036247253,
+            0.764522135257721
+          ],
+          [
+            -0.009999999776482582,
+            0.2851799428462982
+          ]
+        ],
+        "material_count": 1,
+        "shape_variation": {
+          "stone_count": 8,
+          "stone_height_range_m": [
+            0.1756404500700047,
+            0.27652124236873343
+          ],
+          "log_count": 3,
+          "log_length_range_m": [
+            0.83,
+            1.08
+          ]
+        },
+        "path": "assets/models/camp_transport/campfire_base_lod1.glb",
+        "exported_vertices": 215,
+        "surfaces": 1,
+        "vertex_budget_max": 300
+      },
+      "lod2": {
+        "source_vertices": 76,
+        "triangles": 112,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {},
+        "connected_assembly": true,
+        "closed_components": 10,
+        "bounds_m_blender": [
+          [
+            -0.7154681086540222,
+            0.718599796295166
+          ],
+          [
+            -0.7551804780960083,
+            0.7590823173522949
+          ],
+          [
+            -0.009999999776482582,
+            0.2913721203804016
+          ]
+        ],
+        "material_count": 1,
+        "shape_variation": {
+          "stone_count": 6,
+          "stone_height_range_m": [
+            0.1756404500700047,
+            0.2436699877705858
+          ],
+          "log_count": 3,
+          "log_length_range_m": [
+            0.83,
+            1.08
+          ]
+        },
+        "path": "assets/models/camp_transport/campfire_base_lod2.glb",
+        "exported_vertices": 100,
+        "surfaces": 1,
+        "vertex_budget_max": 100
+      },
+      "footprint_size_m": [
+        1.54197359085083,
+        1.5526305437088013
+      ],
+      "selection_radius_m": 0.7763152718544006,
+      "attachment_points_blender": {
+        "fire": [
+          0,
+          0,
+          0.16
+        ]
+      }
+    },
+    "hemp_torch": {
+      "category": "tool",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "lod0": {
+        "source_vertices": 246,
+        "triangles": 476,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -0.05991656333208084,
+            0.05991656333208084
+          ],
+          [
+            -0.06700000166893005,
+            0.06700000166893005
+          ],
+          [
+            0.0,
+            0.8600000143051147
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/hemp_torch_lod0.glb",
+        "exported_vertices": 246,
+        "surfaces": 1,
+        "vertex_budget_max": 500
+      },
+      "lod1": {
+        "source_vertices": 64,
+        "triangles": 116,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.06700000166893005,
+            0.06700000166893005
+          ],
+          [
+            -0.06700000166893005,
+            0.06700000166893005
+          ],
+          [
+            0.0,
+            0.8600000143051147
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/camp_transport/hemp_torch_lod1.glb",
+        "exported_vertices": 64,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.11983312666416168,
+        0.1340000033378601
+      ],
+      "selection_radius_m": 0.06700000166893005,
+      "attachment_points_blender": {
+        "grip": [
+          0,
+          0,
+          0.19
+        ],
+        "fire": [
+          0,
+          0,
+          0.8
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/camp_transport/horse_cart_lod0.glb" id="1"]
+[ext_resource type="Script" path="res://scripts/props/pullable_cart_visual.gd" id="2"]
+
+[node name="horse_cart" type="Node3D"]
+script = ExtResource("2")
+wheel_radius = 0.66
+pull_distance = 2.8
+
+[node name="Model" parent="." instance=ExtResource("1")]
+
+[node name="Hitch" type="Marker3D" parent="."]
+position = Vector3(0, 1.04, 3.25)
+
+[node name="LeftGrip" type="Marker3D" parent="."]
+position = Vector3(-0.55, 1.04, 3.25)
+
+[node name="RightGrip" type="Marker3D" parent="."]
+position = Vector3(0.55, 1.04, 3.25)

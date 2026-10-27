@@ -1,0 +1,317 @@
+{
+  "schema": 1,
+  "units": "meters",
+  "authoring_axes": {
+    "up": "+Z",
+    "front": "-Y"
+  },
+  "rules": "docs/rts_asset_lod_plan.md",
+  "assets": {
+    "wooden_hoe": {
+      "category": "tool",
+      "era": "prehistoric",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "symmetry": [
+        {
+          "axis": "X",
+          "center_m": 0
+        }
+      ],
+      "attachment_points_godot": {
+        "grip": [
+          0,
+          0.3,
+          0
+        ],
+        "support_grip": [
+          0,
+          0.72,
+          0
+        ]
+      },
+      "far_representation": "hidden or merged into unit LOD budget",
+      "lod0": {
+        "source_vertices": 242,
+        "triangles": 472,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -0.13099999725818634,
+            0.13099999725818634
+          ],
+          [
+            -0.38499999046325684,
+            0.07500000298023224
+          ],
+          [
+            0.0,
+            1.1540000438690186
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/hoes/wooden_hoe_lod0.glb",
+        "exported_vertices": 320,
+        "surfaces": 1,
+        "vertex_budget_max": 500
+      },
+      "lod1": {
+        "source_vertices": 76,
+        "triangles": 140,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.13099999725818634,
+            0.13099999725818634
+          ],
+          [
+            -0.38499999046325684,
+            0.07500000298023224
+          ],
+          [
+            0.0,
+            1.1540000438690186
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/hoes/wooden_hoe_lod1.glb",
+        "exported_vertices": 94,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.2619999945163727,
+        0.4599999934434891
+      ],
+      "selection_radius_m": 0.22999999672174454,
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.2619999945163727,
+          1.1540000438690186,
+          0.4599999934434891
+        ],
+        "center_godot": [
+          0.0,
+          0.5770000219345093,
+          0.1549999937415123
+        ]
+      }
+    },
+    "copper_hoe": {
+      "category": "tool",
+      "era": "classical",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "symmetry": [
+        {
+          "axis": "X",
+          "center_m": 0
+        }
+      ],
+      "attachment_points_godot": {
+        "grip": [
+          0,
+          0.3,
+          0
+        ],
+        "support_grip": [
+          0,
+          0.72,
+          0
+        ]
+      },
+      "far_representation": "hidden or merged into unit LOD budget",
+      "lod0": {
+        "source_vertices": 116,
+        "triangles": 224,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.15600000321865082,
+            0.15600000321865082
+          ],
+          [
+            -0.3499999940395355,
+            0.04699999839067459
+          ],
+          [
+            0.0,
+            1.2669999599456787
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/hoes/copper_hoe_lod0.glb",
+        "exported_vertices": 212,
+        "surfaces": 1,
+        "vertex_budget_max": 500
+      },
+      "lod1": {
+        "source_vertices": 58,
+        "triangles": 108,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.15299999713897705,
+            0.15299999713897705
+          ],
+          [
+            -0.3499999940395355,
+            0.04699999839067459
+          ],
+          [
+            0.0,
+            1.2669999599456787
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/hoes/copper_hoe_lod1.glb",
+        "exported_vertices": 76,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.31200000643730164,
+        0.3969999924302101
+      ],
+      "selection_radius_m": 0.19849999621510506,
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.31200000643730164,
+          1.2669999599456787,
+          0.3969999924302101
+        ],
+        "center_godot": [
+          0.0,
+          0.6334999799728394,
+          0.15149999782443047
+        ]
+      }
+    },
+    "iron_hoe": {
+      "category": "tool",
+      "era": "medieval_early_modern",
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "symmetry": [
+        {
+          "axis": "X",
+          "center_m": 0
+        }
+      ],
+      "attachment_points_godot": {
+        "grip": [
+          0,
+          0.3,
+          0
+        ],
+        "support_grip": [
+          0,
+          0.72,
+          0
+        ]
+      },
+      "far_representation": "hidden or merged into unit LOD budget",
+      "lod0": {
+        "source_vertices": 150,
+        "triangles": 288,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -0.10499999672174454,
+            0.10499999672174454
+          ],
+          [
+            -0.4390000104904175,
+            0.039000000804662704
+          ],
+          [
+            0.0,
+            1.3997584581375122
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/hoes/iron_hoe_lod0.glb",
+        "exported_vertices": 228,
+        "surfaces": 1,
+        "vertex_budget_max": 500
+      },
+      "lod1": {
+        "source_vertices": 80,
+        "triangles": 148,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -0.10499999672174454,
+            0.10499999672174454
+          ],
+          [
+            -0.4390000104904175,
+            0.039000000804662704
+          ],
+          [
+            0.0,
+            1.4026603698730469
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/tools/hoes/iron_hoe_lod1.glb",
+        "exported_vertices": 98,
+        "surfaces": 1,
+        "vertex_budget_max": 150
+      },
+      "footprint_size_m": [
+        0.20999999344348907,
+        0.4780000112950802
+      ],
+      "selection_radius_m": 0.2390000056475401,
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.20999999344348907,
+          1.3997584581375122,
+          0.4780000112950802
+        ],
+        "center_godot": [
+          0.0,
+          0.6998792290687561,
+          0.2000000048428774
+        ]
+      }
+    }
+  }
+}

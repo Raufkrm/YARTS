@@ -7,6 +7,8 @@ const STATE_DONE := "done"
 var target_id := ""
 var target_position := Vector3.ZERO
 var range := 8.0
+var has_interaction_slot := true
+var slot_retry_remaining := 0.0
 var state := STATE_APPROACH
 
 

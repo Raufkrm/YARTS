@@ -1,6 +1,8 @@
 class_name UnitAnimationCatalog
 extends RefCounted
 
+const Kneeling = preload("res://scripts/tools/kneeling_work_animation.gd")
+
 const PACKS := [
 	{
 		"label": "UAL1",
@@ -45,6 +47,27 @@ const PACKS := [
 		"path": "res://assets/animations/mixamo/swimming/Treading Water.fbx",
 		"animation_name": "Mixamo_Treading_Water",
 		"loop": true,
+	},
+	{
+		"label": "Mixamo Stand",
+		"path": "res://assets/animations/mixamo/transitions/Stand.fbx",
+		"animation_name": "Mixamo_Stand",
+		"source_animation": "mixamo_com",
+		"loop": false,
+	},
+	{
+		"label": "Mixamo Standing To Crouched",
+		"path": "res://assets/animations/mixamo/transitions/Standing To Crouched.fbx",
+		"animation_name": "Mixamo_Standing_To_Crouched",
+		"source_animation": "mixamo_com",
+		"loop": false,
+	},
+	{
+		"label": "Mixamo Arm Stretching",
+		"path": "res://assets/animations/mixamo/transitions/Arm Stretching.fbx",
+		"animation_name": "Mixamo_Arm_Stretching",
+		"source_animation": "mixamo_com",
+		"loop": false,
 	},
 ]
 const BONE_MAP := {
@@ -195,6 +218,8 @@ static func build_library(target_root: Node3D) -> Dictionary:
 				continue
 			for source_name_value in source_library.get_animation_list():
 				var source_name := str(source_name_value)
+				if source_name == "RESET": continue
+				if pack.has("source_animation") and source_name != str(pack.source_animation): continue
 				var animation_name := preferred_animation_name if not preferred_animation_name.is_empty() else source_name
 				var remapped := _retarget_animation(
 					source_library.get_animation(source_name_value),
@@ -211,6 +236,7 @@ static func build_library(target_root: Node3D) -> Dictionary:
 				library.add_animation(unique_name, remapped)
 				names.append(unique_name)
 		source_root.queue_free()
+	Kneeling.add_phases(library, names)
 	names.sort()
 	var status := "%d animations available from %d packs." % [names.size(), loaded_packs]
 	if names.is_empty():
@@ -363,7 +389,10 @@ static func _retarget_global_delta_animation(source: Animation, animation_name: 
 
 
 static func _retarget_animation(source: Animation, animation_name: String, source_skeleton: Skeleton3D, target_skeleton: Skeleton3D, target_path: NodePath) -> Animation:
-	return retarget_animation(source, animation_name, source_skeleton, target_skeleton, target_path)
+	var clip := retarget_animation(source, animation_name, source_skeleton, target_skeleton, target_path)
+	if clip != null and animation_name in ["Fixing_Kneeling", "Mixamo_Stand", "Mixamo_Standing_To_Crouched"]:
+		Kneeling.preserve_vertical_motion(clip, source, source_skeleton, target_skeleton, target_path)
+	return clip
 
 
 static func _resolve_target_bone(source_name: String, target: Skeleton3D) -> String:

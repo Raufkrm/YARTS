@@ -143,6 +143,10 @@ func settle_starting_cell(cell_id: String, faction_id: String = "player") -> boo
 	cell.threat_level = 0
 	cell.settlement_name = "Cradle" if faction_id == "player" else "%s Settlement" % faction_display_name(faction_id)
 	starting_cell_id = cell_id
+	# This is the only grant site. Deserializing or visiting a cell never grants it.
+	cell.resources["wood"] = 40
+	cell.resources["stone"] = 10
+	cell.rts_state["founding_allowance"] = "available"
 	reveal_from_cell(faction_id, cell_id)
 	return true
 
@@ -176,28 +180,31 @@ func reveal_from_cell(faction_id: String, cell_id: String) -> void:
 	_ensure_faction(faction_id)
 	var faction: Dictionary = factions[faction_id]
 	var discovered: Array = faction.get("discovered_cells", []).duplicate()
-	var seen := {}
-	for known_id in discovered:
-		seen[str(known_id)] = true
+	for known_id in get_intel_cells(faction_id, cell_id):
+		if not discovered.has(known_id): discovered.append(known_id)
+	faction["discovered_cells"] = discovered
+	factions[faction_id] = faction
 
+
+func get_intel_cells(faction_id: String, cell_id: String) -> Array[String]:
+	var result: Array[String] = []
+	if get_cell(cell_id) == null: return result
 	var frontier: Array[String] = [cell_id]
-	var intel: int = maxi(0, int(faction.get("intel", 1)))
+	var visited := {cell_id: true}
+	var intel: int = maxi(0, int(factions.get(faction_id, {}).get("intel", 1)))
 	for depth in range(intel + 1):
 		var next_frontier: Array[String] = []
 		for current_id in frontier:
-			if not seen.has(current_id):
-				seen[current_id] = true
-				discovered.append(current_id)
+			result.append(current_id)
 			if depth >= intel:
 				continue
 			for neighbor in get_neighbors(current_id):
 				var neighbor_id := str(neighbor.id)
-				if not seen.has(neighbor_id) and not next_frontier.has(neighbor_id):
+				if not visited.has(neighbor_id):
+					visited[neighbor_id] = true
 					next_frontier.append(neighbor_id)
 		frontier = next_frontier
-
-	faction["discovered_cells"] = discovered
-	factions[faction_id] = faction
+	return result
 
 
 func is_cell_discovered(cell_id: String, faction_id: String = "player") -> bool:
@@ -464,25 +471,25 @@ func sample_direction(direction: Vector3) -> Dictionary:
 
 
 func _sample_base_layers(normal: Vector3) -> Dictionary:
-	var latitude_abs: float = abs(normal.y)
+	var latitude_abs: float = absf(normal.y)
 	var continent_base: float = _normalized_noise(_elevation_noise, normal, 1.05)
 	var continent_detail: float = _normalized_noise(_detail_noise, normal, 2.35)
-	var continent: float = clamp(continent_base * 0.82 + continent_detail * 0.18, 0.0, 1.0)
+	var continent: float = clampf(continent_base * 0.82 + continent_detail * 0.18, 0.0, 1.0)
 	var landmass: float = smoothstep(0.35, 0.73, continent)
 	var ridge_sample: float = _normalized_noise(_ridge_noise, normal, 4.8)
-	var ridge: float = 1.0 - abs(ridge_sample * 2.0 - 1.0)
+	var ridge: float = 1.0 - absf(ridge_sample * 2.0 - 1.0)
 	var detail: float = _normalized_noise(_detail_noise, normal, 7.5)
 	var fine_detail: float = _normalized_noise(_detail_noise, normal, 18.0)
 	var ridge_land_mask: float = smoothstep(0.52, 0.82, continent)
-	var raw_noise: float = clamp(continent * 0.66 + landmass * 0.20 + ridge * 0.09 + detail * 0.035 + fine_detail * 0.015, 0.0, 1.0)
-	var elevation: float = clamp(continent * 0.56 + landmass * 0.32 + pow(ridge, 2.45) * 0.20 * ridge_land_mask + detail * 0.04 + fine_detail * 0.02 - latitude_abs * 0.035, 0.0, 1.0)
-	var subtropical_dry_belt: float = 1.0 - smoothstep(0.0, 0.28, abs(latitude_abs - 0.34))
-	var moisture: float = clamp(_normalized_noise(_moisture_noise, normal, 2.75) * 0.72 + _normalized_noise(_forest_noise, normal, 9.0) * 0.16 + (1.0 - latitude_abs) * 0.12 - subtropical_dry_belt * 0.22, 0.0, 1.0)
-	var temperature: float = clamp(1.0 - pow(latitude_abs, 1.35), 0.0, 1.0)
+	var raw_noise: float = clampf(continent * 0.66 + landmass * 0.20 + ridge * 0.09 + detail * 0.035 + fine_detail * 0.015, 0.0, 1.0)
+	var elevation: float = clampf(continent * 0.56 + landmass * 0.32 + pow(ridge, 2.45) * 0.20 * ridge_land_mask + detail * 0.04 + fine_detail * 0.02 - latitude_abs * 0.035, 0.0, 1.0)
+	var subtropical_dry_belt: float = 1.0 - smoothstep(0.0, 0.28, absf(latitude_abs - 0.34))
+	var moisture: float = clampf(_normalized_noise(_moisture_noise, normal, 2.75) * 0.72 + _normalized_noise(_forest_noise, normal, 9.0) * 0.16 + (1.0 - latitude_abs) * 0.12 - subtropical_dry_belt * 0.22, 0.0, 1.0)
+	var temperature: float = clampf(1.0 - pow(latitude_abs, 1.35), 0.0, 1.0)
 	temperature += (_normalized_noise(_temperature_noise, normal, 2.5) - 0.5) * 0.18
 	temperature += subtropical_dry_belt * 0.08
-	temperature -= max(0.0, elevation - SEA_LEVEL) * 0.58
-	temperature = clamp(temperature, 0.0, 1.0)
+	temperature -= maxf(0.0, elevation - SEA_LEVEL) * 0.58
+	temperature = clampf(temperature, 0.0, 1.0)
 	return {
 		"latitude_abs": latitude_abs,
 		"elevation": elevation,
@@ -1386,7 +1393,7 @@ func _make_noise(noise_seed: int, frequency: float, octaves: int) -> FastNoiseLi
 
 
 func _normalized_noise(noise: FastNoiseLite, direction: Vector3, scale: float) -> float:
-	return clamp(noise.get_noise_3d(direction.x * scale, direction.y * scale, direction.z * scale) * 0.5 + 0.5, 0.0, 1.0)
+	return clampf(noise.get_noise_3d(direction.x * scale, direction.y * scale, direction.z * scale) * 0.5 + 0.5, 0.0, 1.0)
 
 
 static func _resources_for_terrain(_terrain: String) -> Dictionary:

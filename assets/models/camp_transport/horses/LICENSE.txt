@@ -1,0 +1,14 @@
+Horse and Horse_White by Quaternius
+Ultimate Animated Animal Pack, July 2021
+Source: https://quaternius.com/packs/ultimateanimatedanimals.html
+License: CC0 1.0 Universal (Public Domain Dedication)
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Derived YARTS assets: real-world scale, three geometry LODs, flat normals,
+single vertex-color material, and baked glTF versions of all 13 original clips.
+The original author's 13 animations are retained, not newly authored animations.
+
+Original notice:
+LowPoly Models by @Quaternius
+Consider supporting me on Patreon, even $1 helps me a lot!
+https://www.patreon.com/quaternius

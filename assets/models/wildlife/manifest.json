@@ -1,0 +1,1342 @@
+{
+  "schema": 1,
+  "units": "meters",
+  "assets": {
+    "boar": {
+      "cosmetic_only": false,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "animations": [],
+      "impostor_2d": "assets/models/wildlife/boar_impostor.png",
+      "source": "Poly by Google (CC-BY-3.0)",
+      "lod0": {
+        "source_vertices": 410,
+        "triangles": 788,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 8,
+        "bounds_m_blender": [
+          [
+            -0.29371678829193115,
+            0.29371678829193115
+          ],
+          [
+            -0.8461016416549683,
+            0.8461016416549683
+          ],
+          [
+            0.0,
+            0.949999988079071
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/boar_lod0.glb",
+        "exported_vertices": 2024,
+        "surfaces": 1,
+        "vertex_budget_max": 3000
+      },
+      "footprint_size_m": [
+        0.5874335765838623,
+        1.6922032833099365
+      ],
+      "selection_radius_m": 0.8461016416549683,
+      "rest_bounds_blender": [
+        [
+          -0.29371678829193115,
+          0.29371678829193115
+        ],
+        [
+          -0.8461016416549683,
+          0.8461016416549683
+        ],
+        [
+          0.0,
+          0.949999988079071
+        ]
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.5874335765838623,
+          0.949999988079071,
+          1.6922032833099365
+        ],
+        "center_godot": [
+          0.0,
+          0.4749999940395355,
+          -0.0
+        ]
+      },
+      "lod1": {
+        "source_vertices": 166,
+        "triangles": 300,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 8,
+        "bounds_m_blender": [
+          [
+            -0.29464221000671387,
+            0.29464221000671387
+          ],
+          [
+            -0.84194016456604,
+            0.8438205718994141
+          ],
+          [
+            0.0,
+            0.9454593062400818
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/boar_lod1.glb",
+        "exported_vertices": 900,
+        "surfaces": 1,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "source_vertices": 73,
+        "triangles": 114,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 8,
+        "bounds_m_blender": [
+          [
+            -0.2825014293193817,
+            0.2825014293193817
+          ],
+          [
+            -0.8329660892486572,
+            0.8209972977638245
+          ],
+          [
+            0.0,
+            0.9420692324638367
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/boar_lod2.glb",
+        "exported_vertices": 342,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      }
+    },
+    "camel": {
+      "cosmetic_only": false,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "animations": [],
+      "impostor_2d": "assets/models/wildlife/camel_impostor.png",
+      "source": "Poly by Google (CC-BY-3.0)",
+      "lod0": {
+        "source_vertices": 424,
+        "triangles": 824,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 6,
+        "bounds_m_blender": [
+          [
+            -0.36446595191955566,
+            0.36446595191955566
+          ],
+          [
+            -1.5622962713241577,
+            1.5622962713241577
+          ],
+          [
+            0.0,
+            2.4000000953674316
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/camel_lod0.glb",
+        "exported_vertices": 2126,
+        "surfaces": 1,
+        "vertex_budget_max": 3000
+      },
+      "footprint_size_m": [
+        0.7289319038391113,
+        3.1245925426483154
+      ],
+      "selection_radius_m": 1.5622962713241577,
+      "rest_bounds_blender": [
+        [
+          -0.36446595191955566,
+          0.36446595191955566
+        ],
+        [
+          -1.5622962713241577,
+          1.5622962713241577
+        ],
+        [
+          0.0,
+          2.4000000953674316
+        ]
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.7289319038391113,
+          2.4000000953674316,
+          3.1245925426483154
+        ],
+        "center_godot": [
+          0.0,
+          1.2000000476837158,
+          -0.0
+        ]
+      },
+      "lod1": {
+        "source_vertices": 173,
+        "triangles": 322,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 6,
+        "bounds_m_blender": [
+          [
+            -0.36906471848487854,
+            0.36906471848487854
+          ],
+          [
+            -1.563971757888794,
+            1.573318362236023
+          ],
+          [
+            0.0,
+            2.3914499282836914
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/camel_lod1.glb",
+        "exported_vertices": 962,
+        "surfaces": 1,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "source_vertices": 69,
+        "triangles": 114,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 6,
+        "bounds_m_blender": [
+          [
+            -0.34599772095680237,
+            0.34599772095680237
+          ],
+          [
+            -1.5709868669509888,
+            1.5510709285736084
+          ],
+          [
+            0.0,
+            2.3712668418884277
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/camel_lod2.glb",
+        "exported_vertices": 338,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      }
+    },
+    "seagull": {
+      "cosmetic_only": true,
+      "material_id": "YARTS_BirdFlap",
+      "animations": [
+        "Flap",
+        "Glide"
+      ],
+      "impostor_2d": "assets/models/wildlife/seagull_impostor.png",
+      "source": "Original Yarts geometry",
+      "lod0": {
+        "source_vertices": 70,
+        "triangles": 120,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 9.552245317815411e-18
+        },
+        "connected_assembly": true,
+        "closed_components": 5,
+        "bounds_m_blender": [
+          [
+            -0.5699999928474426,
+            0.5699999928474426
+          ],
+          [
+            -0.2954131066799164,
+            0.3499999940395355
+          ],
+          [
+            -0.038864508271217346,
+            0.11264558881521225
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/seagull_lod0.glb",
+        "exported_vertices": 78,
+        "surfaces": 1,
+        "vertex_budget_max": 180
+      },
+      "footprint_size_m": [
+        1.1399999856948853,
+        0.6454131007194519
+      ],
+      "selection_radius_m": 0.5699999928474426,
+      "rest_bounds_blender": [
+        [
+          -0.5699999928474426,
+          0.5699999928474426
+        ],
+        [
+          -0.2954131066799164,
+          0.3499999940395355
+        ],
+        [
+          -0.038864508271217346,
+          0.11264558881521225
+        ]
+      ],
+      "collision_proxy": null,
+      "lod1": {
+        "source_vertices": 40,
+        "triangles": 60,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 2.571758291167179e-17
+        },
+        "connected_assembly": true,
+        "closed_components": 5,
+        "bounds_m_blender": [
+          [
+            -0.5600000023841858,
+            0.5600000023841858
+          ],
+          [
+            -0.2954131066799164,
+            0.3499999940395355
+          ],
+          [
+            -0.04445945471525192,
+            0.09445945173501968
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/seagull_lod1.glb",
+        "exported_vertices": 40,
+        "surfaces": 1,
+        "vertex_budget_max": 64
+      }
+    },
+    "deer": {
+      "cosmetic_only": false,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "animations": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact_Left",
+        "Idle_HitReact_Right",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "impostor_2d": "assets/models/wildlife/deer_impostor.png",
+      "source": "Quaternius Ultimate Animated Animals (CC0-1.0)",
+      "lod0": {
+        "path": "assets/models/wildlife/deer_lod0.glb",
+        "exported_vertices": 2862,
+        "triangles": 954,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 46,
+        "source_vertices": 479,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.2929735779762268,
+            0.2929735779762268
+          ],
+          [
+            -1.1020466089248657,
+            0.6514264345169067
+          ],
+          [
+            -0.005446447059512138,
+            1.7034695148468018
+          ]
+        ],
+        "material_count": 1,
+        "vertex_budget_max": 3000
+      },
+      "footprint_size_m": [
+        0.5859471559524536,
+        1.7534730434417725
+      ],
+      "selection_radius_m": 0.8767365217208862,
+      "rest_bounds_blender": [
+        [
+          -0.2929735779762268,
+          0.2929735779762268
+        ],
+        [
+          -1.1020466089248657,
+          0.6514264345169067
+        ],
+        [
+          -0.005446447059512138,
+          1.7034695148468018
+        ]
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.5859471559524536,
+          1.708915961906314,
+          1.7534730434417725
+        ],
+        "center_godot": [
+          0.0,
+          0.8490115338936448,
+          0.2253100872039795
+        ]
+      },
+      "lod1": {
+        "path": "assets/models/wildlife/deer_lod1.glb",
+        "exported_vertices": 1038,
+        "triangles": 346,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 46,
+        "source_vertices": 175,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.29050928354263306,
+            0.29050928354263306
+          ],
+          [
+            -1.102870225906372,
+            0.6569427251815796
+          ],
+          [
+            0.0007018651813268661,
+            1.7041704654693604
+          ]
+        ],
+        "material_count": 1,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "path": "assets/models/wildlife/deer_lod2.glb",
+        "exported_vertices": 384,
+        "triangles": 128,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 46,
+        "source_vertices": 66,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.2740078866481781,
+            0.2740078866481781
+          ],
+          [
+            -1.0857621431350708,
+            0.6429430246353149
+          ],
+          [
+            0.0114130899310112,
+            1.706172227859497
+          ]
+        ],
+        "material_count": 1,
+        "vertex_budget_max": 400
+      }
+    },
+    "crow": {
+      "cosmetic_only": true,
+      "material_id": "YARTS_BirdFlap",
+      "animations": [
+        "Flap",
+        "Glide"
+      ],
+      "impostor_2d": "assets/models/wildlife/crow_impostor.png",
+      "source": "Original Yarts geometry",
+      "lod0": {
+        "source_vertices": 70,
+        "triangles": 120,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 7.928363216740097e-18
+        },
+        "connected_assembly": true,
+        "closed_components": 5,
+        "bounds_m_blender": [
+          [
+            -0.4730999767780304,
+            0.4730999767780304
+          ],
+          [
+            -0.24519287049770355,
+            0.2904999852180481
+          ],
+          [
+            -0.03225754201412201,
+            0.09349583834409714
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/crow_lod0.glb",
+        "exported_vertices": 70,
+        "surfaces": 1,
+        "vertex_budget_max": 180
+      },
+      "footprint_size_m": [
+        0.9461999535560608,
+        0.5356928557157516
+      ],
+      "selection_radius_m": 0.4730999767780304,
+      "rest_bounds_blender": [
+        [
+          -0.4730999767780304,
+          0.4730999767780304
+        ],
+        [
+          -0.24519287049770355,
+          0.2904999852180481
+        ],
+        [
+          -0.03225754201412201,
+          0.09349583834409714
+        ]
+      ],
+      "collision_proxy": null,
+      "lod1": {
+        "source_vertices": 40,
+        "triangles": 60,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 2.1345592575916667e-17
+        },
+        "connected_assembly": true,
+        "closed_components": 5,
+        "bounds_m_blender": [
+          [
+            -0.46480000019073486,
+            0.46480000019073486
+          ],
+          [
+            -0.24519287049770355,
+            0.2904999852180481
+          ],
+          [
+            -0.03690134733915329,
+            0.0784013420343399
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/crow_lod1.glb",
+        "exported_vertices": 40,
+        "surfaces": 1,
+        "vertex_budget_max": 64
+      }
+    },
+    "penguin": {
+      "cosmetic_only": false,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "animations": [],
+      "impostor_2d": "assets/models/wildlife/penguin_impostor.png",
+      "source": "Poly by Google (CC-BY-3.0)",
+      "lod0": {
+        "source_vertices": 238,
+        "triangles": 460,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -0.15556612610816956,
+            0.15556612610816956
+          ],
+          [
+            -0.23792009055614471,
+            0.23792009055614471
+          ],
+          [
+            0.0,
+            0.8499999642372131
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/penguin_lod0.glb",
+        "exported_vertices": 1220,
+        "surfaces": 1,
+        "vertex_budget_max": 3000
+      },
+      "footprint_size_m": [
+        0.3111322522163391,
+        0.47584018111228943
+      ],
+      "selection_radius_m": 0.23792009055614471,
+      "rest_bounds_blender": [
+        [
+          -0.15556612610816956,
+          0.15556612610816956
+        ],
+        [
+          -0.23792009055614471,
+          0.23792009055614471
+        ],
+        [
+          0.0,
+          0.8499999642372131
+        ]
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.3111322522163391,
+          0.8499999642372131,
+          0.47584018111228943
+        ],
+        "center_godot": [
+          0.0,
+          0.42499998211860657,
+          -0.0
+        ]
+      },
+      "lod1": {
+        "source_vertices": 93,
+        "triangles": 170,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -0.15315558016300201,
+            0.15315558016300201
+          ],
+          [
+            -0.23805035650730133,
+            0.23792009055614471
+          ],
+          [
+            0.0,
+            0.8519224524497986
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/penguin_lod1.glb",
+        "exported_vertices": 510,
+        "surfaces": 1,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "source_vertices": 36,
+        "triangles": 56,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 4,
+        "bounds_m_blender": [
+          [
+            -0.1456271857023239,
+            0.1456271857023239
+          ],
+          [
+            -0.2364853471517563,
+            0.21061067283153534
+          ],
+          [
+            0.0,
+            0.8379465341567993
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/penguin_lod2.glb",
+        "exported_vertices": 168,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      }
+    },
+    "polar_bear": {
+      "cosmetic_only": false,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "animations": [],
+      "impostor_2d": "assets/models/wildlife/polar_bear_impostor.png",
+      "source": "3D Assets (CC0-1.0)",
+      "lod0": {
+        "source_vertices": 498,
+        "triangles": 984,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.4904123544692993,
+            0.4904123544692993
+          ],
+          [
+            -1.2233881950378418,
+            1.22016441822052
+          ],
+          [
+            0.0,
+            1.4456782341003418
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/polar_bear_lod0.glb",
+        "exported_vertices": 2952,
+        "surfaces": 1,
+        "vertex_budget_max": 3000
+      },
+      "footprint_size_m": [
+        0.9808247089385986,
+        2.443552613258362
+      ],
+      "selection_radius_m": 1.221776306629181,
+      "rest_bounds_blender": [
+        [
+          -0.4904123544692993,
+          0.4904123544692993
+        ],
+        [
+          -1.2233881950378418,
+          1.22016441822052
+        ],
+        [
+          0.0,
+          1.4456782341003418
+        ]
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.9808247089385986,
+          1.4456782341003418,
+          2.443552613258362
+        ],
+        "center_godot": [
+          0.0,
+          0.7228391170501709,
+          0.0016118884086608887
+        ]
+      },
+      "lod1": {
+        "source_vertices": 187,
+        "triangles": 362,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.49306052923202515,
+            0.49306052923202515
+          ],
+          [
+            -1.231563925743103,
+            1.2356951236724854
+          ],
+          [
+            0.0,
+            1.421128273010254
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/polar_bear_lod1.glb",
+        "exported_vertices": 1086,
+        "surfaces": 1,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "source_vertices": 69,
+        "triangles": 126,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.4991368353366852,
+            0.4991368353366852
+          ],
+          [
+            -1.220342993736267,
+            1.2363481521606445
+          ],
+          [
+            0.0,
+            1.392465591430664
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/polar_bear_lod2.glb",
+        "exported_vertices": 378,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      }
+    },
+    "goat": {
+      "cosmetic_only": false,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "animations": [],
+      "impostor_2d": "assets/models/wildlife/goat_impostor.png",
+      "source": "Poly by Google (CC-BY-3.0)",
+      "lod0": {
+        "source_vertices": 501,
+        "triangles": 982,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 5,
+        "bounds_m_blender": [
+          [
+            -0.213605597615242,
+            0.213605597615242
+          ],
+          [
+            -0.691741943359375,
+            0.691741943359375
+          ],
+          [
+            0.0,
+            1.25
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/goat_lod0.glb",
+        "exported_vertices": 2892,
+        "surfaces": 1,
+        "vertex_budget_max": 3000
+      },
+      "footprint_size_m": [
+        0.427211195230484,
+        1.38348388671875
+      ],
+      "selection_radius_m": 0.691741943359375,
+      "rest_bounds_blender": [
+        [
+          -0.213605597615242,
+          0.213605597615242
+        ],
+        [
+          -0.691741943359375,
+          0.691741943359375
+        ],
+        [
+          0.0,
+          1.25
+        ]
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.427211195230484,
+          1.25,
+          1.38348388671875
+        ],
+        "center_godot": [
+          0.0,
+          0.625,
+          -0.0
+        ]
+      },
+      "lod1": {
+        "source_vertices": 186,
+        "triangles": 352,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 5,
+        "bounds_m_blender": [
+          [
+            -0.21451407670974731,
+            0.21451407670974731
+          ],
+          [
+            -0.6958744525909424,
+            0.6910845637321472
+          ],
+          [
+            0.0,
+            1.243505835533142
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/goat_lod1.glb",
+        "exported_vertices": 1056,
+        "surfaces": 1,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "source_vertices": 72,
+        "triangles": 124,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 5,
+        "bounds_m_blender": [
+          [
+            -0.21032655239105225,
+            0.21032655239105225
+          ],
+          [
+            -0.701458215713501,
+            0.6910845637321472
+          ],
+          [
+            0.0,
+            1.227476716041565
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/goat_lod2.glb",
+        "exported_vertices": 372,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      }
+    },
+    "sheep": {
+      "cosmetic_only": false,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "animations": [],
+      "impostor_2d": "assets/models/wildlife/sheep_impostor.png",
+      "source": "Poly by Google (CC-BY-3.0)",
+      "lod0": {
+        "source_vertices": 449,
+        "triangles": 894,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.26141345500946045,
+            0.26141345500946045
+          ],
+          [
+            -0.7168793082237244,
+            0.6503578424453735
+          ],
+          [
+            0.0,
+            1.0499999523162842
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/sheep_lod0.glb",
+        "exported_vertices": 2658,
+        "surfaces": 1,
+        "vertex_budget_max": 3000
+      },
+      "footprint_size_m": [
+        0.5228269100189209,
+        1.367237150669098
+      ],
+      "selection_radius_m": 0.683618575334549,
+      "rest_bounds_blender": [
+        [
+          -0.26141345500946045,
+          0.26141345500946045
+        ],
+        [
+          -0.7168793082237244,
+          0.6503578424453735
+        ],
+        [
+          0.0,
+          1.0499999523162842
+        ]
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.5228269100189209,
+          1.0499999523162842,
+          1.367237150669098
+        ],
+        "center_godot": [
+          0.0,
+          0.5249999761581421,
+          0.033260732889175415
+        ]
+      },
+      "lod1": {
+        "source_vertices": 171,
+        "triangles": 338,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.2613293528556824,
+            0.2613293528556824
+          ],
+          [
+            -0.7215243577957153,
+            0.6503578424453735
+          ],
+          [
+            0.0,
+            1.0472229719161987
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/sheep_lod1.glb",
+        "exported_vertices": 1014,
+        "surfaces": 1,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "source_vertices": 67,
+        "triangles": 130,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 0.0
+        },
+        "connected_assembly": true,
+        "closed_components": 1,
+        "bounds_m_blender": [
+          [
+            -0.24023637175559998,
+            0.24023637175559998
+          ],
+          [
+            -0.7278006076812744,
+            0.6684300899505615
+          ],
+          [
+            0.0,
+            1.025890588760376
+          ]
+        ],
+        "material_count": 1,
+        "path": "assets/models/wildlife/sheep_lod2.glb",
+        "exported_vertices": 390,
+        "surfaces": 1,
+        "vertex_budget_max": 400
+      }
+    },
+    "cow": {
+      "cosmetic_only": false,
+      "material_id": "YARTS_Primitive_VertexPalette",
+      "animations": [
+        "Attack_Headbutt",
+        "Attack_Kick",
+        "Death",
+        "Eating",
+        "Gallop",
+        "Gallop_Jump",
+        "Idle",
+        "Idle_2",
+        "Idle_Headlow",
+        "Idle_HitReact_Left",
+        "Idle_HitReact_Right",
+        "Jump_toIdle",
+        "Walk"
+      ],
+      "impostor_2d": "assets/models/wildlife/cow_impostor.png",
+      "source": "Quaternius Ultimate Animated Animals (CC0-1.0)",
+      "lod0": {
+        "path": "assets/models/wildlife/cow_lod0.glb",
+        "exported_vertices": 2850,
+        "triangles": 950,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 42,
+        "source_vertices": 481,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 3.488272284357663e-07
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.41834670305252075,
+            0.41834670305252075
+          ],
+          [
+            -1.8306291103363037,
+            1.070997714996338
+          ],
+          [
+            -0.019982153549790382,
+            1.6299692392349243
+          ]
+        ],
+        "material_count": 1,
+        "vertex_budget_max": 3000
+      },
+      "footprint_size_m": [
+        0.8366934061050415,
+        2.9016268253326416
+      ],
+      "selection_radius_m": 1.4508134126663208,
+      "rest_bounds_blender": [
+        [
+          -0.41834670305252075,
+          0.41834670305252075
+        ],
+        [
+          -1.8306291103363037,
+          1.070997714996338
+        ],
+        [
+          -0.019982153549790382,
+          1.6299692392349243
+        ]
+      ],
+      "collision_proxy": {
+        "type": "box",
+        "size_godot": [
+          0.8366934061050415,
+          1.6499513927847147,
+          2.9016268253326416
+        ],
+        "center_godot": [
+          0.0,
+          0.804993542842567,
+          0.3798156976699829
+        ]
+      },
+      "lod1": {
+        "path": "assets/models/wildlife/cow_lod1.glb",
+        "exported_vertices": 1050,
+        "triangles": 350,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 42,
+        "source_vertices": 181,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 1.2287812012345967e-07
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.42289936542510986,
+            0.42289936542510986
+          ],
+          [
+            -1.8386653661727905,
+            1.0663481950759888
+          ],
+          [
+            -0.01377931796014309,
+            1.6231107711791992
+          ]
+        ],
+        "material_count": 1,
+        "vertex_budget_max": 1100
+      },
+      "lod2": {
+        "path": "assets/models/wildlife/cow_lod2.glb",
+        "exported_vertices": 390,
+        "triangles": 130,
+        "surfaces": 1,
+        "animations": [
+          "Attack_Headbutt",
+          "Attack_Kick",
+          "Death",
+          "Eating",
+          "Gallop",
+          "Gallop_Jump",
+          "Idle",
+          "Idle_2",
+          "Idle_Headlow",
+          "Idle_HitReact_Left",
+          "Idle_HitReact_Right",
+          "Jump_toIdle",
+          "Walk"
+        ],
+        "bones": 42,
+        "source_vertices": 71,
+        "nonmanifold_edges": 0,
+        "degenerate_faces": 0,
+        "symmetry_max_error_m": {
+          "X": 1.2287812012345967e-07
+        },
+        "connected_assembly": true,
+        "closed_components": 3,
+        "bounds_m_blender": [
+          [
+            -0.4142753481864929,
+            0.4142753779888153
+          ],
+          [
+            -1.8060016632080078,
+            1.0482673645019531
+          ],
+          [
+            0.007758454419672489,
+            1.6231107711791992
+          ]
+        ],
+        "material_count": 1,
+        "vertex_budget_max": 400
+      }
+    }
+  }
+}

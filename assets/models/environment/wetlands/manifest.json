@@ -1,0 +1,356 @@
+{
+  "units": "metres; runtime scale 5",
+  "license": "Original YARTS art",
+  "assets": {
+    "lilypad_round": {
+      "lods": [
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_round_lod0.glb",
+          "vertices": 42,
+          "triangles": 14,
+          "vertex_budget": 200,
+          "bounds_blender": [
+            [
+              -0.4300000071525574,
+              0.4196358919143677
+            ],
+            [
+              -0.37655892968177795,
+              0.37655892968177795
+            ],
+            [
+              0.007000000216066837,
+              0.012000000104308128
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_round_lod1.glb",
+          "vertices": 24,
+          "triangles": 8,
+          "vertex_budget": 100,
+          "bounds_blender": [
+            [
+              -0.4300000071525574,
+              0.4196358919143677
+            ],
+            [
+              -0.37611299753189087,
+              0.37611299753189087
+            ],
+            [
+              0.007000000216066837,
+              0.012000000104308128
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_round_lod2.glb",
+          "vertices": 15,
+          "triangles": 5,
+          "vertex_budget": 24,
+          "bounds_blender": [
+            [
+              -0.35865792632102966,
+              0.4196358919143677
+            ],
+            [
+              -0.3721393048763275,
+              0.3721393048763275
+            ],
+            [
+              0.007000000216066837,
+              0.012000000104308128
+            ]
+          ]
+        }
+      ],
+      "collision_proxy": null,
+      "selection_radius": 0,
+      "impostor_2d": null,
+      "material_id": "WetlandVertexPalette",
+      "animation_set": "shader wind / water bob",
+      "far_behavior": "hidden",
+      "footprint_size": [
+        0.849635899066925,
+        0.7531178593635559
+      ]
+    },
+    "lilypad_white_flower": {
+      "lods": [
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_white_flower_lod0.glb",
+          "vertices": 97,
+          "triangles": 37,
+          "vertex_budget": 200,
+          "bounds_blender": [
+            [
+              -0.6286144256591797,
+              0.5335565805435181
+            ],
+            [
+              -0.3685164153575897,
+              0.3962347209453583
+            ],
+            [
+              0.006000000052154064,
+              0.085999995470047
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_white_flower_lod1.glb",
+          "vertices": 64,
+          "triangles": 24,
+          "vertex_budget": 100,
+          "bounds_blender": [
+            [
+              -0.5870265364646912,
+              0.5216875672340393
+            ],
+            [
+              -0.3697079122066498,
+              0.40705031156539917
+            ],
+            [
+              0.006000000052154064,
+              0.085999995470047
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_white_flower_lod2.glb",
+          "vertices": 18,
+          "triangles": 6,
+          "vertex_budget": 24,
+          "bounds_blender": [
+            [
+              -0.6299999952316284,
+              0.6148154139518738
+            ],
+            [
+              -0.4100410044193268,
+              0.4100410044193268
+            ],
+            [
+              0.007000000216066837,
+              0.012000000104308128
+            ]
+          ]
+        }
+      ],
+      "collision_proxy": null,
+      "selection_radius": 0,
+      "impostor_2d": null,
+      "material_id": "WetlandVertexPalette",
+      "animation_set": "shader wind / water bob",
+      "far_behavior": "hidden",
+      "footprint_size": [
+        1.1621710062026978,
+        0.764751136302948
+      ]
+    },
+    "lilypad_pink_cluster": {
+      "lods": [
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_pink_cluster_lod0.glb",
+          "vertices": 115,
+          "triangles": 43,
+          "vertex_budget": 200,
+          "bounds_blender": [
+            [
+              -0.6000569462776184,
+              0.6173391938209534
+            ],
+            [
+              -0.5487632155418396,
+              0.5199851989746094
+            ],
+            [
+              0.006000000052154064,
+              0.085999995470047
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_pink_cluster_lod1.glb",
+          "vertices": 76,
+          "triangles": 28,
+          "vertex_budget": 100,
+          "bounds_blender": [
+            [
+              -0.6196127533912659,
+              0.6173391938209534
+            ],
+            [
+              -0.5487632155418396,
+              0.5199851989746094
+            ],
+            [
+              0.006000000052154064,
+              0.085999995470047
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/lilypad_pink_cluster_lod2.glb",
+          "vertices": 21,
+          "triangles": 7,
+          "vertex_budget": 24,
+          "bounds_blender": [
+            [
+              -0.6033443212509155,
+              0.644092321395874
+            ],
+            [
+              -0.6267678141593933,
+              0.6267678141593933
+            ],
+            [
+              0.007000000216066837,
+              0.012000000104308128
+            ]
+          ]
+        }
+      ],
+      "collision_proxy": null,
+      "selection_radius": 0,
+      "impostor_2d": null,
+      "material_id": "WetlandVertexPalette",
+      "animation_set": "shader wind / water bob",
+      "far_behavior": "hidden",
+      "footprint_size": [
+        1.2173961400985718,
+        1.068748414516449
+      ]
+    },
+    "cattails": {
+      "lods": [
+        {
+          "mesh": "res://assets/models/environment/wetlands/cattails_lod0.glb",
+          "vertices": 205,
+          "triangles": 101,
+          "vertex_budget": 260,
+          "bounds_blender": [
+            [
+              -0.30554863810539246,
+              0.27549999952316284
+            ],
+            [
+              -0.3437764048576355,
+              0.21865549683570862
+            ],
+            [
+              -0.014999999664723873,
+              1.5800000429153442
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/cattails_lod1.glb",
+          "vertices": 60,
+          "triangles": 28,
+          "vertex_budget": 100,
+          "bounds_blender": [
+            [
+              -0.2288132756948471,
+              0.27549999952316284
+            ],
+            [
+              -0.3437764048576355,
+              0.20959623157978058
+            ],
+            [
+              -0.014999999664723873,
+              1.5800000429153442
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/cattails_lod2.glb",
+          "vertices": 11,
+          "triangles": 5,
+          "vertex_budget": 24,
+          "bounds_blender": [
+            [
+              -0.07000000029802322,
+              0.07000000029802322
+            ],
+            [
+              -0.07000000029802322,
+              0.07000000029802322
+            ],
+            [
+              -0.014999999664723873,
+              1.5
+            ]
+          ]
+        }
+      ],
+      "collision_proxy": null,
+      "selection_radius": 0,
+      "impostor_2d": null,
+      "material_id": "WetlandVertexPalette",
+      "animation_set": "shader wind / water bob",
+      "far_behavior": "hidden",
+      "footprint_size": [
+        0.5810486376285553,
+        0.5624319016933441
+      ]
+    },
+    "high_grass": {
+      "lods": [
+        {
+          "mesh": "res://assets/models/environment/wetlands/high_grass_lod0.glb",
+          "vertices": 49,
+          "triangles": 21,
+          "vertex_budget": 60,
+          "bounds_blender": [
+            [
+              -0.18561366200447083,
+              0.19087976217269897
+            ],
+            [
+              -0.2628878355026245,
+              0.2548370957374573
+            ],
+            [
+              -0.014999999664723873,
+              1.024999976158142
+            ]
+          ]
+        },
+        {
+          "mesh": "res://assets/models/environment/wetlands/high_grass_lod1.glb",
+          "vertices": 9,
+          "triangles": 3,
+          "vertex_budget": 12,
+          "bounds_blender": [
+            [
+              -0.1667984575033188,
+              0.18850000202655792
+            ],
+            [
+              -0.2628878355026245,
+              0.15278977155685425
+            ],
+            [
+              -0.014999999664723873,
+              0.8950000405311584
+            ]
+          ]
+        }
+      ],
+      "collision_proxy": null,
+      "selection_radius": 0,
+      "impostor_2d": null,
+      "material_id": "WetlandVertexPalette",
+      "animation_set": "shader wind / water bob",
+      "far_behavior": "hidden",
+      "footprint_size": [
+        0.3764934241771698,
+        0.5177249312400818
+      ]
+    }
+  }
+}

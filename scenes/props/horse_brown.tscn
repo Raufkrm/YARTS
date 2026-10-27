@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/props/animated_horse_visual.gd" id="1"]
+
+[node name="Horse_brown" type="Node3D"]
+script = ExtResource("1")
+coat = "brown"
+
+[node name="Harness" type="Marker3D" parent="."]
+position = Vector3(0, 1.08, 0.45)
+
+[node name="Saddle" type="Marker3D" parent="."]
+position = Vector3(0, 1.4, -0.1)
